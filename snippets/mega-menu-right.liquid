@@ -1,0 +1,144 @@
+<nav role="navigation" class="site-navigation">
+  <ul class="site-nav__items">
+  {%- assign max_block = section.blocks.size | minus: 1 -%}
+  {%- for current_index in (0..max_block) -%}
+
+    {%- if section.blocks[current_index].type == 'menu_parent' and section.blocks[current_index].settings.pos_right -%}
+      {%- assign parent_block = section.blocks[current_index] -%}
+      {%- assign _sub_has_border = false -%}
+      {%- if settings.color_submenu_border_width > 0 -%}
+        {%- assign _sub_has_border = true -%}
+      {%- endif -%}
+    
+      {%- assign next_item_index = current_index | plus: 1 -%}
+      {%- assign _item_has_sub = false -%}
+
+      {%- unless section.blocks[next_item_index] == nil or section.blocks[next_item_index].type == 'menu_parent' -%}
+        {%- assign _item_has_sub = true -%}
+      {%- endunless -%}
+
+      {%- assign _url = parent_block.settings.url -%}
+      {%- assign _class = '' -%}
+      {%- assign _class_link = 'site-nav__link' -%}
+      {%- assign _title = '' -%}
+      {%- assign _target = '' -%}
+      {%- assign _label = '' -%}
+      {%- assign _label_html = '' -%}
+      {%- assign _icon_img = '' -%}
+
+      {%- assign _label_color = parent_block.settings.label_color | default:'#ffffff' -%}
+      {%- assign _label_bg_color = parent_block.settings.label_bground | default:'#000000' -%}
+      {%- assign _submenu_width = parent_block.settings.submenu_width | default:'250px' | append:'px' -%}
+
+      {%- assign _mixed_text = parent_block.settings.text | strip -%}
+      {%- assign _f_letter = _mixed_text | slice: 0 -%}
+      {%- assign _l_letter = _mixed_text | slice: -1, 1 -%}
+      {%- if _f_letter != '{' -%}
+        {%- assign _mixed_text = _mixed_text | prepend: '{ }' -%}
+      {%- endif -%}
+      {%- if _l_letter != '}' -%}
+        {%- assign _mixed_text = _mixed_text | append: '{ }' -%}
+      {%- endif -%}
+      {%- assign _texts = _mixed_text | split: '}' -%}
+      {%- assign _label = _texts[0] | remove: '{' | strip -%}
+      {%- assign _texts = _texts[1] | split: '{' -%}
+      {%- assign _name = _texts[0] | strip -%}
+      {%- assign _desc = _texts[1] | strip -%}
+
+      {%- if _desc != empty -%}
+        {%- assign _class_link = _class_link | append: ' description' -%}
+      {%- endif -%}
+
+      {%- if _item_has_sub -%}
+        {%- assign _class = _class | append: ' site-nav--has-dropdown' -%}
+      {%- endif -%}
+    
+      {%- if _sub_has_border -%}
+        {%- assign _class = _class | append: ' site-nav--has-border' -%}
+      {%- endif -%}
+
+      {%- if parent_block.settings.pos_right -%}
+        {%- assign _class = _class | append: ' pull-right' -%}
+      {%- endif -%}
+
+      {%- if parent_block.settings.class != empty -%}
+        {%- assign _class = _class | append: ' ' | append: parent_block.settings.class -%}
+      {%- endif -%}
+
+      {%- assign _first_letter_of_label = _label_color | slice: 0 -%}
+      {%- assign _first_letter_of_label_bg = _label_bg_color | slice: 0 -%}
+
+      {%- if _first_letter_of_label != '#' -%}
+        {%- assign _label_color = '' -%}
+      {%- endif -%}
+      {%- if _first_letter_of_label_bg != '#' -%}
+        {%- assign _label_bg_color = '' -%}
+      {%- endif -%}
+
+      {%- if _label != empty -%}
+        {%- capture _label_html -%}<span class="megamenu-label" style="{% if _label_color != '' %}color:{{ _label_color }};{% endif %}{% if _label_bg_color != '' %}background-color:{{ _label_bg_color }};border-color:{{ _label_bg_color }};{% endif %}">{{ _label }}</span>{%- endcapture -%}
+      {%- endif -%}
+    
+      {%- if parent_block.settings.icon_img -%}
+        {%- assign _icon_img = parent_block.settings.icon_img -%}
+      {%- endif -%}
+
+      {%- if _submenu_width == '0px' -%}
+        {%- assign _submenu_width = '100%' -%}
+        {%- assign _class = _class | append: ' site-nav--has-dropdown-100' -%}
+      {%- endif -%}
+    
+      {%- assign _submenu_width_int = _submenu_width | plus: 0 -%}
+      {%- if _submenu_width_int > 700 -%}
+        {%- assign _class = _class | append: ' site-nav--has-dropdown-lg' -%}
+      {%- endif -%}
+
+      <li class="site-nav__item{{ _class }}" {{ block.shopify_attributes }}>
+        <a href="{{ _url | default:'#' }}" class="{{ _class_link }}" {{ _target }}>
+          {%- if _icon_img != empty -%}{{ _icon_img | img_tag: 'Icon', 'icon', 'thumb' }}{%- endif -%}
+          {%- if _desc != empty -%}<span class="description-left">{{ _name }}<br /><span class="description">{{ _desc }}</span></span>{% else %}{{ _name }}{%- endif -%}
+          {{- _label_html -}}
+        </a>
+        {%- if _item_has_sub -%}
+          {%- assign _submenu_bg_style = '' -%}
+          {%- assign _submenu_bg_lazyload = '' -%}
+          {%- assign _submenu_bg_pos = parent_block.settings.submenu_bground_pos | default: 'top_left' -%}
+          {%- assign _submenu_alignment = parent_block.settings.submenu_alignment | default: 'left' -%}
+          {%- assign _submenu_position = parent_block.settings.submenu_position | default: 'left' -%}
+          {%- assign _submenu_bground = parent_block.settings.submenu_bground -%}
+
+          {%- if _submenu_bground -%}
+            {%- capture img_sizes -%}{% if _submenu_bground.aspect_ratio > 1 %}x3{% else %}3x{% endif %}{%- endcapture -%}
+            {%- assign _submenu_bg_repeat = parent_block.settings.submenu_bground_repeat | default: 'no-repeat' -%}
+            {%- capture _submenu_bg_style -%}background-image:url({{ _submenu_bground | img_url: img_sizes }});background-repeat:{{ _submenu_bg_repeat }};background-size:contain;background-attachment:scroll;background-color:{{ settings.color_submenu_bground }};{%- endcapture -%}
+            {%- capture _submenu_bg_lazyload -%}data-bgset="{% include 'bgset', image: _submenu_bground %}" data-sizes="auto" data-parent-fit="cover"{%- endcapture -%}
+          {%- endif -%}
+        
+          {%- assign container_start = '<div class="clearfix">' -%}
+          {%- assign container_end = '</div>' -%}
+          {%- if _submenu_width == '100%' and parent_block.settings.submenu_no_spacing == false -%}
+            {%- assign container_start = '<div class="container">' -%}
+          {%- endif -%}
+
+          <div class="site-nav__dropdown text-{{ _submenu_alignment }} d-position-{{ _submenu_position }}" style="width:{{ _submenu_width }};">
+            <div class="site-nav__dropdown-inner{% if _submenu_bground %} position-{{ _submenu_bg_pos }} lazyload{% endif %}" {{ _submenu_bg_lazyload }} style="{{ _submenu_bg_style }}">
+              {{- container_start -}}
+              <ul class="row row-{{ parent_block.settings.submenu_spacing }}">
+                {%- for new_index in (next_item_index..max_block) -%}
+                  {%- unless section.blocks[new_index] == nil or section.blocks[new_index].type == 'menu_parent' -%}
+                    {%- include 'mega-menu-subitem' -%}
+                    {%- assign current_index = new_index -%}
+                  {%- else -%}
+                    {%- break -%}
+                  {%- endunless -%}
+                {%- endfor -%}
+              </ul>
+              {{- container_end -}}
+            </div>
+          </div>
+        {%- endif -%}
+      </li>
+    {%- endif -%}
+  {%- endfor -%}
+  </ul>
+</nav>

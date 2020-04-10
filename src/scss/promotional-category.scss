@@ -1,0 +1,33 @@
+.promotional-category {
+    background-color: #f0f3fc;
+    padding: 30px 0;
+
+    &__item {
+
+    }
+
+    &__title {
+        text-transform: uppercase;
+        text-align: center;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+
+    &__image {
+        width: 100%;
+    }
+
+    &__video {
+        width: 100%;
+    }
+
+    &__para {
+        margin: 10px;
+        text-align: center;
+        font-size: 16px;
+        margin-bottom: 0px;
+        @media (max-width: 768px) {
+            font-size: 15px;
+        }
+    }
+}

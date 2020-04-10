@@ -1,0 +1,135 @@
+{%- assign is_container = true -%}
+{%- assign container_begin = '<div class="container">' -%}
+{%- assign container_end = '</div>' -%}
+{%- if section.settings.full_width -%}
+  {%- assign is_container = false -%}
+  {%- assign container_begin = '' -%}
+  {%- assign container_end = '' -%}
+{%- endif -%}
+
+{%- capture style_section -%}
+  margin:{{ section.settings.margin_top }}px 0 {{ section.settings.margin_bottom }}px;
+  padding:{{ section.settings.padding_top }}px {{ section.settings.padding_right }}px {{ section.settings.padding_bottom }}px {{ section.settings.padding_left }}px;
+{%- endcapture -%}
+
+{{- container_begin -}}
+<div class="container-section spacing-section{% if section.settings.mobile_disable %} mb-hidden{% endif %}" style="{{ style_section | strip_newlines | remove: "  " }}">
+  <div class="wrapper{% if section.settings.full_width and section.settings.no_spacing == false %} container{% assign is_container = true %}{% endif %}">
+    <div class="col-12" style="min-height:{{ section.settings.height }}px;background-color:{{ section.settings.bground_color }};"></div>
+  </div>
+</div>
+{{- container_end -}}
+
+{% schema %}
+  {
+    "name": "Spacing",
+    "class": "index-section",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "mobile_disable",
+        "label": "Disable on mobile",
+        "info": "Check to disable this section on mobile devices"
+      },
+      {
+        "type": "checkbox",
+        "id": "full_width",
+        "label": "Wide display"
+      },
+      {
+        "type": "header",
+        "content": "— Paddings"
+      },
+      {
+        "type": "range",
+        "id": "padding_top",
+        "label": "Top padding",
+        "min": 0,
+        "max": 250,
+        "step": 5,
+        "unit": "px",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "padding_bottom",
+        "label": "Bottom padding",
+        "min": 0,
+        "max": 250,
+        "step": 5,
+        "unit": "px",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "padding_left",
+        "label": "Left padding",
+        "min": 0,
+        "max": 250,
+        "step": 5,
+        "unit": "px",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "padding_right",
+        "label": "Right padding",
+        "min": 0,
+        "max": 250,
+        "step": 5,
+        "unit": "px",
+        "default": 0
+      },
+      {
+        "type": "header",
+        "content": "— Margins"
+      },
+      {
+        "type": "range",
+        "id": "margin_top",
+        "label": "Top margin",
+        "min": -250,
+        "max": 0,
+        "step": 5,
+        "unit": "px",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "margin_bottom",
+        "label": "Bottom margin",
+        "min": -250,
+        "max": 0,
+        "step": 5,
+        "unit": "px",
+        "default": 0
+      },
+      {
+        "type": "header",
+        "content": "— Options"
+      },
+      {
+        "type": "range",
+        "id": "height",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "unit": "px",
+        "label": "Height",
+        "default": 30
+      },
+      {
+        "type": "color",
+        "id": "bground_color",
+        "label": "Background color",
+        "default": "#fff"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Spacing",
+        "category": "Other"
+      }
+    ]
+  }
+{% endschema %}

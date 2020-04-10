@@ -1,0 +1,126 @@
+<div class="page-wishlist">
+  {%- include 'page-header', page_object: page, page_title: page.title, page_breadcrumbs: true -%}
+  <div class="page-content content-area">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+          <table cellspacing="0" class="wishlist__table">
+            <thead>
+              <tr>
+                <th class="item__remove"></th>
+                <th class="item__image"></th>
+                <th class="item__name">
+                  <span>{{ 'wishlist.label.product' | t }}</span>
+                </th>
+                <th class="item__price">
+                  <span>{{ 'wishlist.label.price' | t }}</span>
+                </th>
+                <th class="item__status">
+                  <span>{{ 'wishlist.label.status' | t }}</span>
+                </th>
+                <th class="item__action"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {%- if customer -%}
+                {%- assign wishlist_size = customer.metafields.wishlist | size -%}
+
+                {%- if wishlist_size > 0 -%}
+                  {%- capture current_page -%}{% include 'querystring', name: 'page', default: 1 %}{%- endcapture -%}
+                  {%- assign current_page = current_page | plus: 0 -%}
+                  {%- assign my_limit = 20 -%}
+                  {%- assign my_offset = current_page | minus: 1 | times: my_limit -%}
+                  {%- assign my_size = my_offset | plus: my_limit -%}
+                  {%- assign all_wishlist_count = customer.metafields.wishlist.size -%}
+
+                  {%- for metafield in customer.metafields.wishlist offset:my_offset limit:my_limit -%}
+                  {%- assign product_handle = metafield | last -%}
+                  {%- assign my_product = all_products[product_handle] -%}
+                  {%- assign current_variant = my_product.first_available_variant -%}
+                  {%- assign is_external_product = false -%}
+                  {%- assign is_grouped_product = false -%}
+
+                  {%- if my_product.metafields.info.external_btn != blank and my_product.metafields.info.external_link != blank -%}
+                    {%- assign is_external_product = true -%}
+                  {%- endif -%}
+                  {%- if my_product.metafields.info.grouped != blank and linklists[my_product.metafields.info.grouped].links.size > 0 -%}
+                    {%- assign is_grouped_product = true -%}
+                  {%- endif -%}
+                  <tr class="wishlist__item">
+                    <td class="item__remove">
+                      <div><a href="javascript:void(0);" class="removewishlist_btn" title="{{ 'wishlist.general.remove' | t | escape }}" data-product_id="{{ my_product.id }}" data-customer_id="{{ customer.id }}" data-shop_domain="{{ shop.permanent_domain }}">×</a></div>
+                    </td>
+                    <td class="item__image">
+                      <a href="{{ my_product.url }}">
+                        <img src="{{ my_product | img_url: '95x95' }}" srcset="{{ my_product | img_url: '95x95' }} 1x, {{ my_product | img_url: '95x95', scale: 2 }} 2x" alt="{{ my_product.title | escape }}" />
+                      </a>
+                    </td>
+                    <td class="item__name" data-title="{{ 'wishlist.label.product' | t | escape }}">
+                      <a href="{{ my_product.url }}">{{ my_product.title }}</a>
+                    </td>
+                    <td class="item__price" data-title="{{ 'wishlist.label.price' | t | escape }}">
+                      {%- include 'product-price' -%}
+                    </td>
+                    <td class="item__status"{% if is_external_product == false %} data-title="{{ 'wishlist.label.status' | t | escape }}"{% endif %}>
+                      {%- include 'product-stock' -%}
+                    </td>
+                    <td class="item__action">
+                      {%- if is_external_product == false -%}
+                        {%- if is_grouped_product == false -%}
+                          {%- if my_product.available -%}
+                            {%- if my_product.variants.size > 1 -%}
+                            <a href="{{ my_product.url }}" class="btn">{{ 'products.product.select_options' | t }}</a>
+                            {%- else -%}
+                            <form action="/cart/add" method="POST">
+                              <input type="hidden" name="quantity" value="1" />
+                              <select class="hide" name="id">
+                                {%- for variant in my_product.variants -%}
+                                <option value="{{ variant.id }}">{{ variant.title | escape }} - {{ variant.price | money }}</option>
+                                {%- endfor -%}
+                              </select>
+                              <a href="/cart" class="btn addcart_btn" data-added="{{ 'products.product.view_cart' | t | escape }}">{% if current_variant.inventory_quantity <= 0 and current_variant.inventory_management == 'shopify' %}{{ 'products.product.pre_order' | t | escape }}{% else %}{{ 'products.product.add_to_cart' | t | escape }}{% endif %}</a>
+                            </form>
+                            {%- endif -%}
+                          {%- else -%}
+                            <a href="{{ my_product.url }}" class="btn">{{ 'products.product.read_more' | t }}</a>
+                          {%- endif -%}
+                        {%- else -%}
+                          <a href="{{ my_product.url }}" class="btn">{{ 'products.product.view_products' | t }}</a>
+                        {%- endif -%}
+                      {%- else -%}
+                        <a href="{{ my_product.metafields.info.external_link }}" class="btn">{{ my_product.metafields.info.external_btn }}</a>
+                      {%- endif -%}
+                    </td>
+                  </tr>
+                  {%- endfor -%}
+                {%- else -%}
+                  <tr>
+                    <td colspan="6" class="wishlist-empty">{{ 'wishlist.general.no_products' | t }} <a href="{{ shop.url }}">{{ 'wishlist.general.continue_shopping' | t }}</a></td>
+                  </tr>
+                {%- endif -%}
+              {%- else -%}
+                <tr>
+                  <td colspan="6" class="need-login">{{ 'wishlist.general.need_login' | t }} <a href="/account/login">{{ 'layout.customer.log_in' | t }}</a></td>
+                </tr>
+              {%- endif -%}
+            </tbody>
+          </table>
+          {%- if customer and wishlist_size > 0 -%}
+          <div class="pagination text-center">
+            <div class="ajax_load_button animated fadeIn">
+              <a href="javascript:void(0);" class="loadmore{% if all_wishlist_count <= my_limit %} hide{% endif %}" data-processing="0" data-no_more="{{ 'general.pagination.no_more' | t | escape }}">
+                <span>{{- 'general.pagination.load_more' | t -}}</span>
+                <div><i></i><i></i><i></i></div>
+              </a>
+              {%- if my_size < all_wishlist_count -%}
+              {%- assign next_page = current_page | plus: 1 -%}
+              <a class="next hide" title="{{ 'general.pagination.next' | t | escape }}" href="{{shop.url | append: page.url | append: "?page=" | append: next_page }}"></a>
+              {%- endif -%}
+            </div>
+          </div>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

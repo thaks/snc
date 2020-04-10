@@ -1,0 +1,49 @@
+<div class="t-p-v">
+    <div class="t-p-v__left">
+        <img src="https://www.fillmurray.com/g/300/300" alt="" class="t-p-v__img">
+    </div>
+    <div class="t-p-v__right">
+        <h1 class="t-p-v__title">Some Heading for this product</h1>
+        <h3 class="t-p-v__price">234AED</h3>
+        <p class="t-p-v__desc">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptates quasi omnis quibusdam fugiat, laborum dicta accusantium commodi dignissimos tempora harum animi quae qui itaque cum velit, unde laudantium illo enim.
+        </p>
+
+        <form action="" class="t-p-v__form">
+            <label for="color">Options</label>
+            <select @change="onSelectChange" name="color" id="color">
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+            </select>
+
+            <label for="quantity">Qantity</label>
+            <input type="text">
+        </form>
+        <button @click="onButtonClick" class="t-p-v__submit-button">Check</button>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+<script>
+
+new Vue({
+    el: '.t-p-v',
+    delimiters: ['${', '}'],
+    data: {
+    }, 
+    methods: {
+        onSelectChange() {
+            console.log('working fine!');
+        },
+
+        onButtonClick() {
+            const Slctr = document.querySelector('#color');
+            Slctr.selectedIndex  = 0;
+        }
+    }
+});
+
+</script>

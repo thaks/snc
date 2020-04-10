@@ -1,0 +1,153 @@
+{%- assign product_swatch_color = settings.product_swatch_color -%}
+{%- assign product_swatch_color_advanced = settings.product_swatch_color_advanced -%}
+{%- assign product_swatch_size = settings.product_swatch_size -%}
+{%- assign section_id = section.id -%}
+{%- assign is_external_product = false -%}
+{%- assign is_grouped_product = false -%}
+
+{%- if product.metafields.info.external_btn != blank and product.metafields.info.external_link != blank -%}
+  {%- assign is_external_product = true -%}
+{%- endif -%}
+
+{%- if product.metafields.info.grouped != blank and linklists[product.metafields.info.grouped].links.size > 0 -%}
+  {%- assign is_grouped_product = true -%}
+{%- endif -%}
+
+<div class="ProductSection-{{ section_id }} product-template__container" data-section-id="{{ section_id }}" data-section-type="product-quickview" data-enable-history-state="false" data-product_swatch_color_advanced="{{ product_swatch_color_advanced }}" data-product_swatch_color="{{ product_swatch_color }}" data-product_swatch_size="{{ product_swatch_size }}">
+  <div id="product-{{ product.id }}" class="product-single row row-0">
+    <div class="cd-close"><span class="close-icon">×</span></div>
+    {%- assign current_variant = product.selected_or_first_available_variant -%}
+    {%- assign featured_image = current_variant.featured_image | default: product.featured_image -%}
+    {%- assign featured_image_alt = current_variant.featured_image.alt | default: product.featured_image.alt -%}
+    {%- assign instructions = product.metafields.info -%}
+
+    <div class="col-12 col-lg-6 cd-slider-wrapper">
+      <div class="product-single__photos bottom">
+        {%- assign product_images_size = product.images.size -%}
+        {%- include 'product-labels', my_product: product -%}
+        {%- include 'product-single-images' -%}
+      </div>
+    </div>
+    <div class="col-12 col-lg-6 cd-item-info">
+      <div class="product-info-wrapper">
+        <div class="product-info">
+          <div class="product-single__top">
+            {%- include 'product-single', function: 'title' -%}
+          </div>
+          <div class="product-single__middle">
+            {%- include 'product-single', function: 'review', force_display: true -%}
+            {%- include 'product-single', function: 'price' -%}
+            {%- include 'product-single', function: 'short_desc', force_display: true -%}
+            <div class="go_to_product_page">
+              <a href="{{ product.url }}">{{ 'products.product.go_to_product_page' | t }}</a>
+            </div>
+          </div>
+          <div class="product-single__bottom">
+            {%- unless product.available == false or product.has_only_default_variant or is_grouped_product == true -%}
+            <div class="product-form__variants">
+              <div class="variations-{{section_id}}">
+                <div class="variations-content-{{section_id}}">
+                  {%- for option in product.options_with_values -%}
+                  <div class="selector-wrapper {{ option.name | handlezie | downcase }} variation-select-{{ section_id }}-{{ forloop.index0 }}">
+                    <label class="option-select-label{% if option.name == 'default' %} hide{% endif %}" for="single-option-selector-{{ forloop.index0 }}">
+                      {{- option.name -}}
+                      {%- if product_swatch_color_advanced -%}: <span class="option-select-value option-select-value-{{ section_id }}-{{ forloop.index0 }}">{{ option.selected_value }}</span>{%- endif -%}
+                    </label>
+                    <div class="select-wrapper">
+                      <select class="single-option-selector-{{ section_id }}-{{ forloop.index0 }} single-option-selector single-option-selector-{{ section_id }}" data-index="option{{ forloop.index }}" data-option="option{{ forloop.index }}">
+                        {%- for value in option.values -%}
+                        <option value="{{ value | escape }}"{% if option.selected_value == value %} selected="selected"{% endif %}>{{ value }}</option>
+                        {%- endfor -%}
+                      </select>
+                    </div>
+                  </div>
+                  {%- endfor -%}
+                </div>
+              </div>
+            </div>
+            {%- endunless -%}
+
+            {%- if is_grouped_product == true -%}
+              {%- include 'product-single', function: 'grouped_product' -%}
+            {%- endif -%}
+
+            {%- if product.available == false -%}
+              <div class="product-single__incoming">{{ 'products.stock_notification_form.sold_out' | t }}</div>
+              {%- include 'product-single', function: 'btn_exts' -%}
+            {%- else -%}
+              {%- form 'product', product, class: form_class, data-section: section_id -%}
+
+                <div class="row row-30 align-items-center">
+                  {%- if product.available and is_external_product == false and is_grouped_product == false -%}
+                  <select name="id" class="ProductSelect-{{ section_id }} hide" data-section="{{ section_id }}">
+                    {%- for variant in product.variants -%}
+                    {%- if variant.available -%}
+                    <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %} value="{{ variant.id }}">
+                      {{- variant.title -}}
+                    </option>
+                    {%- else -%}
+                    <option disabled="disabled">{{ variant.title }} - {{ 'products.product.sold_out' | t }}</option>
+                    {%- endif -%}
+                    {%- endfor -%}
+                  </select>
+                  {%- endif -%}
+
+                  {%- if product.available and is_external_product == false and is_grouped_product == false -%}
+                  <div class="col-auto product-form__item--quantity{% unless current_variant.available %} btn-disabled{% endunless %}">
+                    <button type="button" class="ris ri-minus minus"></button>
+                    <input type="text" name="quantity" value="1" min="1" class="quantity product-form__input" pattern="[0-9]*" />
+                    <button type="button" class="ris ri-plus plus"></button>
+                  </div>
+                  {%- endif -%}
+
+                  <div class="col-auto product-form__item--submit">
+                    {%- if is_external_product == false -%}
+                    {%- if is_grouped_product == false -%}
+                    <button type="submit" name="add"{% unless current_variant.available %} disabled="disabled"{% endunless %} class="AddToCart-{{ section_id }} btn btn-primary progress-btn product-form__cart-submit">
+                      <span class="AddToCartText-{{ section_id }} btn-text">
+                        {%- unless current_variant.available -%}
+                        {{- 'products.product.sold_out' | t -}}
+                        {%- else -%}
+                        {%- if current_variant.inventory_quantity <= 0 and current_variant.inventory_management == 'shopify' -%}
+                        {{- 'products.product.pre_order' | t -}}
+                        {%- else -%}
+                        {{- 'products.product.add_to_cart' | t -}}
+                        {%- endif -%}
+                        {%- endunless -%}
+                      </span>
+                      <div class="progress"></div>
+                      <div class="checked"></div>
+                    </button>
+                    {%- else -%}
+                    <button type="submit" name="add" class="AddToCart-{{ section_id }} btn btn-primary progress-btn product-form__cart-submit--grouped" disabled="">
+                      <span class="btn-text">
+                        {%- if current_variant.inventory_quantity <= 0 and current_variant.inventory_management == 'shopify' -%}
+                        {{- 'products.product.pre_order' | t -}}
+                        {%- else -%}
+                        {{- 'products.product.add_to_cart' | t -}}
+                        {%- endif -%}
+                      </span>
+                      <div class="progress"></div>
+                      <div class="checked"></div>
+                    </button>
+                    {%- endif -%}
+                    {%- else -%}
+                    <a href="{{ product.metafields.info.external_link }}" class="btn btn-primary">{{ product.metafields.info.external_btn }}</a>
+                    {%- endif -%}
+                  </div>
+                </div>
+
+                {%- include 'product-single', function: 'btn_exts' -%}
+              {%- endform -%}
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {%- unless product == empty -%}
+  <script type="application/json" class="ProductJson-{{ section_id }}">{{ product | json }}</script>
+  <script type="application/json" class="ProductSwatchJson-{{ section_id }}">{{ product.metafields.texture | json }}</script>
+  <script type="application/json" class="ProductMoreJson-{{ section_id }}">{%- capture product_more_json -%}{%- include 'product-json', product: product -%}{%- endcapture -%}{{- product_more_json | strip_newlines | remove: "  " -}}</script>
+  {%- endunless -%}
+</div>

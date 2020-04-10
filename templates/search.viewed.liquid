@@ -1,0 +1,9 @@
+{%- layout none -%}
+
+{%- if search.results_count > 0 -%}
+<div class="row products products-grid">
+  {%- for my_product in search.results -%}
+    {%- include 'product-item', layout: 'grid', my_collection: collections.all -%}
+  {%- endfor -%}
+</div>
+{%- endif -%}

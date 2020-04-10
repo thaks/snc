@@ -1,0 +1,23 @@
+{%- if collection.handle != 'all' -%}
+<div class="product product-category col-auto">
+  <div class="category__item" {{ block.shopify_attributes }}>
+    <div class="category__image-wrapper">
+      <div class="aspect__ratio aspect__ratio-{{ section.settings.image_ratio }}{% if section.settings.image_ratio != '0' and section.settings.image_ratio_crop %} aspect__ratio-crop{% endif %}">
+        <a href="{{ collection.url }}" class="aspect__ratio-container">
+          <div class="aspect__ratio-image category__image lazyload" data-bgset="{% include 'bgset', image: featured_image %}" data-sizes="auto" data-parent-fit="cover" style="background-image:url({{ 'transparent.png.jpg' | asset_url }});"></div>
+        </a>
+      </div>
+    </div>
+    <div class="category__content">
+      <div class="category__details">
+        <a href="{{ collection.url }}">
+          {%- if section.settings.products_count -%}
+          <div class="more-products">{{ 'collections.general.items_with_count' | t: count: collection.all_products_count }}</div>
+          {%- endif -%}
+          <h2 class="category__title">{{ cat_title }}</h2>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{%- endif -%}

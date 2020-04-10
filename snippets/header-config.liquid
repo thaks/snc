@@ -1,0 +1,19 @@
+{%- if section.settings.currency or section.settings.language -%}
+<div class="header__item">
+  <div class="site-header-config">
+    <a href="javascript:void(0);" class="config-link d-flex align-items-center">
+      <i class="ion ion-ios-globe"></i>
+    </a>
+    <div class="config__dropdown">
+      <div class="config__dropdown-inner">
+        {%- if section.settings.language -%}
+          {%- include 'language-picker' -%}
+        {%- endif -%}
+        {%- if section.settings.currency -%}
+          {%- include 'currency-picker' -%}
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+{%- endif -%}

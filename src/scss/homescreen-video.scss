@@ -1,0 +1,73 @@
+.homescreen-video {
+    position: relative;
+    height: auto;
+    @media (max-width: 768px) {
+        height: 500px;
+    }
+
+    &__video {
+        width: 100%;
+        @media (max-width: 768px) {
+            height: 500px;
+            object-fit: cover;
+        }
+    }
+
+    &__video-container {
+        width: 100%;
+    }
+
+    &__overlay {
+        z-index: 2;
+        position: absolute;
+        top:0; bottom: 0; right: 0; left: 0;
+        background:  rgba(61, 61, 61, 0.5);
+        
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    &__text-container {
+        // background-color: red;
+        display: flex;
+        flex-direction: column;
+        height: auto;
+        justify-content: center;
+        align-items: center;
+        width: 450px;
+        @media (max-width: 786px) {
+            width: 85%;
+        }
+        
+        p {
+            color: white;
+            text-align: center;
+            letter-spacing: -1px;
+        }
+    }
+
+    &__button-box {
+        padding: 0 30px;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 10px;
+        width: 100%;
+
+
+        &__btn {
+            cursor: pointer;
+            padding: 10px 0;
+            text-transform: uppercase;
+            display: inline-block;
+            flex: 1;
+            text-align: center;
+            background-color: white;
+            color: black;
+            @media (max-width: 786px) {
+                font-size: 14px;
+            }
+        }
+    }
+
+}

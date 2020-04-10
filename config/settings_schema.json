@@ -1,0 +1,1892 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Barberry",
+    "theme_author": "RoarTheme",
+    "theme_version": "1.3",
+    "theme_documentation_url": "https:\/\/docs.roartheme.com\/shopify\/barberry",
+    "theme_support_url": "https:\/\/support.roartheme.com\/"
+  },
+  {
+    "name": "Purchase Code",
+    "settings": [
+      {
+        "type": "text",
+        "id": "purchase_code",
+        "label": "Please click SAVE after put purchase code on this setting",
+        "info": "[How to get it](https:\/\/help.market.envato.com\/hc\/en-us\/articles\/202822600-Where-Is-My-Purchase-Code)"
+      }
+    ]
+  },
+  {
+    "name": "General",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Box layout[.](https:\/\/#roarJs-group:true)"
+      },
+      {
+        "type": "checkbox",
+        "id": "box_layout",
+        "label": "Enable box layout"
+      },
+      {
+        "type": "color",
+        "id": "box_layout_bground",
+        "label": "Background color[.](https:\/\/#roarJs-check:box_layout|true)",
+        "default": "#f2f2f2"
+      },
+      {
+        "type": "image_picker",
+        "id": "box_layout_bground_image",
+        "label": "Background image[.](https:\/\/#roarJs-check:box_layout|true)"
+      },
+      {
+        "type": "select",
+        "id": "box_layout_bground_position",
+        "label": "Background position to start[.](https:\/\/#roarJs-image:box_layout_bground_image|true)",
+        "options": [
+          {
+            "value": "top left",
+            "label": "Top left"
+          },
+          {
+            "value": "top right",
+            "label": "Top right"
+          },
+          {
+            "value": "top center",
+            "label": "Top center"
+          },
+          {
+            "value": "bottom left",
+            "label": "Bottom left"
+          },
+          {
+            "value": "bottom right",
+            "label": "Bottom right"
+          },
+          {
+            "value": "bottom center",
+            "label": "Bottom center"
+          }
+        ],
+        "default": "top left"
+      },
+      {
+        "type": "select",
+        "id": "box_layout_bground_repeat",
+        "label": "Background repeat[.](https:\/\/#roarJs-image:box_layout_bground_image|true)",
+        "options": [
+          {
+            "value": "no-repeat",
+            "label": "None"
+          },
+          {
+            "value": "repeat-x",
+            "label": "Horizontally"
+          },
+          {
+            "value": "repeat-y",
+            "label": "Vertically"
+          },
+          {
+            "value": "repeat",
+            "label": "Vertically & horizontally"
+          }
+        ]
+      },
+      {
+        "type": "header",
+        "content": "Footer[.](https:\/\/#roarJs-group:true)"
+      },
+      {
+        "type": "checkbox",
+        "id": "footer_reveal",
+        "label": "Enable reveal effect",
+        "info": "This to cause the footer to appear as though it's being reveal by the main content area when scrolling down to it."
+      },
+      {
+        "type": "header",
+        "content": "RTL support[.](https:\/\/#roarJs-group:true)"
+      },
+      {
+        "type": "checkbox",
+        "id": "rtl_support",
+        "label": "Enable RTL",
+        "info": "When enabled, the feature turns on Right-to-left support in Shopify for RTL languages."
+      },
+      {
+        "type": "header",
+        "content": "Animation[.](https:\/\/#roarJs-group:true)"
+      },
+      {
+        "type": "checkbox",
+        "id": "animation_disabled",
+        "label": "Disable animation"
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Body[.](https:\/\/#roarJs-group:true)"
+      },
+      {
+        "type": "font_picker",
+        "id": "body_font",
+        "label": "Font family",
+        "default": "josefin_sans_n3"
+      },
+      {
+        "type": "range",
+        "id": "body_font_size",
+        "min": 10,
+        "max": 50,
+        "step": 1,
+        "unit": "px",
+        "label": "Font size",
+        "default": 22
+      },
+      {
+        "type": "range",
+        "id": "body_line_height",
+        "label": "Line height",
+        "max": 2.5,
+        "min": 0.5,
+        "step": 0.1,
+        "default": 1.6
+      },
+      {
+        "type": "range",
+        "id": "body_letter_spacing",
+        "label": "Letter spacing",
+        "max": 10,
+        "min": -5,
+        "step": 0.5,
+        "unit": "px",
+        "default": 0
+      },
+      {
+        "type": "header",
+        "content": "Body on mobile[.](https:\/\/#roarJs-group:true)"
+      },
+      {
+        "type": "range",
+        "id": "body_mb_font_size",
+        "min": 10,
+        "max": 50,
+        "step": 1,
+        "unit": "px",
+        "label": "Font size",
+        "default": 20
+      },
+      {
+        "type": "range",
+        "id": "body_mb_line_height",
+        "label": "Line height",
+        "max": 2.5,
+        "min": 0.5,
+        "step": 0.1,
+        "default": 1.6
+      },
+      {
+        "type": "header",
+        "content": "Heading[.](https:\/\/#roarJs-group:true)"
+      },
+      {
+        "type": "font_picker",
+        "id": "heading_font",
+        "label": "Font family",
+        "default": "josefin_sans_n6"
+      },
+      {
+        "type": "range",
+        "id": "heading_font_size",
+        "min": 10,
+        "max": 80,
+        "step": 1,
+        "unit": "px",
+        "label": "Font size",
+        "default": 24
+      },
+      {
+        "type": "range",
+        "id": "heading_letter_spacing",
+        "label": "Letter spacing",
+        "max": 10,
+        "min": -5,
+        "step": 0.5,
+        "unit": "px",
+        "default": -1
+      },
+      {
+        "type": "header",
+        "content": "Button[.](https:\/\/#roarJs-group:true)"
+      },
+      {
+        "type": "paragraph",
+        "content": "Font family inherited from Heading"
+      },
+      {
+        "type": "range",
+        "id": "button_font_weight",
+        "label": "Font weight",
+        "max": 700,
+        "min": 300,
+        "step": 100,
+        "default": 700
+      },
+      {
+        "type": "range",
+        "id": "button_font_size",
+        "min": 10,
+        "max": 50,
+        "step": 1,
+        "unit": "px",
+        "label": "Font size",
+        "default": 12
+      },
+      {
+        "type": "range",
+        "id": "button_letter_spacing",
+        "label": "Letter spacing",
+        "max": 10,
+        "min": -5,
+        "step": 0.5,
+        "unit": "px",
+        "default": 1
+      },
+      {
+        "type": "select",
+        "id": "button_text_transform",
+        "label": "Text transform",
+        "options": [
+          {
+            "value": "none",
+            "label": "none"
+          },
+          {
+            "value": "capitalize",
+            "label": "Capitalize"
+          },
+          {
+            "value": "uppercase",
+            "label": "Uppercase"
+          },
+          {
+            "value": "lowercase",
+            "label": "Lowercase"
+          },
+          {
+            "value": "initial",
+            "label": "Initial"
+          },
+          {
+            "value": "inherit",
+            "label": "Inherit"
+          }
+        ],
+        "default": "uppercase"
+      },
+      {
+        "type": "header",
+        "content": "Page header[.](https:\/\/#roarJs-group:true)"
+      },
+      {
+        "type": "paragraph",
+        "content": "Font family inherited from Heading"
+      },
+      {
+        "type": "range",
+        "id": "page_header_font_weight",
+        "label": "Font weight",
+        "max": 700,
+        "min": 300,
+        "step": 100,
+        "default": 700
+      },
+      {
+        "type": "range",
+        "id": "page_header_font_size",
+        "min": 10,
+        "max": 80,
+        "step": 1,
+        "unit": "px",
+        "label": "Font size",
+        "default": 60
+      },
+      {
+        "type": "range",
+        "id": "page_header_line_height",
+        "label": "Line height",
+        "max": 2.5,
+        "min": 0.5,
+        "step": 0.1,
+        "default": 1.3
+      },
+      {
+        "type": "range",
+        "id": "page_header_letter_spacing",
+        "label": "Letter spacing",
+        "max": 10,
+        "min": -5,
+        "step": 0.5,
+        "unit": "px",
+        "default": -2.5
+      },
+      {
+        "type": "select",
+        "id": "page_header_text_transform",
+        "label": "Text transform",
+        "options": [
+          {
+            "value": "none",
+            "label": "none"
+          },
+          {
+            "value": "capitalize",
+            "label": "Capitalize"
+          },
+          {
+            "value": "uppercase",
+            "label": "Uppercase"
+          },
+          {
+            "value": "lowercase",
+            "label": "Lowercase"
+          },
+          {
+            "value": "initial",
+            "label": "Initial"
+          },
+          {
+            "value": "inherit",
+            "label": "Inherit"
+          }
+        ],
+        "default": "none"
+      },
+      {
+        "type": "header",
+        "content": "Page title on catalog pages[.](https:\/\/#roarJs-group:true)"
+      },
+      {
+        "type": "paragraph",
+        "content": "Font family inherited from Heading"
+      },
+      {
+        "type": "range",
+        "id": "page_title_font_weight",
+        "label": "Font weight",
+        "max": 700,
+        "min": 300,
+        "step": 100,
+        "default": 600
+      },
+      {
+        "type": "range",
+        "id": "page_title_letter_spacing",
+        "label": "Letter spacing",
+        "max": 10,
+        "min": -5,
+        "step": 0.5,
+        "unit": "px",
+        "default": -0.5
+      },
+      {
+        "type": "select",
+        "id": "page_title_text_transform",
+        "label": "Text transform",
+        "options": [
+          {
+            "value": "none",
+            "label": "none"
+          },
+          {
+            "value": "capitalize",
+            "label": "Capitalize"
+          },
+          {
+            "value": "uppercase",
+            "label": "Uppercase"
+          },
+          {
+            "value": "lowercase",
+            "label": "Lowercase"
+          },
+          {
+            "value": "initial",
+            "label": "Initial"
+          },
+          {
+            "value": "inherit",
+            "label": "Inherit"
+          }
+        ],
+        "default": "none"
+      },
+      {
+        "type": "header",
+        "content": "Page title on product pages[.](https:\/\/#roarJs-group:true)"
+      },
+      {
+        "type": "paragraph",
+        "content": "Font family inherited from Heading"
+      },
+      {
+        "type": "range",
+        "id": "single_page_title_font_weight",
+        "label": "Font weight",
+        "max": 700,
+        "min": 300,
+        "step": 100,
+        "default": 700
+      },
+      {
+        "type": "range",
+        "id": "single_page_title_font_size",
+        "min": 10,
+        "max": 80,
+        "step": 1,
+        "unit": "px",
+        "label": "Font size",
+        "default": 62
+      },
+      {
+        "type": "range",
+        "id": "single_page_title_line_height",
+        "label": "Line height",
+        "max": 2.5,
+        "min": 0.5,
+        "step": 0.1,
+        "default": 1.1
+      },
+      {
+        "type": "range",
+        "id": "single_page_title_letter_spacing",
+        "label": "Letter spacing",
+        "max": 10,
+        "min": -5,
+        "step": 0.5,
+        "unit": "px",
+        "default": -2
+      },
+      {
+        "type": "select",
+        "id": "single_page_title_text_transform",
+        "label": "Text transform",
+        "options": [
+          {
+            "value": "none",
+            "label": "none"
+          },
+          {
+            "value": "capitalize",
+            "label": "Capitalize"
+          },
+          {
+            "value": "uppercase",
+            "label": "Uppercase"
+          },
+          {
+            "value": "lowercase",
+            "label": "Lowercase"
+          },
+          {
+            "value": "initial",
+            "label": "Initial"
+          },
+          {
+            "value": "inherit",
+            "label": "Inherit"
+          }
+        ],
+        "default": "none"
+      },
+      {
+        "type": "header",
+        "content": "Main menu[.](https:\/\/#roarJs-group:true)"
+      },
+      {
+        "type": "font_picker",
+        "id": "menu_font",
+        "label": "Font family",
+        "default": "josefin_sans_n4"
+      },
+      {
+        "type": "range",
+        "id": "menu_font_size",
+        "min": 10,
+        "max": 50,
+        "step": 1,
+        "unit": "px",
+        "label": "Font size",
+        "default": 20
+      },
+      {
+        "type": "range",
+        "id": "menu_letter_spacing",
+        "label": "Letter spacing",
+        "max": 10,
+        "min": -5,
+        "step": 0.5,
+        "unit": "px",
+        "default": -1
+      },
+      {
+        "type": "select",
+        "id": "menu_text_transform",
+        "label": "Text transform",
+        "options": [
+          {
+            "value": "none",
+            "label": "none"
+          },
+          {
+            "value": "capitalize",
+            "label": "Capitalize"
+          },
+          {
+            "value": "uppercase",
+            "label": "Uppercase"
+          },
+          {
+            "value": "lowercase",
+            "label": "Lowercase"
+          },
+          {
+            "value": "initial",
+            "label": "Initial"
+          },
+          {
+            "value": "inherit",
+            "label": "Inherit"
+          }
+        ],
+        "default": "none"
+      },
+      {
+        "type": "range",
+        "id": "menu_icon_size",
+        "min": 10,
+        "max": 50,
+        "step": 1,
+        "unit": "px",
+        "label": "Icon size",
+        "default": 18
+      },
+      {
+        "type": "header",
+        "content": "Dropdown menu[.](https:\/\/#roarJs-group:true)"
+      },
+      {
+        "type": "paragraph",
+        "content": "Font family inherited from Main menu"
+      },
+      {
+        "type": "range",
+        "id": "submenu_font_weight",
+        "label": "Font weight",
+        "max": 700,
+        "min": 300,
+        "step": 100,
+        "default": 300
+      },
+      {
+        "type": "range",
+        "id": "submenu_font_size",
+        "min": 10,
+        "max": 50,
+        "step": 1,
+        "unit": "px",
+        "label": "Font size",
+        "default": 17
+      },
+      {
+        "type": "range",
+        "id": "submenu_letter_spacing",
+        "label": "Letter spacing",
+        "max": 10,
+        "min": -5,
+        "step": 0.5,
+        "unit": "px",
+        "default": 0
+      },
+      {
+        "type": "select",
+        "id": "submenu_text_transform",
+        "label": "Text transform",
+        "options": [
+          {
+            "value": "none",
+            "label": "none"
+          },
+          {
+            "value": "capitalize",
+            "label": "Capitalize"
+          },
+          {
+            "value": "uppercase",
+            "label": "Uppercase"
+          },
+          {
+            "value": "lowercase",
+            "label": "Lowercase"
+          },
+          {
+            "value": "initial",
+            "label": "Initial"
+          },
+          {
+            "value": "inherit",
+            "label": "Inherit"
+          }
+        ],
+        "default": "none"
+      },
+      {
+        "type": "header",
+        "content": "Menu on mobile[.](https:\/\/#roarJs-group:true)"
+      },
+      {
+        "type": "paragraph",
+        "content": "Font family inherited from Main menu"
+      },
+      {
+        "type": "range",
+        "id": "menu_mb_font_weight",
+        "label": "Font weight",
+        "max": 700,
+        "min": 300,
+        "step": 100,
+        "default": 400
+      },
+      {
+        "type": "range",
+        "id": "menu_mb_font_size",
+        "min": 10,
+        "max": 50,
+        "step": 1,
+        "unit": "px",
+        "label": "Font size",
+        "default": 26
+      },
+      {
+        "type": "range",
+        "id": "menu_mb_letter_spacing",
+        "label": "Letter spacing",
+        "max": 10,
+        "min": -5,
+        "step": 0.5,
+        "unit": "px",
+        "default": 0
+      },
+      {
+        "type": "select",
+        "id": "menu_mb_text_transform",
+        "label": "Text transform",
+        "options": [
+          {
+            "value": "none",
+            "label": "none"
+          },
+          {
+            "value": "capitalize",
+            "label": "Capitalize"
+          },
+          {
+            "value": "uppercase",
+            "label": "Uppercase"
+          },
+          {
+            "value": "lowercase",
+            "label": "Lowercase"
+          },
+          {
+            "value": "initial",
+            "label": "Initial"
+          },
+          {
+            "value": "inherit",
+            "label": "Inherit"
+          }
+        ],
+        "default": "none"
+      }
+    ]
+  },
+  {
+    "name": "Colors and typography",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Top bar[.](https:\/\/#roarJs-group:true)"
+      },
+      {
+        "type": "color",
+        "id": "color_topbar_text",
+        "label": "Text color",
+        "default": "#969696"
+      },
+      {
+        "type": "color",
+        "id": "color_topbar_link",
+        "label": "Link color",
+        "default": "#000"
+      },
+      {
+        "type": "color",
+        "id": "color_topbar_highlight",
+        "label": "Highlight color",
+        "default": "#00c9b7"
+      },
+      {
+        "type": "color",
+        "id": "color_topbar_bground",
+        "label": "Background color",
+        "default": "#fff"
+      },
+      {
+        "type": "color",
+        "id": "color_topbar_border",
+        "label": "Border color",
+        "default": "#e7e7e7"
+      },
+      {
+        "type": "range",
+        "id": "topbar_font_size",
+        "min": 10,
+        "max": 50,
+        "step": 1,
+        "unit": "px",
+        "label": "Text size",
+        "default": 14
+      },
+      {
+        "type": "range",
+        "id": "topbar_icon_size",
+        "min": 10,
+        "max": 50,
+        "step": 1,
+        "unit": "px",
+        "label": "Icon size",
+        "default": 18
+      },
+      {
+        "type": "range",
+        "id": "topbar_font_weight",
+        "label": "Font weight",
+        "max": 700,
+        "min": 300,
+        "step": 100,
+        "default": 400
+      },
+      {
+        "type": "header",
+        "content": "Header[.](https:\/\/#roarJs-group:true)"
+      },
+      {
+        "type": "color",
+        "id": "color_header_text",
+        "label": "Text color",
+        "default": "#777"
+      },
+      {
+        "type": "color",
+        "id": "color_header_link",
+        "label": "Link color",
+        "default": "#000"
+      },
+      {
+        "type": "color",
+        "id": "color_header_highlight",
+        "label": "Highlight color",
+        "default": "#00c9b7"
+      },
+      {
+        "type": "color",
+        "id": "color_header_bground",
+        "label": "Background color",
+        "default": "#fff"
+      },
+      {
+        "type": "color",
+        "id": "color_header_border",
+        "label": "Border color",
+        "default": "#e7e7e7"
+      },
+      {
+        "type": "range",
+        "id": "header_font_size",
+        "min": 10,
+        "max": 50,
+        "step": 1,
+        "unit": "px",
+        "label": "Font size",
+        "default": 14
+      },
+      {
+        "type": "range",
+        "id": "header_icon_size",
+        "min": 10,
+        "max": 50,
+        "step": 1,
+        "unit": "px",
+        "label": "Icon size",
+        "default": 18
+      },
+      {
+        "type": "range",
+        "id": "header_font_weight",
+        "label": "Font weight",
+        "max": 700,
+        "min": 300,
+        "step": 100,
+        "default": 400
+      },
+      {
+        "type": "header",
+        "content": "Main menu[.](https:\/\/#roarJs-group:true)"
+      },
+      {
+        "type": "color",
+        "id": "color_menu_color",
+        "label": "Text color",
+        "default": "#000"
+      },
+      {
+        "type": "color",
+        "id": "color_menu_hover",
+        "label": "Hover color",
+        "default": "#00c9b7"
+      },
+      {
+        "type": "color",
+        "id": "color_menu_bground",
+        "label": "Background color",
+        "default": "#fff"
+      },
+      {
+        "type": "header",
+        "content": "Dropdown menu[.](https:\/\/#roarJs-group:true)"
+      },
+      {
+        "type": "color",
+        "id": "color_submenu_color",
+        "label": "Text color",
+        "default": "#000"
+      },
+      {
+        "type": "color",
+        "id": "color_submenu_hover",
+        "label": "Hover color",
+        "default": "#00c9b7"
+      },
+      {
+        "type": "color",
+        "id": "color_submenu_bground",
+        "label": "Background color",
+        "default": "#fff"
+      },
+      {
+        "type": "color",
+        "id": "color_submenu_border",
+        "label": "Border color",
+        "default": "#000"
+      },
+      {
+        "type": "range",
+        "id": "color_submenu_border_width",
+        "label": "Border width",
+        "min": 0,
+        "max": 10,
+        "step": 1,
+        "unit": "px",
+        "default": 0
+      },
+      {
+        "type": "header",
+        "content": "Header on mobile[.](https:\/\/#roarJs-group:true)"
+      },
+      {
+        "type": "color",
+        "id": "color_header_mb_text",
+        "label": "Text color",
+        "default": "#000"
+      },
+      {
+        "type": "color",
+        "id": "color_header_mb_bground",
+        "label": "Background color",
+        "default": "#fff"
+      },
+      {
+        "type": "range",
+        "id": "header_mb_font_size",
+        "min": 10,
+        "max": 50,
+        "step": 1,
+        "unit": "px",
+        "label": "Font size",
+        "default": 18
+      },
+      {
+        "type": "header",
+        "content": "Body[.](https:\/\/#roarJs-group:true)"
+      },
+      {
+        "type": "color",
+        "id": "color_body_bground",
+        "label": "Background color",
+        "default": "#fff"
+      },
+      {
+        "type": "color",
+        "id": "color_body_text",
+        "label": "Text color",
+        "default": "#777"
+      },
+      {
+        "type": "color",
+        "id": "color_body_link",
+        "label": "Link color",
+        "default": "#000"
+      },
+      {
+        "type": "color",
+        "id": "color_body_border",
+        "label": "Border color",
+        "default": "#e7e7e7"
+      },
+      {
+        "type": "color",
+        "id": "color_body_price",
+        "label": "Price color",
+        "default": "#00c9b7"
+      },
+      {
+        "type": "color",
+        "id": "color_body_highlight",
+        "label": "Highlight color",
+        "default": "#00c9b7"
+      },
+      {
+        "type": "color",
+        "id": "color_body_highlight2",
+        "label": "Highlight2 color",
+        "default": "#ec7a5c"
+      },
+      {
+        "type": "header",
+        "content": "Button[.](https:\/\/#roarJs-group:true)"
+      },
+      {
+        "type": "color",
+        "id": "color_btn_color",
+        "label": "Text color",
+        "default": "#fff"
+      },
+      {
+        "type": "color",
+        "id": "color_btn_border",
+        "label": "Border color",
+        "default": "#000"
+      },
+      {
+        "type": "color",
+        "id": "color_btn_bground",
+        "label": "Background color",
+        "default": "#000"
+      },
+      {
+        "type": "color",
+        "id": "color_btn_color_hover",
+        "label": "Text color on hover",
+        "default": "#000"
+      },
+      {
+        "type": "color",
+        "id": "color_btn_border_hover",
+        "label": "Border color on hover",
+        "default": "#000"
+      },
+      {
+        "type": "color",
+        "id": "color_btn_bground_hover",
+        "label": "Background color on hover",
+        "default": "#fff"
+      },
+      {
+        "type": "range",
+        "id": "btn_font_size",
+        "min": 10,
+        "max": 50,
+        "step": 1,
+        "unit": "px",
+        "label": "Font size",
+        "default": 12
+      },
+      {
+        "type": "range",
+        "id": "btn_font_weight",
+        "label": "Font weight",
+        "max": 700,
+        "min": 300,
+        "step": 100,
+        "default": 400
+      },
+      {
+        "type": "header",
+        "content": "Footer[.](https:\/\/#roarJs-group:true)"
+      },
+      {
+        "type": "color",
+        "id": "color_footer_heading",
+        "label": "Heading color",
+        "default": "#fff"
+      },
+      {
+        "type": "color",
+        "id": "color_footer_text",
+        "label": "Text color",
+        "default": "#808080"
+      },
+      {
+        "type": "color",
+        "id": "color_footer_link",
+        "label": "Link color",
+        "default": "#808080"
+      },
+      {
+        "type": "color",
+        "id": "color_footer_highlight",
+        "label": "Highlight color",
+        "default": "#00c9b7"
+      },
+      {
+        "type": "color",
+        "id": "color_footer_bground",
+        "label": "Background color",
+        "default": "#191919"
+      },
+      {
+        "type": "range",
+        "id": "footer_font_size",
+        "min": 10,
+        "max": 50,
+        "step": 1,
+        "unit": "px",
+        "label": "Font size",
+        "default": 14
+      },
+      {
+        "type": "range",
+        "id": "footer_font_weight",
+        "label": "Font weight",
+        "max": 700,
+        "min": 300,
+        "step": 100,
+        "default": 400
+      },
+      {
+        "type": "header",
+        "content": "Copyright[.](https:\/\/#roarJs-group:true)"
+      },
+      {
+        "type": "color",
+        "id": "color_cpyright_text",
+        "label": "Text color",
+        "default": "#808080"
+      },
+      {
+        "type": "color",
+        "id": "color_cpyright_link",
+        "label": "Link color",
+        "default": "#808080"
+      },
+      {
+        "type": "color",
+        "id": "color_cpyright_highlight",
+        "label": "Highlight color",
+        "default": "#00c9b7"
+      },
+      {
+        "type": "color",
+        "id": "color_cpyright_border",
+        "label": "Border color",
+        "default": "#0f0f0f"
+      },
+      {
+        "type": "color",
+        "id": "color_cpyright_bground",
+        "label": "Background color",
+        "default": "#0f0f0f"
+      },
+      {
+        "type": "range",
+        "id": "cpyright_font_size",
+        "min": 10,
+        "max": 50,
+        "step": 1,
+        "unit": "px",
+        "label": "Font size",
+        "default": 13
+      },
+      {
+        "type": "range",
+        "id": "cpyright_font_weight",
+        "label": "Font weight",
+        "max": 700,
+        "min": 300,
+        "step": 100,
+        "default": 400
+      }
+    ]
+  },
+  {
+    "name": "Header",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "header_topbar",
+        "label": "Enable topbar"
+      },
+      {
+        "type": "checkbox",
+        "id": "header_sticky",
+        "label": "Enable sticky header"
+      },
+      {
+        "type": "header",
+        "content": "Page heading[.](https:\/\/#roarJs-group:true)"
+      },
+      {
+        "type": "checkbox",
+        "id": "page_title_breadcrumbs",
+        "label": "Show breadcrumbs",
+        "info": "Displays a full chain of links to the current page.",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "page_title_color",
+        "label": "Page title color scheme",
+        "info": "You can set different colors depending on it's background. May be light or dark.",
+        "options": [
+          {
+            "value": "default",
+            "label": "Default"
+          },
+          {
+            "value": "light",
+            "label": "Light"
+          },
+          {
+            "value": "dark",
+            "label": "Dark"
+          }
+        ],
+        "default": "default"
+      },
+      {
+        "type": "select",
+        "id": "page_title_size",
+        "label": "Page title section size",
+        "info": "You can set different sizes for your pages title section.",
+        "options": [
+          {
+            "value": "default",
+            "label": "Default"
+          },
+          {
+            "value": "small",
+            "label": "Small"
+          },
+          {
+            "value": "large",
+            "label": "Large"
+          },
+          {
+            "value": "xlarge",
+            "label": "XLarge"
+          }
+        ],
+        "default": "default"
+      },
+      {
+        "type": "color",
+        "id": "page_title_bground_color",
+        "label": "Pages heading background color",
+        "default": "#f7f7f7"
+      },
+      {
+        "type": "image_picker",
+        "id": "page_title_bground_image",
+        "label": "Pages heading background image"
+      },
+      {
+        "type": "select",
+        "id": "page_title_bground_repeat",
+        "label": "Pages heading background repeat[.](https:\/\/#roarJs-image:page_title_bground_image|true)",
+        "options": [
+          {
+            "value": "no-repeat",
+            "label": "No repeat"
+          },
+          {
+            "value": "repeat",
+            "label": "Repeat all"
+          },
+          {
+            "value": "repeat-x",
+            "label": "Repeat horizontally"
+          },
+          {
+            "value": "repeat-y",
+            "label": "Repeat vertically"
+          }
+        ],
+        "default": "repeat"
+      },
+      {
+        "type": "select",
+        "id": "page_title_bground_position",
+        "label": "Pages heading background position[.](https:\/\/#roarJs-image:page_title_bground_image|true)",
+        "options": [
+          {
+            "value": "left top",
+            "label": "Left Top"
+          },
+          {
+            "value": "left center",
+            "label": "Left Center"
+          },
+          {
+            "value": "left bottom",
+            "label": "Left Bottom"
+          },
+          {
+            "value": "right top",
+            "label": "Right Top"
+          },
+          {
+            "value": "right center",
+            "label": "Right Center"
+          },
+          {
+            "value": "right bottom",
+            "label": "Right Bottom"
+          },
+          {
+            "value": "center top",
+            "label": "Center Top"
+          },
+          {
+            "value": "center center",
+            "label": "Center Center"
+          },
+          {
+            "value": "center bottom",
+            "label": "Center Bottom"
+          }
+        ],
+        "default": "center center"
+      },
+      {
+        "type": "select",
+        "id": "page_title_bground_size",
+        "label": "Pages heading background size[.](https:\/\/#roarJs-image:page_title_bground_image|true)",
+        "options": [
+          {
+            "value": "cover",
+            "label": "Cover"
+          },
+          {
+            "value": "contain",
+            "label": "Contain"
+          },
+          {
+            "value": "auto",
+            "label": "Auto"
+          }
+        ],
+        "default": "cover"
+      },
+      {
+        "type": "select",
+        "id": "page_title_bground_attachment",
+        "label": "Pages heading background attachment[.](https:\/\/#roarJs-image:page_title_bground_image|true)",
+        "options": [
+          {
+            "value": "scroll",
+            "label": "Scroll"
+          },
+          {
+            "value": "fixed",
+            "label": "Fixed"
+          }
+        ],
+        "default": "scroll"
+      }
+    ]
+  },
+  {
+    "name": "Shop",
+    "settings": [
+      {
+        "type": "header",
+        "content": "General[.](https:\/\/#roarJs-group:true)"
+      },
+      {
+        "type": "checkbox",
+        "id": "product_swatch_color",
+        "label": "Enable color swatches",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "product_swatch_color_advanced",
+        "label": "Enable advanced color swatches",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "product_swatch_size",
+        "label": "Enable size swatches",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "shop_mobile_boost",
+        "label": "Enable mobile boost",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Catalog mode[.](https:\/\/#roarJs-group:true)"
+      },
+      {
+        "type": "checkbox",
+        "id": "catalog_mode",
+        "label": "Catalog mode",
+        "info": "When enabled, the feature turns off the shopping functionality of Shopify."
+      },
+      {
+        "type": "checkbox",
+        "id": "catalog_mode_price",
+        "label": "Remove product price"
+      },
+      {
+        "type": "header",
+        "content": "Add to cart behaviour[.](https:\/\/#roarJs-group:true)"
+      },
+      {
+        "type": "checkbox",
+        "id": "shop_cart_ajax",
+        "label": "Enable AJAX add to cart buttons",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "shop_after_addition",
+        "label": "Action after add to cart",
+        "options": [
+          {
+            "value": "redirect",
+            "label": "Redirect to the cart page"
+          },
+          {
+            "value": "message",
+            "label": "Display message"
+          },
+          {
+            "value": "minicart",
+            "label": "Display mini cart"
+          }
+        ],
+        "default": "message"
+      },
+      {
+        "type": "header",
+        "content": "Products[.](https:\/\/#roarJs-group:true)"
+      },
+      {
+        "type": "select",
+        "id": "shop_image_ratio",
+        "label": "Image ratio",
+        "info": "For best results [all product photos should be the same ratio.](https:\/\/help.shopify.com\/manual\/productivity-tools\/image-editor#image-aspect-ratio)",
+        "default": "75",
+        "options": [
+          {
+            "value": "0",
+            "label": "Disabled"
+          },
+          {
+            "value": "1",
+            "label": "Square 1:1"
+          },
+          {
+            "value": "75",
+            "label": "Portrait 3:4"
+          },
+          {
+            "value": "667",
+            "label": "Portrait 2:3"
+          },
+          {
+            "value": "1333",
+            "label": "Landscape 4:3"
+          },
+          {
+            "value": "15",
+            "label": "Landscape 3:2"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "shop_image_ratio_crop",
+        "label": "Automatically crop images",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "shop_product_hover",
+        "label": "Product grid layout",
+        "default": "2",
+        "options": [
+          {
+            "value": "1",
+            "label": "Layout 1"
+          },
+          {
+            "value": "2",
+            "label": "Layout 2"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "shop_image_second",
+        "label": "2nd product image on hover"
+      },
+      {
+        "type": "range",
+        "id": "shop_image_overlay",
+        "min": 0,
+        "max": 100,
+        "step": 10,
+        "unit": "%",
+        "label": "Product image overlay on hover",
+        "default": 0
+      },
+      {
+        "type": "checkbox",
+        "id": "shop_vendor_enable",
+        "label": "Show product vendor",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "shop_review_enable",
+        "label": "Show product reviews",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "shop_quickview_enable",
+        "label": "Show quickview button",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "shop_wishlist_enable",
+        "label": "Show wishlist button",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "shop_compare_enable",
+        "label": "Show compare button",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "shop_variant_swatches",
+        "label": "Show variant swatches",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Product labels[.](https:\/\/#roarJs-group:true)"
+      },
+      {
+        "type": "select",
+        "id": "shop_label_shape",
+        "label": "Label shape",
+        "default": "bordered",
+        "options": [
+          {
+            "value": "bordered",
+            "label": "Bordered"
+          },
+          {
+            "value": "solid",
+            "label": "Solid"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "shop_label_percentage",
+        "label": "Shop sale label in percentage",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "shop_label_hot",
+        "label": "\"Hot\" label on products"
+      },
+      {
+        "type": "checkbox",
+        "id": "shop_label_new",
+        "label": "\"New\" label on products"
+      }
+    ]
+  },
+  {
+    "name": "Product compare",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "shop_compare",
+        "label": "Use compare feature",
+        "info": "A customer only can add a maximum of 50 products.",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "label": "Product name",
+        "id": "compare_title",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "label": "Product price",
+        "id": "compare_price",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "label": "Product availability",
+        "id": "compare_availability",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "label": "Product reviews",
+        "id": "compare_rating",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "compare_options",
+        "label": "Product options",
+        "default": "size,color"
+      }
+    ]
+  },
+  {
+    "name": "Product wishlist",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "shop_wishlist",
+        "label": "Use wishlist feature",
+        "info": "You have to install [Wishlist app](https:\/\/wiki.roartheme.com\/clientapps\/#wishlist) to use this feature.",
+        "default": true
+      },
+      {
+        "type": "page",
+        "id": "wishlist_page",
+        "label": "Wishlist page"
+      },
+      {
+        "type": "image_picker",
+        "id": "wishlist_background",
+        "label": "Background image"
+      }
+    ]
+  },
+  {
+    "name": "Cart page",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Gift wrapping[.](https:\/\/#roarJs-group:true)"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_gift_enable",
+        "label": "Enable gift wrapping"
+      },
+      {
+        "type": "product",
+        "id": "cart_gift_product",
+        "label": "Gift wrapping product"
+      },
+      {
+        "type": "header",
+        "content": "Shipping calculator[.](https:\/\/#roarJs-group:true)"
+      },
+      {
+        "type": "checkbox",
+        "id": "shipping_calculator_enable",
+        "label": "Enable shipping calculator",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "shipping_calculator_default_country",
+        "label": "Default country selection",
+        "info": "If your customer is logged-in, the country in his default shipping address will be selected. If you are not sure about the  spelling to use here, refer to the first checkout page.",
+        "default": "United States"
+      },
+      {
+        "type": "text",
+        "id": "shipping_calculator_submit_button_label",
+        "label": "Submit button label",
+        "default": "Calculate shipping"
+      },
+      {
+        "type": "text",
+        "id": "shipping_calculator_submit_button_label_disabled",
+        "label": "Submit button label when calculating",
+        "default": "Calculating..."
+      },
+      {
+        "type": "header",
+        "content": "Terms and conditions[.](https:\/\/#roarJs-group:true)"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_terms_enable",
+        "label": "Enable terms and conditions"
+      },
+      {
+        "type": "page",
+        "id": "cart_terms_page",
+        "label": "Terms and conditions page"
+      }
+    ]
+  },
+  {
+    "name": "Age verification",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "If you sell products such as wine, cigarettes, or dangerous goods, then you might want to discourage visitors under a certain age from browsing your website. You can do this by adding an age selection form to your storefront."
+      },
+      {
+        "type": "checkbox",
+        "id": "age_check_enable",
+        "label": "Enable age verification"
+      },
+      {
+        "type": "text",
+        "id": "age_check_heading",
+        "label": "Heading[.](https:\/\/#roarJs-check:age_check_enable|true)",
+        "default": "Adults only (18+)"
+      },
+      {
+        "type": "textarea",
+        "id": "age_check_text",
+        "label": "Text[.](https:\/\/#roarJs-check:age_check_enable|true)",
+        "default": "This website contains adult material and is only suitable for those 18 years or older. Click Enter only if you are at least 18 years of age."
+      },
+      {
+        "type": "url",
+        "id": "age_check_exit_link",
+        "label": "Link exit[.](https:\/\/#roarJs-check:age_check_enable|true)"
+      },
+      {
+        "type": "image_picker",
+        "id": "age_check_image",
+        "label": "Background image[.](https:\/\/#roarJs-check:age_check_enable|true)"
+      }
+    ]
+  },
+  {
+    "name": "Currency picker",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "shop_enabled_currencies",
+        "label": "Sell in multiple currencies"
+      },
+      {
+        "type": "paragraph",
+        "content": "Even though prices are displayed in different currencies, orders will still be processed in your store's currency.[.](https:\/\/#roarJs-check:shop_enabled_currencies|false)"
+      },
+      {
+        "type": "select",
+        "id": "currency_format",
+        "label": "Format[.](https:\/\/#roarJs-check:shop_enabled_currencies|false)",
+        "options": [
+          {
+            "value": "money_format",
+            "label": "Without currency ($10.00)"
+          },
+          {
+            "value": "money_with_currency_format",
+            "label": "With currency ($10.00 CAD)"
+          }
+        ],
+        "default": "money_with_currency_format"
+      },
+      {
+        "type": "text",
+        "id": "currency_supported",
+        "label": "Supported currencies[.](https:\/\/#roarJs-check:shop_enabled_currencies|false)",
+        "default": "INR GBP CAD USD AUD EUR JPY",
+        "info": "Use the country's ISO [currency code](http:\/\/www.xe.com\/iso4217.php). Separate your currency codes with a space."
+      },
+      {
+        "type": "checkbox",
+        "id": "currency_flag",
+        "label": "Show currency flag[.](https:\/\/#roarJs-check:shop_enabled_currencies|false)",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "currency_code",
+        "label": "Show currency code[.](https:\/\/#roarJs-check:shop_enabled_currencies|false)",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "currency_auto_switch",
+        "label": "Auto switch[.](https:\/\/#roarJs-check:shop_enabled_currencies|false)",
+        "info": "The currency will automatically change based on your customer's location.",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "currency_original_price",
+        "label": "Show original price on hover[.](https:\/\/#roarJs-check:shop_enabled_currencies|false)",
+        "info": "If your customer hovers over the converted prices, he will still be able to see the price in your shop's main currency.",
+        "default": true
+      },
+      {
+        "type": "html",
+        "id": "currency_notification",
+        "label": "Checkout currency notification[.](https:\/\/#roarJs-check:shop_enabled_currencies|false)",
+        "info": "This notification will appear on the cart page. It is meant to inform your customers that Shopify only allows them to Checkout in your shop's main currency.",
+        "default": "All orders are processed in {{ shop_currency }}. While the content of your cart is currently displayed in {{ current_currency }}, you will checkout using {{ shop_currency }} at the most current exchange rate."
+      }
+    ]
+  },
+  {
+    "name": "Social media",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Social sharing image[.](https:\/\/#roarJs-group:true)"
+      },
+      {
+        "type": "image_picker",
+        "id": "share_image",
+        "label": "Image",
+        "info": "Shown when sharing a link on social media. [Learn more](https:\/\/help.shopify.com\/manual\/using-themes\/troubleshooting\/showing-social-media-thumbnail-images\/) about image thumbnails."
+      },
+      {
+        "type": "header",
+        "content": "Social sharing options[.](https:\/\/#roarJs-group:true)"
+      },
+      {
+        "type": "checkbox",
+        "id": "share_facebook",
+        "label": "Share on Facebook",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "share_twitter",
+        "label": "Tweet on Twitter",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "share_pinterest",
+        "label": "Pin on Pinterest",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Social accounts[.](https:\/\/#roarJs-group:true)"
+      },
+      {
+        "type": "text",
+        "id": "social_facebook_link",
+        "label": "Facebook",
+        "info": "https:\/\/facebook.com\/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social_twitter_link",
+        "label": "Twitter",
+        "info": "https:\/\/twitter.com\/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social_pinterest_link",
+        "label": "Pinterest",
+        "info": "https:\/\/pinterest.com\/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social_instagram_link",
+        "label": "Instagram",
+        "info": "http:\/\/instagram.com\/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social_tumblr_link",
+        "label": "Tumblr",
+        "info": "http:\/\/shopify.tumblr.com"
+      },
+      {
+        "type": "text",
+        "id": "social_googleplus_link",
+        "label": "Google plus",
+        "info": "https:\/\/plus.google.com\/communities\/110861994536544381143"
+      },
+      {
+        "type": "text",
+        "id": "social_youtube_link",
+        "label": "YouTube",
+        "info": "https:\/\/www.youtube.com\/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social_vimeo_link",
+        "label": "Vimeo",
+        "info": "https:\/\/vimeo.com\/shopify"
+      }
+    ]
+  },
+  {
+    "name": "Favicon",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon image",
+        "info": "Will be scaled down to 32 x 32px"
+      }
+    ]
+  }
+]

@@ -1,0 +1,27 @@
+{% assign matchingPair = product.metafields.complete-the-look %}
+{% unless matchingPair['number-of-match'] == blank %}
+
+        <div class="complete-the-look">
+            <div class="complete-the-look__header">
+                Complete the look
+            </div>
+            <div class="complete-the-look__content">
+                <div class="complete-the-look__slider">
+                    {% for i in (1..matchingPair['number-of-match']) %}
+                        {% assign match = 'match' | append: i %}
+                        {% assign myHandle = matchingPair[match] %}      
+                        {% assign matchingProduct = all_products[myHandle] %} 
+                        {% assign matchingProductUrl = shop.url | append: matchingProduct.url %}
+                        <a href="{{ matchingProductUrl }}" class="complete-the-look__slider__item">
+                            <img class="complete-the-look__slider__item__image" src="{{ matchingProduct.first_available_variant | img_url: 'master' }}" alt="">
+                            <span class="complete-the-look__slider__item__button">
+                                View Product
+                            </span>
+                        </a>
+
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+{% endunless %}
+

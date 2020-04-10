@@ -1,0 +1,133 @@
+<div class="container content-area">
+  <div class="site-account" id="CustomerLoginForm">
+    {%- form 'customer_login' -%}
+
+    <div class="alert alert-success hide" id="ResetSuccess">
+      <div class="alert__icon">
+        <i class="ris ri-check"></i>
+      </div>
+      <div class="alert__content">
+        {{- 'customer.recover_password.success' | t -}}
+      </div>
+    </div>
+    
+    {%- if form.errors != blank -%}
+    <div class="alert alert-error">
+      <div class="alert__icon">
+        <i class="ris ri-alert"></i>
+      </div>
+      <div class="alert__content">
+        {{- form.errors | default_errors -}}
+      </div>
+    </div>
+    {%- endif -%}
+    
+    <div class="title-wrapper text-center">
+      {%- include 'breadcrumbs' -%}
+      <h1 class="page-title">{{ 'customer.login.title' | t }}</h1>
+    </div>
+
+    <div class="form-group">
+      <label for="customer_login-email">{{ 'customer.login.email' | t }}<span class="required">*</span></label>
+      <input id="customer_login-email" type="email" name="customer[email]"{% if form.errors contains 'email' %} class="input-error"{% endif %} autocorrect="off" autocapitalize="off" required="required" autofocus />
+    </div>
+    {%- if form.password_needed -%}
+    <div class="form-group">
+      <label for="customer_login-password">{{ 'customer.login.password' | t }}<span class="required">*</span></label>
+      <input id="customer_login-password" type="password" value="" name="customer[password]"{% if form.errors contains 'password' %} class="input-error"{% endif %} required="required" />
+    </div>
+    {%- endif -%}
+    {%- if form.password_needed -%}
+    <div class="form-group">
+      <a class="recover" href="#recover" id="RecoverPassword">{{ 'customer.login.forgot_password' | t }}</a>
+    </div>
+    {%- endif -%}
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary w100">{{ 'customer.login.sign_in' | t }}</button>
+    </div>
+    <div class="form-divider">
+      <span>{{ 'customer.login.or' | t }}</span>
+    </div>
+    <div class="form-group">
+      <a href="/account/register" class="btn w100">{{ 'customer.login.create_an_account' | t }}</a>
+    </div>
+    <p></p>
+
+    {%- endform -%}
+  </div>
+
+  <div class="site-account hide" id="RecoverPasswordForm">
+    <div class="title-wrapper text-center">
+      {%- include 'breadcrumbs' -%}
+      <h2 class="page-title">{{ 'customer.recover_password.title' | t }}</h2>
+      <div class="term-description"><p>{{ 'customer.recover_password.subtext' | t }}</p></div>
+    </div>
+
+    {%- form 'recover_customer_password' -%}
+
+    {%- if form.errors != blank -%}
+    <div class="alert alert-error">
+      <div class="alert__icon">
+        <i class="ris ri-alert"></i>
+      </div>
+      <div class="alert__content">
+        {{- form.errors | default_errors -}}
+      </div>
+    </div>
+    {%- endif -%}
+
+    {%- comment -%}
+    Add a hidden span to indicate the form was submitted succesfully.
+    {%- endcomment -%}
+    {%- if form.posted_successfully? -%}
+    <span class="hide reset-password-success"></span>
+    {%- endif -%}
+
+    <div class="clearfix"></div>
+    <div class="form-group">
+      <label for="customer_recover-password">{{ 'customer.recover_password.email' | t }}<span class="required">*</span></label>
+      <input id="customer_recover-password" type="email" name="email" autocorrect="off" autocapitalize="off" />
+    </div>
+    <div class="clearfix"></div>
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary w100">{{ 'customer.recover_password.submit' | t }}</button>
+    </div>
+    <div class="form-divider">
+      <span>{{ 'customer.login.or' | t }}</span>
+    </div>
+    <div class="form-group">
+      <a href="javascript:void(0);" class="btn w100" id="HideRecoverPasswordLink">{{ 'customer.recover_password.cancel' | t }}</a>
+    </div>
+    <p></p>
+
+    {%- endform -%}
+  </div>
+
+  {%- comment -%}
+    If accounts are set as optional, the following will be shown as an option
+    during checkout, not on the default /login page.
+  {%- endcomment -%}
+  {%- if shop.checkout.guest_login -%}
+  <div class="site-account">
+    <div class="title-wrapper text-center">
+      {%- include 'breadcrumbs' -%}
+      <h2 class="page-title">{{ 'customer.login.guest_title' | t }}</h2>
+    </div>
+    
+    {%- form 'guest_login' -%}
+
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary w100">{{ 'customer.login.guest_continue' | t }}</button>
+    </div>
+    <div class="form-divider">
+      <span>{{ 'customer.login.or' | t }}</span>
+    </div>
+    <div class="form-group">
+      <input type="submit" class="btn w100" value="{{ 'customer.login.guest_continue' | t }}">
+    </div>
+    <p></p>
+
+    {%- endform -%}
+  </div>
+  {%- endif -%}
+</div>

@@ -1,0 +1,5 @@
+{%- if my_product.metafields.info.countdown != blank -%}
+<div class="product__countdown" data-section-id="{{ my_product.id }}" data-section-type="countdown-timer">
+  <div class="countdown-{{ my_product.id }}" data-end_date="{{ my_product.metafields.info.countdown | escape }}"></div>
+</div>
+{%- endif -%}

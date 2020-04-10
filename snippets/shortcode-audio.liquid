@@ -1,0 +1,8 @@
+{%- capture my_src -%}{% include 'shortcode-render' render:'src' %}{%- endcapture -%}
+{%- if my_src != blank -%}
+<div class="widget__audio">
+  <audio controls="controls">
+    <source src="{{ my_src }}">
+  </audio>
+</div>
+{%- endif -%}

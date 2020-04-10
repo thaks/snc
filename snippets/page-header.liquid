@@ -1,0 +1,177 @@
+{%- comment -%}
+	Params:
+	+ page_title
+	+ page_subtitle			=> metafields.info.subtitle
+	+ page_breadcrumbs
+	+ page_categories
+	+ page_image			=> metafields.info.bg_image
+	+ page_bg_color			=> metafields.info.bg_color
+	+ page_bg_repeat		=> metafields.info.bg_repeat
+	+ page_bg_position		=> metafields.info.bg_position
+	+ page_bg_size			=> metafields.info.bg_size
+	+ page_bg_attachment	=> metafields.info.bg_attachment
+	+ page_title_size		=> metafields.info.title_size		: default, small, large, xlarge
+	+ page_title_color		=> metafields.info.title_color		: default, light, dark
+{%- endcomment -%}
+
+{%- assign page_title_size = page_object.metafields.info.title_size | default: settings.page_title_size -%}
+{%- assign page_title_color = page_object.metafields.info.title_color | default: settings.page_title_color -%}
+{%- assign page_image = page_object.metafields.info.bg_image | default: '' -%}
+{%- assign page_bg_color = page_object.metafields.info.bg_color | default: settings.page_title_bground_color -%}
+{%- assign page_bg_repeat = page_object.metafields.info.bg_repeat | default: settings.page_title_bground_repeat -%}
+{%- assign page_bg_position = page_object.metafields.info.bg_position | default: settings.page_title_bground_position -%}
+{%- assign page_bg_size = page_object.metafields.info.bg_size | default: settings.page_title_bground_size -%}
+{%- assign page_bg_attachment = page_object.metafields.info.bg_attachment | default: settings.page_title_bground_attachment -%}
+
+{%- assign title_class = 'page-title-default' -%}
+{%- assign title_class = title_class | append: ' title-size-' | append: page_title_size -%}
+{%- assign title_class = title_class | append: ' color-scheme-' | append: page_title_color -%}
+
+{%- assign style = '' -%}
+{%- assign style = 'background-color:' | append: page_bg_color | append: ';' -%}
+
+{%- assign has_image = false -%}
+{%- assign lazyload = false -%}
+{%- if page_image != '' -%}
+  {%- assign lazyload = false -%}
+  {%- assign has_image = true -%}
+  {%- assign style = style| append: 'background-image:url(' | append: page_image | append: ');' -%}
+{%- elsif settings.page_title_bground_image -%}
+  {%- assign lazyload = true -%}
+  {%- assign has_image = true -%}
+  {%- capture img_sizes -%}{% if settings.page_title_bground_image.aspect_ratio > 1 %}x3{% else %}3x{% endif %}{%- endcapture -%}
+  {%- assign bground_image = settings.page_title_bground_image | img_url: img_sizes -%}
+  {%- assign style = style| append: 'background-image:url(' | append: bground_image | append: ');' -%}
+{%- endif -%}
+
+{%- if has_image -%}
+  {%- assign style = style| append: 'background-repeat:' | append: page_bg_repeat | append: ';' -%}
+  {%- assign style = style| append: 'background-position:' | append: page_bg_position | append: ';' -%}
+  {%- assign style = style| append: 'background-size:' | append: page_bg_size | append: ';' -%}
+  {%- assign style = style| append: 'background-attachment:' | append: page_bg_attachment | append: ';' -%}
+{%- endif -%}
+
+<div class="page-header {{ title_class }}">
+  <div class="title-section container" data-parallax='{"y" : -40, "smoothness": 10}'>
+    <div class="title-section-wrapper d-flex flex-wrap flex-row align-items-center justify-content-center">
+      <div class="title-wrapper">
+        {%- if page_breadcrumbs != nil -%}
+          {%- include 'breadcrumbs' -%}
+        {%- endif -%}
+        {%- if page_title != nil -%}
+        <div class="page-title-wrapper">
+          {%- if template.name == 'collection' and page_object.handle != 'all' -%}
+          <a href="/collections/all" class="back-btn">
+            <svg class="svg-icon"><use xlink:href="#global__symbols-back"></use></svg>       
+          </a>
+          {%- endif -%}
+          <h1 class="page-title">{{ page_title }}</h1>
+        </div>
+        {%- endif -%}
+        {%- if page_subtitle != nil and page_subtitle != blank -%}
+        <div class="term-description"><p>{{ page_subtitle }}</p></div>
+        {%- endif -%}
+        {%- if template.name == 'article' -%}
+        <div class="page-meta">
+          <span class="page-delimiter"></span>
+          <ul class="page-meta_list form-animate">
+            {%- if section.settings.show_author -%}
+            <li class="meta-author">{{ 'blogs.article.posted_by' | t }} <span>{{ article.author }}</span></li>
+            {%- endif -%}
+            {%- if section.settings.show_date -%}
+            <li class="meta-date">{{ 'blogs.article.posted_on' | t }} <span>{{ article.published_at | date: "%-d, %b" }}</span></li>
+            {%- endif -%}
+            {%- if section.settings.show_category -%}
+            <li class="meta-category">{{ 'blogs.article.posted_in' | t }} <a href="{{ blog.url }}">{{ blog.title }}</a></li>
+            {%- endif -%}
+            {%- if section.settings.show_share_buttons -%}
+            <li class="meta-share">
+              <div class="meta-share_container">
+                <a href="javascript:void(0);" class="social-sharing" data-share_img="{{ article.image | img_url: 'master' }}" data-title="{{ article.title | escape }}" data-name="{{ 'blogs.article.share' | t | escape }}" data-share_elem="facebook,twitter,google,pinterest">
+                  <span>{{ 'blogs.article.share' | t }}</span>
+                </a>
+              </div>
+            </li>
+            {%- endif -%}
+          </ul>
+        </div>
+        {%- endif -%}
+      </div>
+      {%- if page_categories != nil -%}
+      <div class="page-categories-wrapper">
+        <div class="page-categories">
+          <div class="barberry-show-categories d-inline-block d-lg-none">
+            <a href="javascript:void(0);">
+              <span>
+                {%- if template.name == 'collection' -%}
+                  {{- 'collections.general.categories' | t -}}
+                {%- else -%}
+                  {{- 'blogs.blog.all_articles' | t -}}
+                {%- endif -%}
+              </span>
+            </a>
+          </div>
+          <div class="barberry-categories">
+            <ul class="list_categories">
+              {%- if template.name == 'collection' -%}
+                {%- if page_object.handle == 'all' -%}
+                  {%- for link in page_categories -%}
+                  <li class="category_item">
+                    <a class="category_item_link" href="{{ link.url }}">
+                      {%- if link.type == 'collection_link' and link.object.metafields.info.thumbnail -%}
+                      <img src="{{ link.object.metafields.info.thumbnail }}" alt="{{ link.title | escape }}" />
+                      {%- endif -%}
+                      <span class="cat-item-title">
+                        <span>{{ link.title }}</span>
+                        {%- if link.type == 'collection_link' -%}
+                        <sup>{{ link.object.all_products_count }}</sup>
+                        {%- endif -%}
+                      </span>
+                    </a>
+                  </li>
+                  {%- endfor -%}
+                {%- else -%}
+                  {%- for link in page_categories -%}
+                    {%- if link.object.handle == page_object.handle and link.links.size > 0 -%}
+                      {%- for l in link.links -%}
+                      <li class="category_item">
+                        <a class="category_item_link" href="{{ l.url }}">
+                          {%- if l.type == 'collection_link' and l.object.metafields.info.thumbnail -%}
+                          <img src="{{ l.object.metafields.info.thumbnail }}" alt="{{ l.title | escape }}" />
+                          {%- endif -%}
+                          <span class="cat-item-title">
+                            <span>{{ l.title }}</span>
+                            {%- if l.type == 'collection_link' -%}
+                            <sup>{{ l.object.all_products_count }}</sup>
+                            {%- endif -%}
+                          </span>
+                        </a>
+                      </li>
+                      {%- endfor -%}
+                    {%- break -%}
+                    {%- endif -%}
+                  {%- endfor -%}
+                {%- endif -%}
+              {%- else -%}
+              <li class="category_item"><a class="category_item_link" href="{{ page_object.url }}"><span class="cat-item-title"><span>{{ 'blogs.blog.all_articles' | t }}</span></span></a></li>
+              {%- for link in page_categories -%}
+              <li class="category_item"><a class="category_item_link" href="{{ link.url }}"><span class="cat-item-title"><span>{{ link.title }}</span></span></a></li>
+              {%- endfor -%}
+              {%- endif -%}
+            </ul>
+          </div>
+        </div>
+      </div>
+      {%- endif -%}
+    </div>
+  </div>
+  <div class="page-header-bg-wrapper">
+    <div class="page-header-bg rellax{% if lazyload %} lazyload{% endif %}" data-rellax-speed="-1.5"
+         {%- if lazyload -%}
+         data-bgset="{% include 'bgset', image: settings.page_title_bground_image %}" 
+         data-sizes="auto" 
+         data-parent-fit="cover" 
+         {%- endif -%}
+         style="{{ style | strip_newlines | remove: "  " }}"></div>
+  </div>
+</div>

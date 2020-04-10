@@ -1,0 +1,268 @@
+<div class="page-contact layout-2" data-section-id="{{ section.id }}" data-section-type="page-contact-template">
+  {%- if section.blocks.size > 0 -%}
+    {%- assign container_begin = '<div class="container content-area">' -%}
+    {%- assign container_end = '</div>' -%}
+  
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'google_map' -%}
+        {%- assign container_begin = '<div class="content-area">' -%}
+        {%- break -%}
+      {%- endif -%}
+    {%- endfor -%}
+  
+    {{- container_begin -}}
+    <div class="row row-0 align-items-center">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+        {%- when 'google_map' -%}
+        <div class="col-12{% if section.blocks.size > 1 %} col-xl-5{% endif %}" {{ block.shopify_attributes }}>
+          {%- assign display_map = false -%}
+          {%- assign onboarding = false -%}
+          {%- assign bg_image = block.settings.background_image -%}
+
+          {%- if block.settings.api_key == blank and bg_image == blank -%}
+            {%- assign onboarding = true -%}
+          {%- endif -%}
+          {%- if block.settings.api_key != blank and block.settings.map_address != blank -%}
+            {%- assign display_map = true -%}
+          {%- endif -%}
+          <div id="MapSection--{{ section.id }}" class="map-section{% if display_map == true %} map-section--display-map{% endif %}{% if onboarding == true %} map-section--onboarding{% endif %} d-flex flex-wrap flex-row align-items-center" data-section-id="{{ section.id }}" data-section-type="map">
+            <div class="map-section__background-wrapper">
+              {%- if bg_image != blank -%}
+                {%- capture img_sizes -%}{% if bg_image.aspect_ratio > 1 %}x3{% else %}3x{% endif %}{%- endcapture -%}
+                <div class="map-section__image lazyload" data-bgset="{% include 'bgset', image: bg_image %}" data-sizes="auto" data-parent-fit="cover" style="background-image: url({{ bg_image | img_url: img_sizes }});"></div>
+              {%- elsif onboarding == true -%}
+                <div class="placeholder-background">
+                  {{- 'lifestyle-2' | placeholder_svg_tag: 'placeholder-svg' -}}
+                </div>
+              {%- endif -%}
+              {%- if display_map -%}
+              <div class="map-section__container"
+                   id="Map-{{ section.id }}"
+                   data-map
+                   data-address-setting="{{ block.settings.map_address | escape }}"
+                   data-api-key="{{ block.settings.api_key }}">
+              </div>
+              {%- endif -%}
+            </div>
+          </div>
+        </div>
+        {%- when 'contact_info' -%}
+        <div class="col-12{% if section.blocks.size > 1 %} col-xl-7{% endif %}" {{ block.shopify_attributes }}>
+          <div class="contact-info{% if section.blocks.size > 1 %} has-padding{% endif %}">
+            <h1 class="contact-title hide">{{ page.title }}</h1>
+            <div class="row">
+              <div class="col-1 d-none d-md-block d-lg-block"></div>
+              {%- if block.settings.store_location != blank -%}
+              <div class="col-12 col-md-5">
+                <ul class="contact-content">
+                  <li>
+                    <h3>{{ 'contact.general.address' | t }}</h3>
+                    {{- block.settings.store_location -}}
+                  </li>
+                </ul>
+              </div>
+              {%- endif -%}
+              {%- if block.settings.store_info != blank -%}
+              <div class="col-12 col-md-5">
+                <ul class="contact-content">
+                  <li>
+                    <h3>{{ 'contact.general.get_in_touch' | t }}</h3>
+                    {{- block.settings.store_info -}}
+                  </li>
+                </ul>
+              </div>
+              {%- endif -%}
+            </div>
+            <div class="row">
+              <div class="col-1 d-none d-md-block d-lg-block"></div>
+              <div class="col-12 col-md-10">
+                {%- if block.settings.social_media_icons -%}
+                <div class="delimiter col-12"></div>
+                <ul class="social-icons row row-{{ block.settings.social_spacing }}">
+                  {%- include 'social-icons', facebook: block.settings.social_facebook, twitter: block.settings.social_twitter, pinterest: block.settings.social_pinterest, instagram: block.settings.social_instagram, tumblr: block.settings.social_tumblr, googleplus: block.settings.social_googleplus, youtube: block.settings.social_youtube, vimeo: block.settings.social_vimeo, size: block.settings.social_size -%}
+                </ul>
+                {%- endif -%}
+                {%- include 'contact-form', screen: 'md' -%}
+              </div>
+            </div>
+          </div>
+        </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+    {{- container_end -}}
+  {%- endif -%}
+</div>
+
+{% schema %}
+  {
+    "name": "Contact pages",
+    "blocks": [
+      {
+        "type": "google_map",
+        "name": "Google map",
+        "limit": 1,
+        "settings": [
+          {
+            "id": "map_address",
+            "type": "text",
+            "label": "Map address",
+            "info": "Google Maps will find the exact location.",
+            "default": "80 Spadina Ave, Toronto"
+          },
+          {
+            "id": "api_key",
+            "type": "text",
+            "label": "Google Maps API key",
+            "info": "You'll need to [register a Google Maps API Key](https://help.shopify.com/manual/using-themes/troubleshooting/map-section-api-key) to display the map."
+          },
+          {
+            "type": "image_picker",
+            "id": "background_image",
+            "label": "Image",
+            "info": "Displayed if the map isn't loaded."
+          },
+          {
+            "type": "select",
+            "id": "background_image_position",
+            "label": "Image position",
+            "default": "center center",
+            "options": [
+              {
+                "label": "Top left",
+                "value": "top left"
+              },
+              {
+                "label": "Top center",
+                "value": "top center"
+              },
+              {
+                "label": "Top right",
+                "value": "top right"
+              },
+              {
+                "label": "Middle left",
+                "value": "center left"
+              },
+              {
+                "label": "Middle center",
+                "value": "center center"
+              },
+              {
+                "label": "Middle right",
+                "value": "center right"
+              },
+              {
+                "label": "Bottom left",
+                "value": "bottom left"
+              },
+              {
+                "label": "Bottom center",
+                "value": "bottom center"
+              },
+              {
+                "label": "Bottom right",
+                "value": "bottom right"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "contact_info",
+        "name": "Contact info",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "richtext",
+            "id": "store_location",
+            "label": "Store location",
+            "default": "<p>16 Boulevard Saint-Germain<br>75005 Paris,<br>France<\/p>"
+          },
+          {
+            "type": "richtext",
+            "id": "store_info",
+            "label": "Store info",
+            "default": "<p>info@barberry.com<br>+33 (0) 31-305-210<br>mo &ndash; fri: 09:00 &ndash; 17:00<\/p>"
+          },
+          {
+            "type": "header",
+            "content": "Social media icons",
+            "info": "Theme settings > Social media, to change social links."
+          },
+          {
+            "type": "checkbox",
+            "id": "social_media_icons",
+            "label": "Show social media icons",
+            "default": true
+          },
+          {
+            "type": "range",
+            "id": "social_spacing",
+            "min": 0,
+            "max": 60,
+            "step": 10,
+            "unit": "px",
+            "label": "Space between icons",
+            "default": 40
+          },
+          {
+            "type": "range",
+            "id": "social_size",
+            "min": 10,
+            "max": 50,
+            "step": 1,
+            "unit": "px",
+            "label": "Icon size",
+            "default": 24
+          },
+          {
+            "type": "checkbox",
+            "id": "social_facebook",
+            "label": "Show facebook",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "social_twitter",
+            "label": "Show twitter",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "social_pinterest",
+            "label": "Show pinterest",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "social_instagram",
+            "label": "Show instagram",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "social_tumblr",
+            "label": "Show tumblr"
+          },
+          {
+            "type": "checkbox",
+            "id": "social_googleplus",
+            "label": "Show google plus"
+          },
+          {
+            "type": "checkbox",
+            "id": "social_youtube",
+            "label": "Show youtube"
+          },
+          {
+            "type": "checkbox",
+            "id": "social_vimeo",
+            "label": "Show vimeo"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

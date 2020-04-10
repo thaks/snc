@@ -1,0 +1,408 @@
+{%- assign is_container = true -%}
+{%- assign container_begin = '<div class="container">' -%}
+{%- assign container_end = '</div>' -%}
+{%- if section.settings.full_width -%}
+  {%- assign is_container = false -%}
+  {%- assign container_begin = '' -%}
+  {%- assign container_end = '' -%}
+{%- endif -%}
+
+{%- capture style_section -%}
+  padding:{{ section.settings.padding_top }}px {{ section.settings.padding_right }}px {{ section.settings.padding_bottom }}px {{ section.settings.padding_left }}px;
+{%- endcapture -%}
+
+{{- container_begin -}}
+<div class="container-section columns-section{% if section.settings.mobile_disable %} mb-hidden{% endif %}" style="{{ style_section | strip_newlines | remove: "  " }}">
+  {%- assign blocks_size = section.blocks.size -%}
+  {%- if section.blocks.size > 0 -%}
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'background' -%}
+        {%- assign blocks_size = blocks_size | minus: 1 -%}
+        {%- include 'bgimage' -%}
+        {%- break -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endif -%}
+  
+  <div class="wrapper{% if section.settings.full_width and section.settings.no_spacing == false %} container{% assign is_container = true %}{% endif %}">
+    {%- if blocks_size > 0 -%}
+      {%- case blocks_size -%}
+      {%- when 1 -%}
+        {%- assign grid_class = 'col-12' -%}
+      {%- when 2' -%}
+        {%- assign grid_class = 'col-12 col-sm-6' -%}
+      {%- when 3 -%}
+        {%- assign grid_class = 'col-12 col-sm-6 col-lg-4' -%}
+      {%- when 4 -%}
+        {%- assign grid_class = 'col-12 col-sm-6 col-lg-3' -%}
+      {%- endcase -%}
+      <div class="row">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'featured_collection' -%}
+          <div class="{{ grid_class }}" {{ block.shopify_attributes }}>
+            {%- if block.settings.heading != blank -%}
+              <h3 class="heading weight-{{ section.settings.heading_weight }} size-{{ section.settings.heading_size }}" style="color:{{ section.settings.heading_color }};margin-bottom:{{ section.settings.heading_spacing }}px;">{{ block.settings.heading }}</h3>
+            {%- endif -%}
+            {%- if block.settings.subheading != blank -%}
+              <p class="subheading weight-{{ section.settings.subheading_weight }} size-{{ section.settings.subheading_size }}" style="color:{{ section.settings.subheading_color }};margin-bottom:{{ section.settings.subheading_spacing }}px;">{{ block.settings.subheading }}</p>
+            {%- endif -%}
+
+            {%- assign my_collection = collections[block.settings.collection] -%}
+            {%- if my_collection != blank and my_collection.products_count > 0 -%}
+              <ul class="listing">
+                {%- for my_product in my_collection.products limit: section.settings.product_limit -%}
+                {%- assign featured_image_aspect_ratio = my_product.featured_image.aspect_ratio | default: 1 -%}
+                <li class="d-flex">
+                  <div class="left">
+                    <div class="aspect__ratio aspect__ratio-{{ settings.shop_image_ratio }}{% if settings.shop_image_ratio != '0' and settings.shop_image_ratio_crop %} aspect__ratio-crop{% endif %}"{% if settings.shop_image_ratio == '0' %} style="padding-bottom:{{ 100 | divided_by: featured_image_aspect_ratio }}%;"{% endif %}>
+                      <a href="{{ my_product.url | within: my_collection }}" class="aspect__ratio-container">
+                        {%- capture img_sizes -%}{% if my_product.featured_image.aspect_ratio > 1 %}x3{% else %}3x{% endif %}{%- endcapture -%}
+                        <div class="aspect__ratio-image product__image lazyload" data-bgset="{{ my_product.featured_image | img_url: '100x' }} 1x, {{ my_product.featured_image | img_url: '200x' }} 2x" data-sizes="auto" data-parent-fit="cover" style="background-image:url('{{ my_product.featured_image | img_url: img_sizes }}');"></div>
+                      </a>
+                    </div>
+                  </div>
+                  <div class="right">
+                    {%- if section.settings.show_vendor -%}
+                    <div class="vendor">{{ my_product.vendor | link_to_vendor }}</div>
+                    {%- endif -%}
+                    <h5 class="name"><a href="{{ my_product.url | within: my_collection }}" title="{{ my_product.title | escape }}">{{ my_product.title }}</a></h5>
+                    {%- if section.settings.show_review -%}
+                    <div class="review"><span class="shopify-product-reviews-badge" data-id="{{ my_product.id }}"></span></div>
+                    {%- endif -%}
+                    <span class="money price">{{ my_product.price | money }}</span>
+                    {%- if my_product.compare_at_price > my_product.price -%}
+                    <s class="money compare_at_price">{{ my_product.compare_at_price | money }}</s>
+                    {%- endif -%}
+                  </div>
+                </li>
+                {%- endfor -%}
+              </ul>
+              {%- if section.settings.show_view_all -%}
+              <a href="{{ my_collection.url }}" class="view_more btn">{{ 'sections.products.view_more' | t }}&nbsp;&nbsp;<i class="ion ion-md-add"></i></a>
+              {%- endif -%}
+            {%- else -%}
+              {%- include 'no-blocks' -%}
+            {%- endif -%}
+          </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      {%- include 'no-blocks' -%}
+    {%- endif -%}
+  </div>
+</div>
+{{- container_end -}}
+
+{% schema %}
+  {
+    "name": "Products columns",
+    "class": "index-section",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "mobile_disable",
+        "label": "Disable on mobile",
+        "info": "Check to disable this section on mobile devices"
+      },
+      {
+        "type": "checkbox",
+        "id": "full_width",
+        "label": "Wide display",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "no_spacing",
+        "label": "No spacing",
+        "info": "When Wide display is checked, use this option to remove the bilateral spaces"
+      },
+      {
+        "type": "header",
+        "content": "— Heading style"
+      },
+      {
+        "type": "color",
+        "id": "heading_color",
+        "label": "Color",
+        "default": "#000"
+      },
+      {
+        "type": "range",
+        "id": "heading_size",
+        "label": "Font size",
+        "max": 100,
+        "min": 10,
+        "step": 1,
+        "unit": "px",
+        "default": 24
+      },
+      {
+        "type": "range",
+        "id": "heading_weight",
+        "label": "Font weight",
+        "max": 700,
+        "min": 300,
+        "step": 100,
+        "default": 500
+      },
+      {
+        "type": "range",
+        "id": "heading_spacing",
+        "label": "Bottom spacing",
+        "min": 0,
+        "max": 100,
+        "step": 5,
+        "unit": "px",
+        "default": 10
+      },
+      {
+        "type": "header",
+        "content": "— Subheading style"
+      },
+      {
+        "type": "color",
+        "id": "subheading_color",
+        "label": "Color",
+        "default": "#788188"
+      },
+      {
+        "type": "range",
+        "id": "subheading_size",
+        "label": "Font size",
+        "max": 100,
+        "min": 10,
+        "step": 1,
+        "unit": "px",
+        "default": 16
+      },
+      {
+        "type": "range",
+        "id": "subheading_weight",
+        "label": "Font weight",
+        "max": 700,
+        "min": 300,
+        "step": 100,
+        "default": 300
+      },
+      {
+        "type": "range",
+        "id": "subheading_spacing",
+        "label": "Bottom spacing",
+        "min": 0,
+        "max": 100,
+        "step": 5,
+        "unit": "px",
+        "default": 30
+      },
+      {
+        "type": "header",
+        "content": "— Paddings"
+      },
+      {
+        "type": "range",
+        "id": "padding_top",
+        "label": "Top padding",
+        "min": 0,
+        "max": 250,
+        "step": 5,
+        "unit": "px",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "padding_bottom",
+        "label": "Bottom padding",
+        "min": 0,
+        "max": 250,
+        "step": 5,
+        "unit": "px",
+        "default": 40
+      },
+      {
+        "type": "range",
+        "id": "padding_left",
+        "label": "Left padding",
+        "min": 0,
+        "max": 250,
+        "step": 5,
+        "unit": "px",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "padding_right",
+        "label": "Right padding",
+        "min": 0,
+        "max": 250,
+        "step": 5,
+        "unit": "px",
+        "default": 0
+      },
+      {
+        "type": "header",
+        "content": "— Options"
+      },
+      {
+        "type": "range",
+        "id": "product_limit",
+        "label": "Products per column",
+        "min": 2,
+        "max": 10,
+        "step": 1,
+        "default": 3
+      },
+      {
+        "type": "checkbox",
+        "id": "show_review",
+        "label": "Show review",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_vendor",
+        "label": "Show vendor",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_view_all",
+        "label": "Show 'View all' button",
+        "default": false
+      }
+    ],
+    "blocks": [
+      {
+        "type": "featured_collection",
+        "name": "Collection",
+        "limit": 4,
+        "settings": [
+          {
+            "label": "Heading",
+            "id": "heading",
+            "type": "text",
+            "default": "Featured products"
+          },
+          {
+            "label": "Subheading",
+            "id": "subheading",
+            "type": "text",
+            "default": "Description"
+          },
+          {
+            "label": "Collection",
+            "id": "collection",
+            "type": "collection"
+          }
+        ]
+      },
+      {
+        "type": "background",
+        "name": "🏷 Background",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "color",
+            "id": "bground_color",
+            "label": "Background color",
+            "default": "#00c9b7"
+          },
+          {
+            "type": "range",
+            "id": "bground_opacity",
+            "label": "Background opacity",
+            "min": 0,
+            "max": 100,
+            "step": 5,
+            "unit": "%",
+            "default": 100
+          },
+          {
+            "type": "header",
+            "content": "— Background image",
+            "info": "Reduce background opacity to use background image"
+          },
+          {
+            "type": "image_picker",
+            "id": "bground_image",
+            "label": "Upload image"
+          },
+          {
+            "type": "select",
+            "id": "bground_position",
+            "label": "Background position to start",
+            "options": [
+              {
+                "value": "center_center",
+                "label": "Center"
+              },
+              {
+                "value": "top_left",
+                "label": "Top left"
+              },
+              {
+                "value": "top_right",
+                "label": "Top right"
+              },
+              {
+                "value": "top_center",
+                "label": "Top center"
+              },
+              {
+                "value": "bottom_left",
+                "label": "Bottom left"
+              },
+              {
+                "value": "bottom_right",
+                "label": "Bottom right"
+              },
+              {
+                "value": "bottom_center",
+                "label": "Bottom center"
+              }
+            ],
+            "default": "center_center"
+          },
+          {
+            "type": "checkbox",
+            "id": "parallax_effect",
+            "label": "Parallax scrolling effect",
+            "info": "Parallax scrolling will be turn of on mobile devices"
+          },
+          {
+            "type": "header",
+            "content": "— Scroll down anchor"
+          },
+          {
+            "type": "checkbox",
+            "id": "show_anchor",
+            "label": "Show anchor icon"
+          },
+          {
+            "type": "color",
+            "id": "anchor_color",
+            "label": "Anchor color",
+            "default": "#00c9b7"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Products columns",
+        "category": "Collection",
+        "blocks": [
+          {
+            "type": "featured_collection"
+          },
+          {
+            "type": "featured_collection"
+          },
+          {
+            "type": "featured_collection"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

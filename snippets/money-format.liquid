@@ -1,0 +1,1 @@
+<sub>{{ cart.currency.symbol }}</sub>{{ price | money_without_currency | replace_first: '.', '<sup>.' | append: '</sup>' }}

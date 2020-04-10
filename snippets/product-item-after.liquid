@@ -1,0 +1,39 @@
+<div class="product__content">
+  <div class="product__details d-flex flex-nowrap justify-content-between">
+    <h3 class="product__title">
+      {%- if shop_review_enable -%}
+      <div class="product__review"><span class="shopify-product-reviews-badge" data-id="{{ my_product.id }}"></span></div>
+      {%- endif -%}
+      <a class="product__link" href="{{ my_product.url | within: my_collection }}" title="{{ my_product.title | escape }}">
+        {%- if highlight != nil and highlight != blank -%}
+          {{- my_product.title | highlight: highlight -}}
+        {%- else -%}
+          {{- my_product.title -}}
+        {%- endif -%}
+      </a>
+    </h3>
+    <div class="product__price">{% include 'product-price', my_product: my_product %}</div>
+    {%- if current_shop_view == 'list' -%}
+    <div class="product__short">
+      {%- capture ellipsis -%}...<br><a href="{{ my_product.url | within: my_collection }}">{{ 'products.product.more' | t }}</a>{%- endcapture -%}
+      {{- my_product.description | strip_html | truncatewords: 10, ellipsis -}}
+    </div>
+    {%- endif -%}
+  </div>
+  {%- if current_shop_view == 'list' -%}
+  <div class="product__actions">
+    <div class="clearfix">
+      {%- include 'product-stock' -%}
+      
+      {{- product_btn -}}
+      
+      {%- if shop_wishlist_enable and settings.wishlist_page != blank -%}
+      {%- assign wishlist = customer.metafields.wishlist | json -%}
+      <a href="/pages/{{ settings.wishlist_page }}" class="btn addwishlist_btn{% if wishlist contains my_product.id %} added{% endif %}"{% unless wishlist contains my_product.id %} data-added="{{ 'wishlist.general.view_wishlist' | t | escape }}" data-product_handle="{{ my_product.handle }}" data-product_id="{{ my_product.id }}" data-customer_id="{{ customer.id }}" data-shop_domain="{{ shop.permanent_domain }}"{% endunless %}>
+        <span class="tooltip">{% if wishlist contains my_product.id %}{{ 'wishlist.general.view_wishlist' | t }}{% else %}{{ 'wishlist.general.add_to_wishlist' | t }}{% endif %}</span>
+      </a>
+      {%- endif -%}
+    </div>
+  </div>
+  {%- endif -%}
+</div>

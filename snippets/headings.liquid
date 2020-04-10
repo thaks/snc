@@ -1,0 +1,29 @@
+{%- case type -%}
+{%- when 'index' -%}
+  {%- if object.settings.heading != blank or object.settings.subheading != blank -%}
+  <div class="headings text-{{ object.settings.alignment }}">
+    {%- if object.settings.heading != blank -%}
+      <h3 class="heading weight-{{ object.settings.heading_weight }} size-{{ object.settings.heading_size }}" style="color:{{ object.settings.heading_color }};margin-bottom:{{ object.settings.heading_spacing }}px;">{{ object.settings.heading }}</h3>
+    {%- endif -%}
+    {%- if object.settings.subheading != blank -%}
+      <p class="subheading weight-{{ object.settings.subheading_weight }} size-{{ object.settings.subheading_size }}" style="color:{{ object.settings.subheading_color }};margin-bottom:{{ object.settings.subheading_spacing }}px;">{{ object.settings.subheading }}</p>
+    {%- endif -%}
+  </div>
+  {%- endif -%}
+
+{%- when 'sidebar' -%}
+  {%- if block.settings.heading != blank -%}
+    {%- if block.settings.show_toggle -%}
+      <input id="widget-{{ block.id }}" type="checkbox" class="widget__toggle hide" />
+    {%- endif -%}
+    <h3 class="widget__title size-{{ block.settings.title_size }} weight-{{ block.settings.title_weight }} text-{{ block.settings.title_transform }}" style="color:{{ block.settings.title_color }};margin-bottom:{{ block.settings.title_spacing }}px;">
+      <label for="widget-{{ block.id }}">{{ block.settings.heading }}</label>
+    </h3>
+  {%- endif -%}
+
+{%- when 'footer' -%}
+  {%- if block.settings.heading != blank -%}
+    <input type="checkbox" class="hide" id="{{ block.id }}" />
+    <h3 class="heading size-{{ section.settings.title_size }} weight-{{ section.settings.title_weight }}" style="margin-bottom:{{ section.settings.title_spacing }}px;"><label for="{{ block.id }}">{{ block.settings.heading }}</label></h3>
+  {%- endif -%}
+{%- endcase -%}

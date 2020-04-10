@@ -1,0 +1,12 @@
+<ul class="header__contact d-flex flex-wrap">
+  {%- if block.settings.phone != blank -%}
+  <li>
+    <a href="tel:{{ block.settings.phone | escape | remove: ' ' }}"><strong>{{ 'layout.topbar.call' | t }}</strong> {{ block.settings.phone }}</a>
+  </li>
+  {%- endif -%}
+  {%- if block.settings.email != blank -%}
+  <li>
+    <a href="mailto:{{ block.settings.email | escape }}">{{ block.settings.email }}</a>
+  </li>
+  {%- endif -%}
+</ul>

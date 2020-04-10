@@ -1,0 +1,7 @@
+{%- capture my_src -%}{% include 'shortcode-render' render:'src' %}{%- endcapture -%}
+{%- capture my_alt -%}{% include 'shortcode-render' render:'alt' %}{%- endcapture -%}
+{%- if my_src != blank -%}
+<div class="widget__text">
+  <img src="{{ my_src | escape }}" crossOrigin="anonymous" alt="{{ my_alt | escape }}" />
+</div>
+{%- endif -%}

@@ -1,0 +1,134 @@
+<div class="page-lookbook">
+  {%- if section.blocks.size > 0 -%}
+    <header class="lookbook-header d-flex align-items-center">
+      {%- if section.settings.background -%}
+        {%- capture img_sizes -%}{% if section.settings.background.aspect_ratio > 1 %}x3{% else %}3x{% endif %}{%- endcapture -%}
+        <div class="header__image lazyload" data-bgset="{% include 'bgset', image: section.settings.background %}" data-sizes="auto" data-parent-fit="cover" style="background-image:url({{ section.settings.background | img_url: img_sizes }});"></div>
+      {%- endif -%}
+      <div class="header__overlay"></div>
+      <div class="container">
+        <h1>{{ page.title }}</h1>
+        {%- if page.content != blank -%}
+        <p>{{ page.content }}</p>
+        {%- endif -%}
+      </div>
+    </header>
+    {%- if section.settings.breadcrumb -%}
+    <div class="container">
+      <ol class="breadcrumbs d-flex align-items-center justify-content-center" itemscope itemtype="http://schema.org/BreadcrumbList">
+        <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem" data-line="—">
+          <a itemprop="item" href="{{ shop.url }}">
+            <span itemprop="name">{{ 'general.breadcrumbs.homepage' | t }}</span>
+          </a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+          <a itemprop="item" href="{{ page.url }}">
+            <span itemprop="name">{{ page.title }}</span>
+          </a>
+          <meta itemprop="position" content="2" />
+        </li>
+      </ol>
+    </div>
+    {%- endif -%}
+    <div class="container">
+      <div class="lookbook-section">
+        <div class="row lookbook-listing row-{{ section.settings.spacing }}">
+          {%- case section.settings.grid -%}
+          {%- when 1 -%}
+            {%- assign grid_class = ' col-12' -%}
+          {%- when 2 -%}
+            {%- assign grid_class = ' col-6 col-md-6' -%}
+          {%- when 3' -%}
+            {%- assign grid_class = ' col-6 col-md-4' -%}
+          {%- when 4 -%}
+            {%- assign grid_class = ' col-6 col-md-4 col-lg-3' -%}
+          {%- endcase -%}
+
+          {%- for block in section.blocks -%}
+          <div class="lookbook__item{{ grid_class }}" {{ block.shopify_attributes }}>
+            <div class="lookbook__wrapper">
+              {%- if block.settings.image -%}
+                {%- assign img_url = block.settings.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+                {%- capture img_sizes -%}{% if block.settings.image.aspect_ratio > 1 %}x3{% else %}3x{% endif %}{%- endcapture -%}
+                <img class="lookbook__image lazyload"
+                     src="{{ block.settings.image | img_url: img_sizes }}"
+                     data-src="{{ img_url }}"
+                     data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+                     data-aspectratio="{{ block.settings.image.aspect_ratio }}"
+                     data-sizes="auto"
+                     tabindex="-1"
+                     alt="{{ block.settings.image.alt | escape }}" />
+              {%- endif -%}
+              <div id="lookbook__id-{{ block.id }}" class="lookbook__app{% if block.settings.plus_icon %} lookbook__customize{% endif %}">{{ block.settings.code }}</div>
+            </div>
+          </div>
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+</div>
+{% schema %}
+  {
+    "name": "Lookbook page",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "background",
+        "label": "Background"
+      },
+      {
+        "type": "checkbox",
+        "id": "breadcrumb",
+        "label": "Show breadcrumb"
+      },
+      {
+        "type": "range",
+        "id": "grid",
+        "min": 1,
+        "max": 4,
+        "step": 1,
+        "label": "Lookbooks columns",
+        "default": 3,
+        "info": "How many lookbooks you want to show per row"
+      },
+      {
+        "type": "range",
+        "id": "spacing",
+        "min": 0,
+        "max": 30,
+        "step": 10,
+        "unit": "px",
+        "label": "Space between lookbooks",
+        "default": 20,
+        "info": "You can set different spacing between blocks"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "lookbook",
+        "name": "Lookbook",
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "plus_icon",
+            "label": "Plus icon instead of number"
+          },
+          {
+            "type": "text",
+            "id": "code",
+            "label": "Lookbook code",
+            "info": "Go to App > Lookbook, to get this code"
+          },
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Lookbook image",
+            "info": "Upload image which uploaded in Lookbook app again"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

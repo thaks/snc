@@ -1,0 +1,42 @@
+<div class="container content-area">
+  <div class="site-account">
+    {%- form 'activate_customer_password' -%}
+
+    {%- if form.errors != blank -%}
+    <div class="alert alert-error">
+      <div class="alert__icon">
+        <i class="ris ri-alert"></i>
+      </div>
+      <div class="alert__content">
+        {{- form.errors | default_errors -}}
+      </div>
+    </div>
+    {%- endif -%}
+    
+    <div class="title-wrapper text-center">
+      {%- include 'breadcrumbs' -%}
+      <h1 class="page-title">{{ 'customer.activate_account.title' | t }}</h1>
+      <div class="term-description"><p>{{ 'customer.activate_account.subtext' | t }}</p></div>
+    </div>
+
+    <div class="form-group">
+      <label for="customer_activate-password">{{ 'customer.activate_account.password' | t }}<span class="required">*</span></label>
+      <input id="customer_activate-password" type="password" name="customer[password]"{% if form.errors contains 'password' %} class="input-error"{% endif %} />
+    </div>
+    <div class="form-group">
+      <label for="customer_activate-password_confirm">{{ 'customer.activate_account.password_confirm' | t }}<span class="required">*</span></label>
+      <input id="customer_activate-password_confirm" type="password" name="customer[password_confirmation]"{% if form.errors contains 'password_confirmation' %} class="input-error"{% endif %} />
+    </div>
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary w100">{{ 'customer.activate_account.submit' | t }}</button>
+    </div>
+    <div class="form-divider">
+      <span>{{ 'customer.activate_account.or' | t }}</span>
+    </div>
+    <div class="form-group">
+      <button type="submit" class="btn w100" name="decline">{{ 'customer.activate_account.cancel' | t }}</button>
+    </div>
+
+    {%- endform -%}
+  </div>
+</div>

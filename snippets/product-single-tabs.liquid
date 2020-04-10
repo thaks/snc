@@ -1,0 +1,64 @@
+<div class="product-single__tabs tabs-layout-{{ tabs_layout | default: section.settings.tabs_layout }}">
+  <div class="container">
+    <ul class="product-tabs">
+      <li class="description_tab"><a class="product-tabs__title active" href="#tab-description">{{ 'products.product.description' | t }}</a></li>
+
+      {%- if section.settings.show_product_reviews -%}
+      <li class="reviews_tab"><a class="product-tabs__title" href="#tab-reviews">{{ 'products.product.reviews' | t }}</a></li>
+      {%- endif -%}
+
+      {%- if section.settings.additional_tab_title != blank -%}
+      <li class="additional_tab"><a class="product-tabs__title" href="#tab-additional">{{ section.settings.additional_tab_title }}</a></li>
+      {%- endif -%}
+    </ul>
+
+    <div class="product-tabs__wrapper">
+      {%- if layout == 'bottom' -%}
+      <div class="row row-0 justify-content-center">
+        <div class="col-12 col-md-9 col-lg-8">
+          {%- endif -%}
+          <div class="product-tabs__title-wrap"><a class="product-tabs__title active" href="#tab-description">{{ 'products.product.description' | t }}</a></div>
+          <div id="tab-description" class="product-tabs__panel active" itemprop="description" style="display: block;">
+            {{- product.description -}}
+          </div>
+          {%- if layout == 'bottom' -%}
+        </div>
+      </div>
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.show_product_reviews -%}
+    <div class="product-tabs__wrapper">
+      {%- if layout == 'bottom' -%}
+      <div class="row row-0 justify-content-center">
+        <div class="col-12 col-md-9 col-lg-8">
+          {%- endif -%}
+          <div class="product-tabs__title-wrap"><a class="product-tabs__title" href="#tab-reviews">{{ 'products.product.reviews' | t }}</a></div>
+          <div id="tab-reviews" class="product-tabs__panel">
+            <div id="shopify-product-reviews" data-id="{{ product.id }}">{{ product.metafields.spr.reviews }}</div>
+          </div>
+          {%- if layout == 'bottom' -%}
+        </div>
+      </div>
+      {%- endif -%}
+    </div>
+    {%- endif -%}
+
+    {%- if section.settings.additional_tab_title != blank -%}
+    <div class="product-tabs__wrapper">
+      {%- if layout == 'bottom' -%}
+      <div class="row row-0 justify-content-center">
+        <div class="col-12 col-md-9 col-lg-8">
+          {%- endif -%}
+          <div class="product-tabs__title-wrap"><a class="product-tabs__title" href="#tab-additional">{{ section.settings.additional_tab_title }}</a></div>
+          <div id="tab-additional" class="product-tabs__panel">
+            {{- section.settings.additional_tab_content -}}
+          </div>
+          {%- if layout == 'bottom' -%}
+        </div>
+      </div>
+      {%- endif -%}
+    </div>
+    {%- endif -%}
+  </div>
+</div>

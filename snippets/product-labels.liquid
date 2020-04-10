@@ -1,0 +1,50 @@
+{%- if my_product.available -%}
+  {%- assign show_label_new = false -%}
+  {%- assign show_label_hot = false -%}
+  {%- assign show_label_sale = false -%}
+
+  {%- if settings.shop_label_new and my_product.metafields.info.label contains 'new' -%}
+    {%- assign show_label_new = true -%}
+    {%- assign shop_label_new = 'products.label.new' | t -%}
+  {%- endif -%}
+
+  {%- if settings.shop_label_hot and my_product.metafields.info.label contains 'hot' -%}
+    {%- assign show_label_hot = true -%}
+    {%- assign shop_label_hot = 'products.label.hot' | t -%}
+  {%- endif -%}
+
+  {%- if my_product.compare_at_price > my_product.price -%}
+    {%- assign show_label_sale = true -%}
+    {%- assign shop_label_sale = 'products.label.sale' | t -%}
+
+    {%- if settings.shop_label_percentage and my_product.variants.size == 1 -%}
+      {%- capture shop_label_sale -%}-{{ my_product.compare_at_price | minus: my_product.price | times: 100.0 | divided_by: my_product.compare_at_price | ceil }}%{%- endcapture -%}
+    {%- endif -%}  
+  {%- endif -%}
+
+  {%- if show_label_new or show_label_hot or show_label_sale -%}
+  <div class="product__labels labels-{{ shop_label_shape | default: settings.shop_label_shape }} d-flex align-items-start flex-nowrap flex-column">
+    {%- if show_label_sale -%}
+    <div class="product__label label-sale">{{ shop_label_sale }}</div>
+    {%- endif -%}
+
+    {%- if show_label_hot -%}
+    <div class="product__label label-hot">{{ shop_label_hot }}</div>
+    {%- endif -%}
+
+    {%- if show_label_new -%}
+    <div class="product__label label-new">{{ shop_label_new }}</div>
+    {%- endif -%}
+  </div>
+  {%- endif -%}
+{%- else -%}
+  <div class="product__labels labels-{{ shop_label_shape | default: settings.shop_label_shape }} d-flex align-items-start flex-nowrap flex-column">
+    <div class="product__label label-soldout">
+      {%- if my_product.variants.first.incoming -%}
+        {{- 'products.label.incoming' | t -}}
+      {%- else -%}
+        {{- 'products.label.sold_out' | t -}}
+      {%- endif -%}
+    </div>
+  </div>
+{%- endif -%}

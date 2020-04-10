@@ -1,0 +1,18 @@
+<div class="product__buttons">
+  <div class="d-flex align-items-center justify-content-center">
+    {%- if shop_quickview_enable -%}
+    <button type="button" class="btn quickview_btn has-tooltip" data-product_handle="{{ my_product.handle }}" data-collection_handle="{{ my_collection.handle | default: 'all' }}">
+      <span class="tooltip">{{ 'products.product.quick_view' | t }}</span>
+    </button>
+    {%- endif -%}
+    
+    {{- product_btn -}}
+    
+    {%- if shop_wishlist_enable and settings.wishlist_page != blank -%}
+    {%- assign wishlist = customer.metafields.wishlist | json -%}
+    <a href="/pages/{{ settings.wishlist_page }}" class="btn addwishlist_btn{% if wishlist contains my_product.id %} added{% endif %} has-tooltip"{% unless wishlist contains my_product.id %} data-added="{{ 'wishlist.general.view_wishlist' | t | escape }}" data-product_handle="{{ my_product.handle }}" data-product_id="{{ my_product.id }}" data-customer_id="{{ customer.id }}" data-shop_domain="{{ shop.permanent_domain }}"{% endunless %}>
+      <span class="tooltip">{% if wishlist contains my_product.id %}{{ 'wishlist.general.view_wishlist' | t }}{% else %}{{ 'wishlist.general.add_to_wishlist' | t }}{% endif %}</span>
+    </a>
+    {%- endif -%}
+  </div>
+</div>

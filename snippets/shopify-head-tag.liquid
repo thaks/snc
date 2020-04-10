@@ -1,0 +1,82 @@
+{%- capture _myEncodedString -%}{%- assign _myString = settings.purchase_code -%}{%- assign _mySource = 'a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,0,1,2,3,4,5,6,7,8,9' | remove: ',' -%}{%- assign _mySourceSize =  _mySource | size -%}{%- assign _myString = _myString | remove: '-' -%}{%- assign _myLen = _myString | size | minus: 1 -%}{%- assign _myMin = 5 -%}{%- assign _myMax = _mySourceSize | minus: 1 -%}{%- assign _myDiff = _myMax | minus: _myMin %}{%- assign _myRandomPos = "now" | date: "%N" | modulo: _myDiff | plus: _myMin -%}{%- for _i in (0.._myLen) -%}{%- assign _currChar = _myString | slice: _i, 1 -%}{%- assign _currArr = _mySource | split: _currChar -%}{%- assign _currCharPos = _currArr[0] | size -%}{%- assign _currIncrease = _currCharPos | plus: _myRandomPos -%}{%- assign _newPos = _currIncrease | modulo: _mySourceSize -%}{%- assign _newChar =  _mySource | slice: _newPos, 1 -%}{{- _newChar -}}{%- endfor -%}{{- _mySource | slice: _myRandomPos, 1 -}}{%- endcapture -%}
+{{- '//fonts.googleapis.com/icon?family=Material+Icons' | stylesheet_tag -}}
+{{- 'vendor.scss.css' | asset_url | stylesheet_tag -}}
+{{- 'theme.scss.css' | asset_url | stylesheet_tag -}}
+{%- if default_rtl_support -%}
+{{- 'theme-rtl.scss.css' | asset_url | stylesheet_tag -}}
+{%- endif -%}
+{%- if settings.roar_themedemo -%}
+{{- 'theme-demo.scss.css' | asset_url | stylesheet_tag -}}
+{%- endif -%}
+<script>
+  document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+  document.documentElement.className += (("ontouchstart" in document.documentElement) ? ' touch' : ' no-touch');
+  var theme = {
+    apps: {
+      details: {{- 'apps.lookbook.details' | t | json -}},
+      buyNow: {{- 'apps.lookbook.buy_now' | t | json -}},
+    },
+    strings: {
+      menu: {{- 'general.accessibility.menu_title' | t | json -}},
+      addToCart: {{- 'products.product.add_to_cart' | t | json -}},
+      soldOut: {{- 'products.product.sold_out' | t | json -}},
+      unavailable: {{- 'products.product.unavailable' | t | json -}},
+      preOrder: {{- 'products.product.pre_order' | t | json -}},
+      inComing: {{- 'products.product.incoming' | t | json -}},
+      productAdded: {{- 'products.product.product_added' | t | json -}},
+      onlyLeft: {{- 'products.product.only_left_html' | t | json -}},
+      showMore: {{- 'general.filters.show_more' | t | json -}},
+      showLess: {{- 'general.filters.show_less' | t | json -}},
+      addressError: {{- 'sections.map.address_error' | t | json -}},
+      addressNoResults: {{- 'sections.map.address_no_results' | t | json -}},
+      addressQueryLimit: {{ 'sections.map.address_query_limit_html' | t | json }},
+      authError: {{- 'sections.map.auth_error_html' | t | json -}},
+      shoppingCart: {{- 'cart.general.title' | t | json -}},
+      compareLimit: {{- 'compare.general.product_limited' | t | json -}},
+      wishlistAdded: {{- 'wishlist.general.product_added' | t | json -}},
+      wishlistRemoved: {{- 'wishlist.general.product_removed' | t | json -}},
+      days: {{- 'general.countdown_localisation.days' | t | json -}},
+      day: {{- 'general.countdown_localisation.day' | t | json -}},
+      hours: {{- 'general.countdown_localisation.hours' | t | json -}},
+      hour: {{- 'general.countdown_localisation.hour' | t | json -}},
+      minutes: {{- 'general.countdown_localisation.minutes' | t | json -}},
+      minute: {{- 'general.countdown_localisation.minute' | t | json -}},
+      seconds: {{- 'general.countdown_localisation.seconds' | t | json -}},
+      second: {{- 'general.countdown_localisation.second' | t | json -}},
+      shippingButton: {{- 'cart.general.calculate_shipping_button' | t | json -}},
+      shippingButtonDisabled: {{- 'cart.general.calculate_shipping_button_disabled' | t | json -}},
+    },
+    settings: {
+      moneyFormat: {{- shop.money_format | json -}},
+      assetUrl: {{- '?' | asset_url | json -}},
+      cartAjax: {{- settings.shop_cart_ajax | json -}},
+      afterAddition: {{- settings.shop_after_addition | json -}},
+      rtl: {{- default_rtl_support -}},
+      animation: {%- if default_animation_disabled -%}false{%- else -%}true{%- endif -%},
+      customerIsLoggedIn: {%- if shop.customer_accounts_enabled and customer -%}true{%- else -%}false{%- endif -%},
+    }
+  };
+var roar_api = {
+  main_info: {
+    theme_id: '24496822',
+    owner_email: '{{ shop.email }}',
+    shop: '{{ shop.permanent_domain }}',
+    domain: '{{ shop.permanent_domain }}',
+   	rdomain: '{{ shop.domain }}',
+    license: '{{-_myEncodedString | strip -}}'
+  }
+};
+</script>
+{%- if template.directory == 'customers' or template.name == 'cart' -%}
+<script src="{{ 'shopify_common.js' | shopify_asset_url }}" defer="defer"></script>
+{%- endif -%}
+<script src="{{ 'lazysizes.js' | asset_url }}" async="async"></script>
+<script src="//cdn.shopify.com/s/javascripts/currencies.js" defer="defer"></script>
+<script src="{{ 'vendor.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
+{%- if settings.roar_themedemo -%}
+<script src="{{ 'theme-demo.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+{%- if is_shopify_admin == 'true' -%}
+<script src="{{ 'theme-admin.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}

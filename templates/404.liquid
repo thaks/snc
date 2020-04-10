@@ -1,0 +1,25 @@
+<div class="page-404" data-section-id="{{ section.id }}" data-section-type="page-404-template">
+  <div class="container">
+    <div class="row justify-content-center text-center">
+      <div class="col-12 col-md-8 col-lg-6">
+        <header class="page-header title-size-default">
+          <div class="title-section">
+            <div class="page-title-wrapper">
+              <h1 class="page-title">{{ 'general.404.title' | t }}</h1>
+            </div>
+          </div>
+        </header>
+        <div class="page-content">
+          <div class="error-404-description">{{ 'general.404.subtext' | t }}</div>
+          <div class="error-404-searchform">
+            <form class="search-form" action="/search" method="GET" role="search">
+              <input type="hidden" name="type" value="product" />
+              <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'general.search.placeholder' | t }}" autofocus />
+              <button type="submit">{{ 'general.search.submit' | t }}</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,10 @@
+{%- unless my_product.price_varies -%}
+  {%- if my_product.compare_at_price > my_product.price -%}
+  <del class="compare_at_price"><span class="price"><span class="money price">{{ my_product.compare_at_price | money }}</span></span></del>
+  <ins><span class="money price">{{ my_product.price | money }}</span></ins>
+  {%- else -%}
+  <span class="money price">{{ my_product.price | money }}</span>
+  {%- endif -%}
+{%- else -%}
+  <span class="money price">{{ my_product.price_min | money }}</span> – <span class="money price">{{ my_product.price_max | money }}</span>
+{%- endunless-%}

@@ -1,0 +1,215 @@
+{%- paginate search.results by section.settings.per_page -%}
+<div class="page-search content-area" style="padding-left:{{ section.settings.padding_left }}px;padding-right:{{ section.settings.padding_right }}px;">
+  <div class="container{% if section.settings.full_width %}-fluid{% endif %}">
+    <div class="title-wrapper text-center">
+      <h1 class="page-title">
+        {%- if search.results_count == 0 or search.performed == false -%}
+          {{- 'general.search.title' | t -}}
+        {%- else -%}
+          {{- 'general.search.results_with_count' | t: terms: search.terms, count: search.results_count -}}
+        {%- endif -%}
+      </h1>
+    </div>
+    
+    <p class="search__infotext">{{ 'layout.search.info_text' | t }}</p>
+    <form class="search-form" action="/search" method="GET" role="search">
+      <input type="hidden" name="type" value="{{ search.types | join: ',' | escape }}" />
+      <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'general.search.placeholder' | t }}" autofocus />
+      <button type="submit">{{ 'general.search.submit' | t }}</button>
+    </form>
+    
+    {%- if search.performed and search.results_count == 0 -%}
+      <div class="no-products">
+        <p>{{ 'general.search.no_results_html' | t: terms: search.terms }}</p>
+      </div>
+    {%- else -%}
+      <div class="row row-{{ section.settings.spacing }} products products-{{ section.settings.shop_view }}{% if section.settings.shop_view == 'grid' %} grid-{{ section.settings.grid }} layout-{{ settings.shop_product_hover }}{% endif %}">
+        {%- for my_item in search.results -%}
+          {%- case my_item.object_type -%}
+          {%- when 'product' -%}
+            {%- include 'product-item', layout: section.settings.shop_view, my_collection: collections.all, my_product: my_item -%}
+          {%- when 'article' -%}
+            {%- assign image_aspect_ratio = my_item.image.aspect_ratio | default: 1 -%}
+            <div class="product col-auto">
+              <div class="product__item other__item">
+                <div class="product__image-wrapper">
+                  <div class="aspect__ratio aspect__ratio-{{ settings.shop_image_ratio }}{% if settings.shop_image_ratio != '0' and settings.shop_image_ratio_crop %} aspect__ratio-crop{% endif %}"{% if settings.shop_image_ratio == '0' %} style="padding-bottom:{{ 100 | divided_by: image_aspect_ratio }}%;"{% endif %}>
+                    <a href="{{ my_item.url }}" class="aspect__ratio-container">
+                      <div class="product__overlay overlay-{{ settings.shop_image_overlay }}"></div>
+                      <div class="aspect__ratio-image product__image product__image-featured lazyload" data-bgset="{% include 'bgset', image: my_item.image %}" data-sizes="auto" style="background-image:url({{ 'transparent.png.jpg' | asset_url }});"></div>
+                    </a>
+                  </div>
+                  <div class="product__buttons">
+                    <div class="d-flex align-items-center justify-content-center">
+                      <a href="{{ my_item.url }}" class="btn product_btn">
+                        <span class="tooltip">{{ 'products.product.read_more' | t }}</span>
+                        {{- 'products.product.read_more' | t -}}
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <div class="product__content">
+                  <div class="product__details d-flex flex-nowrap justify-content-between">
+                    <h3 class="product__title">
+                      <a class="product__link" href="{{ my_item.url }}" title="{{ my_item.title | escape }}">{{ my_item.title }}</a>
+                    </h3>
+                    {%- if section.settings.shop_view == 'list' -%}
+                    <div class="product__short">
+                      {%- capture ellipsis -%}...<br><a href="{{ my_item.url }}">{{ 'products.product.more' | t }}</a>{%- endcapture -%}
+                      {{- my_item.excerpt_or_content | strip_html | truncatewords: 10, ellipsis -}}
+                    </div>
+                    {%- endif -%}
+                  </div>
+                  {%- if section.settings.shop_view == 'list' -%}
+                  <div class="product__actions">
+                    <div class="clearfix">
+                      <a href="{{ my_item.url }}" class="btn product_btn">
+                        <span class="tooltip">{{ 'products.product.read_more' | t }}</span>
+                        {{- 'products.product.read_more' | t -}}
+                      </a>
+                    </div>
+                  </div>
+                  {%- endif -%}
+                </div>
+              </div>
+            </div>
+          {%- when 'page' -%}
+            {%- assign image_aspect_ratio = 1 -%}
+            <div class="product col-auto">
+              <div class="product__item other__item">
+                <div class="product__image-wrapper">
+                  <div class="aspect__ratio aspect__ratio-{{ settings.shop_image_ratio }}{% if settings.shop_image_ratio != '0' and settings.shop_image_ratio_crop %} aspect__ratio-crop{% endif %}"{% if settings.shop_image_ratio == '0' %} style="padding-bottom:{{ 100 | divided_by: image_aspect_ratio }}%;"{% endif %}>
+                    <a href="{{ my_item.url }}" class="aspect__ratio-container">
+                      <div class="product__overlay overlay-{{ settings.shop_image_overlay }}"></div>
+                      <div class="aspect__ratio-image product__image product__image-featured" style="background-image:url({{ 'transparent.png.jpg' | asset_url }});"></div>
+                    </a>
+                  </div>
+                  <div class="product__buttons">
+                    <div class="d-flex align-items-center justify-content-center">
+                      <a href="{{ my_item.url }}" class="btn product_btn">
+                        <span class="tooltip">{{ 'products.product.read_more' | t }}</span>
+                        {{- 'products.product.read_more' | t -}}
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <div class="product__content">
+                  <div class="product__details d-flex flex-nowrap justify-content-between">
+                    <h3 class="product__title">
+                      <a class="product__link" href="{{ my_item.url }}" title="{{ my_item.title | escape }}">{{ my_item.title }}</a>
+                    </h3>
+                    {%- if section.settings.shop_view == 'list' -%}
+                    <div class="product__short">
+                      {%- capture ellipsis -%}...<br><a href="{{ my_item.url }}">{{ 'products.product.more' | t }}</a>{%- endcapture -%}
+                      {{- my_item.content | strip_html | truncatewords: 10, ellipsis -}}
+                    </div>
+                    {%- endif -%}
+                  </div>
+                  {%- if section.settings.shop_view == 'list' -%}
+                  <div class="product__actions">
+                    <div class="clearfix">
+                      <a href="{{ my_item.url }}" class="btn product_btn">
+                        <span class="tooltip">{{ 'products.product.read_more' | t }}</span>
+                        {{- 'products.product.read_more' | t -}}
+                      </a>
+                    </div>
+                  </div>
+                  {%- endif -%}
+                </div>
+              </div>
+            </div>
+          {%- endcase -%}
+        {%- endfor -%}
+      </div>
+    
+      {%- if paginate.pages > 1 -%}
+        {%- include 'pagination' -%}
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+</div>
+{%- endpaginate -%}
+
+{% schema %}
+  {
+    "name": "Search page",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "full_width",
+        "label": "Wide display"
+      },
+      {
+        "type": "range",
+        "id": "padding_left",
+        "label": "Left padding",
+        "min": 0,
+        "max": 100,
+        "step": 5,
+        "unit": "px",
+        "default": 10
+      },
+      {
+        "type": "range",
+        "id": "padding_right",
+        "label": "Right padding",
+        "min": 0,
+        "max": 100,
+        "step": 5,
+        "unit": "px",
+        "default": 10
+      },
+      {
+        "type": "header",
+        "content": "Product listing"
+      },
+      {
+        "type": "range",
+        "id": "per_page",
+        "min": 1,
+        "max": 50,
+        "step": 1,
+        "label": "Products per page",
+        "default": 12,
+        "info": "Number of products per page."
+      },
+      {
+        "type": "range",
+        "id": "grid",
+        "label": "Products columns",
+        "info": "How many products you want to show per row.",
+        "min": 2,
+        "max": 6,
+        "step": 1,
+        "default": 4
+      },
+      {
+        "type": "select",
+        "id": "shop_view",
+        "label": "Shop products view",
+        "default": "grid",
+        "options": [
+          {
+            "value": "grid",
+            "label": "Grid"
+          },
+          {
+            "value": "list",
+            "label": "List"
+          }
+        ]
+      },
+      {
+        "type": "range",
+        "id": "spacing",
+        "min": 0,
+        "max": 60,
+        "step": 10,
+        "unit": "px",
+        "label": "Space between products",
+        "default": 0,
+        "info": "Choose 0 to use default style."
+      }
+    ]
+  }
+{% endschema %}

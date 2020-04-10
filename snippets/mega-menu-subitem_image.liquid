@@ -1,0 +1,42 @@
+{%- assign _image = block.settings.image -%}
+{%- assign _image_class = '' -%}
+
+{%- if block.settings.title != blank -%}
+  {%- case block.settings.image_position -%}
+    {%- when 'left' -%}
+      {%- assign _image_class = ' flex-row' -%}
+    {%- when 'right' -%}
+      {%- assign _image_class = ' flex-row' -%}
+    {%- when 'top' -%}
+      {%- assign _image_class = ' flex-column' -%}
+    {%- when 'bottom' -%}
+      {%- assign _image_class = ' flex-column' -%}
+  {%- endcase -%}
+{%- endif -%}
+<div class="submenu_html text-{{ block.settings.text_alignment }}">
+  {%- if block.settings.url != blank -%}
+  <a class="d-inline-block" href="{{ block.settings.url }}">
+    {%- endif -%}
+    <div class="d-inline-flex flex-wrap align-items-center{{ _image_class }}">
+      {%- if _image -%}
+        {%- assign img_url = _image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+        {%- capture img_sizes -%}{% if _image > 1 %}x3{% else %}3x{% endif %}{%- endcapture -%}
+        <img class="lazyload"
+           src="{{ _image | img_url: img_sizes }}"
+           data-src="{{ img_url }}"
+           data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+           data-aspectratio="{{ _image.aspect_ratio }}"
+           data-sizes="auto"
+           tabindex="-1"
+           alt="{{ _image.alt | escape }}"
+           style="width:{{ _image.width }}px;" />
+      {%- endif -%}
+      
+      {%- if block.settings.title != blank -%}
+        <h4 class="banner__title weight-{{ block.settings.title_weight }} size-{{ block.settings.title_size }} font-{{ block.settings.title_font }}{% if block.settings.image_position == 'right' or block.settings.image_position == 'bottom' %} order-first{% endif %}" style="color:{{ block.settings.title_color }};{% if _image %}margin-{{ block.settings.image_position }}:{{ block.settings.title_spacing }}px;{% endif %}">{{ block.settings.title }}</h4>
+      {%- endif -%}
+    </div>
+    {%- if block.settings.url != blank -%}
+  </a>
+  {%- endif -%}
+</div>

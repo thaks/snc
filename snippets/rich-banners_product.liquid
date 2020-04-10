@@ -1,0 +1,58 @@
+{%- assign borders_class = '' -%}
+{%- if block.settings.borders_top -%}
+  {%- assign borders_class = borders_class | append: ' border-top' -%}
+{%- endif -%}
+{%- if block.settings.borders_bottom -%}
+  {%- assign borders_class = borders_class | append: ' border-bottom' -%}
+{%- endif -%}
+{%- if block.settings.borders_left -%}
+  {%- assign borders_class = borders_class | append: ' border-left' -%}
+{%- endif -%}
+{%- if block.settings.borders_right -%}
+  {%- assign borders_class = borders_class | append: ' border-right' -%}
+{%- endif -%}
+{%- if block.settings.borders_mb_top -%}
+  {%- assign borders_class = borders_class | append: ' border-mb-top' -%}
+{%- endif -%}
+{%- if block.settings.borders_mb_bottom -%}
+  {%- assign borders_class = borders_class | append: ' border-mb-bottom' -%}
+{%- endif -%}
+{%- if block.settings.borders_mb_left -%}
+  {%- assign borders_class = borders_class | append: ' border-mb-left' -%}
+{%- endif -%}
+{%- if block.settings.borders_mb_right -%}
+  {%- assign borders_class = borders_class | append: ' border-mb-right' -%}
+{%- endif -%}
+
+{%- assign border_style = '' -%}
+{%- if borders_class != '' -%}
+  {%- capture border_style -%}
+    border-color: {{ block.settings.border_color }};
+    border-width: {{ block.settings.border_width }}px;
+  {%- endcapture -%}
+{%- endif -%}
+
+{%- if block.settings.product != blank and all_products[block.settings.product] != blank -%}
+<div class="d-flex col-p-{{ block.settings.width }} col-pm-{{ block.settings.width_mb }}" {{ block.shopify_attributes }}>
+  <div id="rich-banner-{{ block.id }}" class="rich-banner-{{ block.id }} rich-banner d-flex w100" {{ block.shopify_attributes }}>
+    <div class="banner__widget d-flex w100{% if block.settings.tilt_effect %} has--tilt-effect{% endif %}{% if block.settings.rounded_edge %} has--rounded-edge{% endif %}{% if block.settings.box_shadow %} has--box-shadow{% endif %}{{ borders_class }}" style="background-color:{{ block.settings.bground_color }};padding-bottom:{{ block.settings.product_spacing }}px;{{ border_style | strip_newlines | remove: "  " }}">
+      {%- assign my_product = all_products[block.settings.product] -%}
+      {%- if block.settings.shop_product_options -%}
+        {%- assign shop_image_ratio = block.settings.shop_image_ratio -%}
+        {%- assign shop_image_ratio_crop = block.settings.shop_image_ratio_crop -%}
+        {%- assign shop_image_second = block.settings.shop_image_second -%}
+        {%- assign shop_image_overlay = block.settings.shop_image_overlay -%}
+        {%- assign shop_product_hover = block.settings.shop_product_hover -%}
+        {%- assign shop_vendor_enable = block.settings.shop_vendor_enable -%}
+        {%- assign shop_review_enable = block.settings.shop_review_enable -%}
+        {%- assign shop_quickview_enable = block.settings.shop_quickview_enable -%}
+        {%- assign shop_wishlist_enable = block.settings.shop_wishlist_enable -%}
+        {%- assign shop_compare_enable = block.settings.shop_compare_enable -%}
+      {%- endif -%}
+      <div class="products products-grid w100">
+        {%- include 'product-item' -%}
+      </div>
+    </div>
+  </div>
+</div>
+{%- endif -%}

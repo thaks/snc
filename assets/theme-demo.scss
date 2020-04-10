@@ -1,0 +1,139 @@
+html {
+  padding-bottom: 0 !important;
+}
+#preview-bar-iframe {
+  display: none !important;
+}
+.site-nav__dropdown .site-nav__link > del {
+  opacity: .4;
+}
+.roar_themedemo-wrapper {
+  direction: ltr !important;
+  text-align: left;
+  
+  * {
+    direction: ltr !important;
+  }
+  &.active {
+    .roar_themedemo-icon {
+      right: 320px;
+    }
+    .roar_themedemo-container {
+      width: 320px;
+    }
+  }
+  .btn {
+    width: 100%;
+  }
+}
+.roar_themedemo-container {
+  font-family: Trebuchet MS,sans-serif;
+  font-size: 14px;
+  position: fixed;
+  z-index: 1000;
+  right: 0;
+  top: 0;
+  width: 0;
+  height: 100%;
+  background-color: #fff;
+  box-shadow: -3px 0 40px -2px rgba(0, 0, 0, 0.14);
+  transition: width .5s ease;
+}
+.roar_themedemo-icon {
+  position: fixed;
+  z-index: 1001;
+  top: 120px;
+  right: 0;
+  cursor: pointer;
+  font-size: 20px;
+  width: 50px;
+  height: 50px;
+  background-color: #fff;
+  color: #000;
+  border-radius: 5px 0 0 5px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: right .5s ease;
+  
+  i {
+    animation: loadSpin 4s infinite linear;
+  }
+}
+.roar_themedemo {
+  width: 320px;
+  list-style: none;
+  padding: 0 30px 30px;
+  margin: 0;
+  
+  li {
+    margin-top: 30px;
+  }
+  h3 {
+    font-size: 24px;
+    font-weight: 300;
+    margin-bottom: 20px;
+    line-height: 1;
+    
+    + p {
+      margin-top: -15px;
+      padding-left: 35px;
+      margin-bottom: 20px;
+    }
+    strong {
+      font-weight: 600;
+      color: #ec7a5c;
+    }
+  }
+  .btn {
+    &:before {
+      display: none;
+    }
+    &.active {
+      color: #fff !important;
+      background-color: #191919 !important;
+      border-color: #191919 !important;
+    }
+  }
+  .btn-checkbox {
+    margin-top: 20px;
+    
+    label {
+      cursor: pointer;
+      display: block;
+      position: relative;
+      padding-left: 30px;
+      margin-bottom: 0;
+      
+      &:before {
+        position: absolute;
+        top: 50%;
+        margin-top: -10px;
+        left: 0;
+        display: block;
+        content: "\f3ff";
+        font-family: 'Ionicons';
+        line-height: 16px;
+        font-size: 14px;
+        color: transparent;
+        font-weight: bold;
+        text-align: center;
+        width: 20px;
+        height: 20px;
+        background-color: transparent;
+        border: 2px solid #e7e7e7;
+      }
+    }
+    &.active label:before {
+      background-color: #191919;
+      border-color: #191919;
+      color: #fff;
+    }
+  }
+}
+@media (max-width: 1024px) {
+  .roar_themedemo-wrapper {
+    display: none;
+  }
+}

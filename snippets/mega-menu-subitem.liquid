@@ -1,0 +1,27 @@
+{%- assign block = section.blocks[new_index] -%}
+{%- assign _sub_item_content_w 	= block.settings.width -%}
+{%- assign _sub_item_ct_type = block.type -%}
+
+<li class="column col-p-{{ _sub_item_content_w }} col-auto" {{ block.shopify_attributes }}>
+  {%- case _sub_item_ct_type -%}
+    {%- when 'submenu_banner' -%}
+      {%- include 'mega-menu-subitem_banner' -%}
+    {%- when 'submenu_linklist' -%}
+      {%- include 'mega-menu-subitem_linklist' -%}
+    {%- when 'submenu_product' -%}
+      {%- include 'mega-menu-subitem_product' -%}
+    {%- when 'submenu_products' -%}
+      {%- include 'mega-menu-subitem_products' -%}
+    {%- when 'submenu_html' -%}
+      <div class="submenu_html">{{ block.settings.html }}</div>
+    {%- when 'submenu_image' %}
+      {%- include 'mega-menu-subitem_image' -%}
+    {%- when 'submenu_video' %}
+      <div class="submenu_html">
+        {%- if block.settings.video_url != blank -%}
+          {%- capture video_html -%}[{{ block.settings.video_type }} video="{{ block.settings.video_url | escape }}"]{%- endcapture -%}
+          {%- include 'shortcode' load: video_html -%}
+        {%- endif -%}
+      </div>
+  {%- endcase -%}
+</li>

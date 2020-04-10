@@ -1,0 +1,35 @@
+{%- layout none -%}
+<div class="search__container">
+  {%- if search.results_count == 0 or search.performed == false -%}
+  <div class="not__found">{{ 'layout.search.no_products' | t }}</div>
+  {%- capture featured -%}{% include 'querystring', name: 'featured' %}{%- endcapture -%}
+  {%- if featured != blank -%}
+    {%- assign featured_collection = collections[featured] -%}
+    {%- if featured_collection and featured_collection.products.size > 0 -%}
+      {%- capture featured_limit -%}{% include 'querystring', name: 'featured_limit', default: 10 %}{%- endcapture -%}
+      <h3 class="featured_title">{{ 'layout.search.featured_products' | t }}</h3>
+      <div class="row row-0 products products-grid grid-6 layout-1">
+        {%- for my_product in featured_collection.products limit: featured_limit -%}
+          {%- include 'product-item', layout: 'grid', my_collection: featured_collection -%}
+        {%- endfor -%}
+      </div>
+      <div class="search__suggestion">
+        <a class="btn btn-primary" href="{{ featured_collection.url }}">{{ 'layout.search.view_more' | t }}</a>
+      </div>
+    {%- endif -%}
+  {%- endif -%}
+  {%- else -%}
+  {%- capture searched_limit -%}{% include 'querystring', name: 'searched_limit', default: 20 %}{%- endcapture -%}
+  <div class="row row-0 products products-grid grid-6 layout-1">
+    {%- assign terms = search.terms | remove: '*' -%}
+    {%- for my_product in search.results limit: searched_limit -%}
+      {%- include 'product-item', layout: 'grid', my_collection: collections.all, highlight: terms -%}
+    {%- endfor -%}
+  </div>
+  {%- assign length = search.terms | size | minus: 2 -%}
+  {%- assign new_terms = search.terms | slice: 1, length -%}
+  <div class="search__suggestion">
+    <a class="btn btn-primary" href="/search?type=product&q={{ new_terms | escape }}">{{ 'layout.search.view_more' | t }}</a>
+  </div>
+  {%- endif -%}
+</div>

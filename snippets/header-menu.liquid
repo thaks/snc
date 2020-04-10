@@ -1,0 +1,19 @@
+{%- if block.settings.show_icon -%}
+<div class="mobile-nav__open menu-trigger d-flex align-items-center">
+  <div class="nav_burger">
+    <span class="burger_top"></span>
+    <span class="burger_middle"></span>
+    <span class="burger_bottom"></span>
+  </div>
+  <div class="menu-title">{{ 'general.accessibility.menu_title' | t }}</div>
+</div>
+{%- endif -%}
+<div class="header__menu spacing-{{ block.settings.items_spacing }}{% if block.settings.show_icon %} hide{% endif %}">
+  <nav role="navigation" class="site-navigation">
+    <ul class="site-nav__items">
+      <li class="site-nav__item"><span class="site-nav__placeholder"></span></li>
+      <li class="site-nav__item"><span class="site-nav__placeholder width-80"></span></li>
+      <li class="site-nav__item"><span class="site-nav__placeholder width-100"></span></li>
+    </ul>
+  </nav>
+</div>

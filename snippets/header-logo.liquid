@@ -1,0 +1,15 @@
+<a class="header__logo" href="{{ shop.url }}">
+  {%- if block.settings.logo or block.settings.logo_light -%}
+    {%- assign logo_size = 'x' | append: block.settings.logo_max_height -%}
+    {%- if block.settings.logo -%}
+      {%- assign logo_alt = block.settings.logo.alt | default: shop.name -%}
+      <img class="site-logo" src="{{ block.settings.logo | img_url: logo_size }}" srcset="{{ block.settings.logo | img_url: logo_size }} 1x, {{ block.settings.logo | img_url: logo_size, scale: 2 }} 2x" alt="{{ logo_alt | escape }}" style="max-height:{{ block.settings.logo_max_height }}px;" />
+    {%- endif -%}
+    {%- if block.settings.logo_light -%}
+      {%- assign logo_light_alt = block.settings.logo_light.alt | default: shop.name -%}
+      <img class="site-logo-light" src="{{ block.settings.logo_light | img_url: logo_size }}" srcset="{{ block.settings.logo_light | img_url: logo_size }} 1x, {{ block.settings.logo_light | img_url: logo_size, scale: 2 }} 2x" alt="{{ logo_light_alt | escape }}" style="max-height:{{ block.settings.logo_max_height }}px;" />
+    {%- endif -%}
+  {%- else -%}
+    <span>{{ shop.name | escape }}</span>
+  {%- endif -%}
+</a>

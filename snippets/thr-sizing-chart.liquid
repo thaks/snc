@@ -1,0 +1,86 @@
+<div class="size__chart__modal__container">
+    <div class="modal__content">
+      <div class="close__button">&times;</div>
+<!--       <div class="modal___content">
+        <img src="https://cdn.shopify.com/s/files/1/2610/4676/files/size300c.png?5246421444597609921" alt="">
+        <img src="https://cdn.shopify.com/s/files/1/2610/4676/files/sizet.PNG?5246421444597609921" alt="">
+      </div> -->
+      
+      
+      {% if product.type == 'SCRUBS' or product.type == "LABCOAT" %}
+        
+        {% case product.vendor %}
+          {% when 'ADAR' %}
+              <div class="ww__modal___content">             
+                  <img src="https://cdn.shopify.com/s/files/1/2610/4676/files/Untitled-1_54a65383-c0e1-4f65-a2a1-cfb1e70b0f00.jpg?13798856415744185048" alt="">            
+              </div>
+          {% when 'BARCO' %}
+      		<div class="ww__modal___content">             
+                {% if product.handle == "215" or product.handle == "118" or  product.handle == "219" or product.handle == "0219t" or product.handle == "219t" or  product.handle == "117" or  product.handle == "216" or product.handle == "109" or product.handle == "115" or  product.handle == "405" or product.handle == "0212" or  product.handle == "0116" %}
+                				<img src="https://cdn.shopify.com/s/files/1/2610/4676/files/M1.jpg?12106236007455142620" alt="">   
+                {% elsif product.handle == "914" or product.handle == "9599" or  product.handle == "9422" %}
+                                <img src="https://cdn.shopify.com/s/files/1/2610/4676/files/M2.jpg?12106236007455142620" alt="">
+                {% elsif product.handle == "29116" %}
+               					 <img src="https://cdn.shopify.com/s/files/1/2610/4676/files/U.jpg?12106236007455142620" alt="">
+                {% else %}
+                				<img src="https://cdn.shopify.com/s/files/1/2610/4676/files/W.jpg?12106236007455142620" alt="">
+                {% endif %}             
+              </div>
+          {% when 'KOI' %}
+              <div class="ww__modal___content">             
+                  <img src="https://cdn.shopify.com/s/files/1/2610/4676/files/koi_women.jpg?2250613206730564186" alt="">   
+                  <img src="https://cdn.shopify.com/s/files/1/2610/4676/files/koi_men.jpg?2250613206730564186" alt="">
+              </div>
+          {% when 'Healing Hands' %}
+              <div class="ww__modal___content">             
+                  <img src="https://cdn.shopify.com/s/files/1/2610/4676/files/hh-size-chart.jpg?9594" alt="">   
+              </div>
+          {% when 'MAEVN' %}
+              <div class="ww__modal___content">             
+                  <img src="https://cdn.shopify.com/s/files/1/2610/4676/files/maevn_women.jpg?6626140021792089842" alt="">      
+                  <img src="https://cdn.shopify.com/s/files/1/2610/4676/files/maevn_men.jpg?6626140021792089842" alt="">
+                  <img src="https://cdn.shopify.com/s/files/1/2610/4676/files/maevn_unisex.jpg?6626140021792089842" alt="">
+              </div>
+          {% when 'MEDELITA' %}
+              <div class="ww__modal___content">             
+                  <img src="https://cdn.shopify.com/s/files/1/2610/4676/files/medelita_size_chart.jpg?11909" alt="">      
+              </div>
+          {% when 'SCRUBS AND CLOGS' %}
+      		{% if product.id == 432305602600 %}
+                <div class="ww__modal___content" style="background-color: white;"> 	
+                    <img src="https://cdn.shopify.com/s/files/1/2610/4676/files/kids-labcoat-sizechart.jpg?9622" alt="">      
+                </div>
+      		{% elsif product.id == 432305897512 %}
+              <div class="ww__modal___content" style="background-color: white;">             
+                <img src="https://cdn.shopify.com/s/files/1/2610/4676/files/scrubs-set-sizechart.jpg?9622" alt="">      
+              </div>
+              {% elsif product.id == 1503140053101 %}
+                <div class="ww__modal___content" style="background-color: white;">
+                  <img src="https://cdn.shopify.com/s/files/1/2610/4676/files/kids-labcoat-sizechart.jpg?9622" alt="">  
+                  <img src="https://cdn.shopify.com/s/files/1/2610/4676/files/scrubs-set-sizechart.jpg?9622" alt="">      
+                </div>
+      		{% endif %}
+            	
+          {% when 'WONDERWINK' %}
+              <div class="ww__modal___content">             
+                {% if product.handle == "800a" or product.handle == "5006" or  product.handle == "5036" or product.handle == "6006" or product.handle == "8006" or  product.handle == "7106a" %}
+                				<img src="https://cdn.shopify.com/s/files/1/2610/4676/files/UF.jpg?3882208738982930043" alt="">   
+                {% elsif product.handle == "5716" or product.handle == "6716" or  product.handle == "7102b" or product.handle == "7302b" or product.handle == "503a" or  product.handle == "103" %}
+                                <img src="https://cdn.shopify.com/s/files/1/2610/4676/files/MCF.jpg?3882208738982930043" alt="">
+                {% elsif product.handle == "5355" or product.handle == "6355" or  product.handle == "6213" or product.handle == "5213" or product.handle == "6718" or  product.handle == "6618" or product.handle == "5618"%}
+               					 <img src="https://cdn.shopify.com/s/files/1/2610/4676/files/MMF.jpg?3882208738982930043" alt="">
+                {% elsif product.handle == "101" or product.handle == "101bf" or  product.handle == "501" or product.handle == "545" %}
+               					 <img src="https://cdn.shopify.com/s/files/1/2610/4676/files/WCF.jpg?3882208738982930043" alt="">
+                {% else %}
+                				<img src="https://cdn.shopify.com/s/files/1/2610/4676/files/WMF.jpg?3882208738982930043" alt="">
+                {% endif %}             
+              </div>
+          {% else %}
+        {% endcase %} 
+      
+      {% elsif product.type == 'LABCOAT' %}
+        
+        
+      {% endif %}
+    </div>
+</div>

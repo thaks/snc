@@ -1,0 +1,5 @@
+{%- assign min = 1 -%}
+{%- assign max = 1000 -%}
+{%- assign diff = max | minus: min -%}
+{%- assign random = "now" | date: "%N" | modulo: diff | plus: min -%}
+{{- random -}}

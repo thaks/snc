@@ -1,0 +1,127 @@
+{% comment %}ly_liquid_scripts_begin{% endcomment %}{% capture ly_liquid_content %}{% comment %}ly_liquid_scripts_end{% endcomment %}{%- assign default_rtl_support = settings.rtl_support -%}
+{%- assign default_catalog_mode = settings.catalog_mode -%}
+{%- assign default_animation_disabled = settings.animation_disabled -%}
+{%- if settings.roar_themedemo -%}
+  {%- capture shop_demo -%}{% include 'querystring', name: 'type' %}{%- endcapture -%}
+  {%- if shop_demo == 'rtl-enabled' -%}{% assign default_rtl_support = true %}{%- endif -%}
+  {%- if shop_demo == 'catalog-mode' -%}{% assign default_catalog_mode = true %}{%- endif -%}
+  {%- if shop_demo == 'animation-disabled' -%}{% assign default_animation_disabled = true %}{%- endif -%}
+{%- endif -%}
+<!doctype html>
+<html class="no-js{% if settings.box_layout %} is-boxed{% endif %}" lang="{{ shop.locale }}">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  {%- if canonical_url != blank -%}
+  <link rel="canonical" href="{{ canonical_url }}">
+  {%- endif -%}
+
+  {%- if settings.favicon != blank -%}
+  <link rel="shortcut icon" href="{{ settings.favicon | img_url: '32x32' }}" type="image/png">
+  <link rel="apple-touch-icon-precomposed" href="{{ settings.favicon | img_url: '152x152' }}" type="image/png">
+  {%- endif -%}
+
+  {%- capture seo_title -%}
+    {{- page_title -}}
+    {%- if current_tags -%}
+      {%- assign meta_tags = current_tags | join: ', ' %} &ndash; {{ 'general.meta.tags' | t: tags: meta_tags -}}
+    {%- endif -%}
+    {%- if current_page != 1 -%}
+      &nbsp;&ndash; {{ 'general.meta.page' | t: page: current_page }}
+    {%- endif -%}
+    {%- unless page_title contains shop.name -%}
+      &nbsp;&ndash; {{ shop.name }}
+    {%- endunless -%}
+  {%- endcapture -%}
+  <title>{{ seo_title }}</title>
+
+  {%- if page_description -%}
+    <meta name="description" content="{{ page_description | escape }}">
+  {%- endif -%}
+  
+  {%- capture is_shopify_admin -%}{% include 'check-shopify-admin' %}{%- endcapture -%}
+
+  {%- include 'social-meta-tags' -%}
+  {%- include 'shopify-head-tag' -%}
+  {%- include 'weketing-tracking' -%}
+  {%- include 'ra-roarnotify-init' -%}
+  
+  {%- if settings.age_check_enable and is_shopify_admin == 'false' -%}
+  <noscript>
+    <meta http-equiv="refresh" content="1; url={{ settings.age_check_exit_link | default: 'https://google.com/' }}" />
+  </noscript>
+  {%- endif -%}
+
+
+    <!-- Add the slick-theme.css if you want default styling -->
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/kenwheeler/slick@1.8.1/slick/slick.css"/>
+    <!-- Add the slick-theme.css if you want default styling -->
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/kenwheeler/slick@1.8.1/slick/slick-theme.css"/>
+  
+
+  {{ 'app.css' | asset_url | stylesheet_tag }}
+  {{ content_for_header }}
+</head>
+{%- assign body_class = 'template-' | append: template.name -%}
+{%- if template.suffix != blank -%}
+  {%- assign body_class = body_class | append: ' ' | append: template.suffix -%}
+{%- endif -%}
+{%- if template.name == 'page' or template.name == 'cart' or template.name == 'list-collections' or template.name == 'collection' or template.name == 'product' or template.name == 'blog' or template.name == 'article' -%}
+  {%- assign body_class = body_class | append: ' header-has-overlap' -%}
+{%- endif -%}
+{%- if default_rtl_support -%}
+  {%- assign body_class = body_class | append: ' is-rtl' -%}
+{%- endif -%}
+{%- if default_catalog_mode -%}
+  {%- assign body_class = body_class | append: ' is-catalog_mode' -%}
+  {%- if settings.catalog_mode_price -%}
+    {%- assign body_class = body_class | append: ' hide-price' -%}
+  {%- endif -%}
+{%- endif -%}
+{%- if default_animation_disabled == false -%}
+  {%- assign body_class = body_class | append: ' animation-enabled' -%}
+{%- endif -%}
+<body class="{{ body_class }}">
+  <div id="site-loader"></div>
+  <div id="site-container">
+    <div id="site-content">
+      {%- include 'global-symbols' -%}
+      {%- include 'age-check' -%}
+      {%- if settings.header_topbar -%}
+        {%- section 'header-topbar' -%}
+      {%- endif -%}
+      {%- section 'header' -%}
+      {%- section 'header-menu' -%}
+      {%- if settings.header_sticky -%}
+        {%- section 'header-sticky' -%}
+      {%- endif -%}
+      {%- section 'header-mobile' -%}
+
+      <main role="main" class="site-main">
+        {{ content_for_layout }}
+        <div class="site-overlay"></div>
+      </main>
+    </div>
+    <div id="site-footer"{% if settings.footer_reveal %} class="is-reveal"{% endif %}>
+      {%- section 'footer' -%}
+      {%- section 'copyright' -%}
+    </div>
+    <div class="progress-section"></div>
+  </div>
+  {%- include 'shop-elements' -%}
+  
+  {%- if is_shopify_admin == 'true' -%}
+    {%- include 'theme-admin' -%}
+  {%- endif -%}
+ {% include 'smile-initializer' %}
+ {% include 'thr-sizing-chart' %}
+
+ <script type="text/javascript" src="//cdn.jsdelivr.net/gh/kenwheeler/slick@1.8.1/slick/slick.min.js"></script>
+ {{ 'app.js' | asset_url | script_tag }}
+
+
+{% include 'thr-translation-manager' %}
+{% comment %}ly_liquid_scripts_begin{% endcomment %}{% endcapture %}{% render 'ly-liquid-scripts' content: ly_liquid_content %}{% comment %}ly_liquid_scripts_end{% endcomment %}{% comment %}ly_core_scripts_begin{% endcomment %}{% render 'ly-core-scripts' %}{% comment %}ly_core_scripts_end{% endcomment %}{% comment %}ly_switcher_factory_begin{% endcomment %}{% render 'ly-switcher-factory' %}{% comment %}ly_switcher_factory_end{% endcomment %}</body>
+</html>

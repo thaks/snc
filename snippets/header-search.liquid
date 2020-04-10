@@ -1,0 +1,43 @@
+<div class="header__search">
+  {%- if block.settings.show_icon -%}
+  <a class="search__icon search__toggle d-icon" href="/search"><svg class="svg-icon"><use xlink:href="#global__symbols-search"></use></svg></a>
+  <div class="search__overlay"></div>
+  <div class="search__fullscreen d-flex flex-column align-items-stretch">
+    <div class="search__fullscreen-inner">
+      <div class="container">
+        <div class="search__header">
+          <div class="search__close search__toggle close-icon">×</div>
+          <p class="search__infotext">{{ 'layout.search.info_text' | t }}</p>
+          <form action="/search" method="GET" role="search"{% if block.settings.quick_search %} class="search__ajax no-js" data-limit="{{ block.settings.search_limit | default: 20 }}" data-featured="{{ block.settings.featured }}" data-featured_limit="{{ block.settings.featured_limit | default: 10 }}"{% endif %}>
+            <input type="hidden" name="type" value="product" />
+            <input class="search__input" type="text" name="q" autocomplete="off" placeholder="{{ 'layout.search.placeholder' | t | escape }}" />
+            {%- if block.settings.typewriter_effect -%}
+            <div class="search__label d-flex align-items-center">
+              <div class="search__label-text" data-first_time="0" data-typedtext="{{ block.settings.typewriter_text | escape }}" data-typedtext_2="{{ 'layout.search.placeholder' | t | escape }}"></div>
+            </div>
+            {%- endif -%}
+            <button class="search__btn" type="submit"><i class="ris ri-search"></i></button>
+          </form>
+          {%- if block.settings.quick_search -%}
+          <div class="search__results-wrapper">
+            <div class="search__results"></div>
+            <div class="search__loader d-flex align-items-center justify-content-center"></div>
+          </div>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+  {%- else -%}
+  <form action="/search" method="GET" role="search" class="{% if block.settings.quick_search %}search__ajax no-js {% endif %}search__form d-flex align-items-center"{% if block.settings.quick_search %} data-limit="{{ block.settings.search_limit | default: 20 }}" data-featured="{{ block.settings.featured }}" data-featured_limit="{{ block.settings.featured_limit | default: 10 }}"{% endif %}>
+    <input type="hidden" name="type" value="product" />
+    <input class="search__input" type="text" name="q" autocomplete="off" placeholder="{{ 'layout.search.placeholder' | t | escape }}" />
+    <button class="search__btn" type="submit"><i class="ris ri-search"></i></button>
+  </form>
+  {%- if block.settings.quick_search -%}
+  <div class="search__results-wrapper d-position-{{ block.settings.result_position }}">
+    <div class="search__results"></div>
+  </div>
+  {%- endif -%}
+  {%- endif -%}
+</div>

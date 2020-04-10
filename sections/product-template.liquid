@@ -1,0 +1,1925 @@
+{%- assign product_swatch_color = settings.product_swatch_color -%}
+{%- assign product_swatch_color_advanced = settings.product_swatch_color_advanced -%}
+{%- assign product_swatch_size = settings.product_swatch_size -%}
+{%- assign section_id = section.id -%}
+
+{% comment %}
+  Get first variant, or deep linked one
+{% endcomment %}
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+{%- assign product_image_zoom_size = '1024x1024' -%}
+{%- assign product_image_scale = '2' -%}
+{%- assign product_images_size = product.images.size -%}
+{%- assign enable_sticky_product = section.settings.enable_sticky_product -%}
+{%- assign enable_zoom_image = section.settings.enable_zoom_image -%}
+{%- assign enable_images_gallery = section.settings.enable_images_gallery -%}
+{%- assign tabs_layout = section.settings.tabs_layout -%}
+{%- assign tabs_location = section.settings.tabs_location -%}
+{%- assign full_width = section.settings.full_width -%}
+{%- assign header_overlap = section.settings.header_overlap -%}
+{%- assign thumbnails_position = section.settings.thumbnails_position -%}
+{%- assign product_image_width = section.settings.image_size | plus: 0 -%}
+{%- assign product_description_width = 12 -%}
+{%- assign product_video = product.metafields.info.video -%}
+{%- assign is_external_product = false -%}
+{%- assign is_grouped_product = false -%}
+
+{%- if settings.roar_themedemo -%}
+  {%- capture shop_demo -%}{% include 'querystring', name: 'type' %}{%- endcapture -%}
+  {%- case shop_demo -%}
+  {%- when 'thumbs-left' -%}
+    {%- assign thumbnails_position = 'left' -%}
+  {%- when 'thumbs-right' -%}
+    {%- assign thumbnails_position = 'right' -%}
+  {%- when 'thumbs-bottom' -%}
+    {%- assign thumbnails_position = 'bottom' -%}
+  {%- when 'thumbs-column' -%}
+    {%- assign thumbnails_position = 'bottom_column' -%}
+  {%- when 'thumbs-grid' -%}
+    {%- assign thumbnails_position = 'bottom_grid' -%}
+  {%- when 'thumbs-combined' -%}
+    {%- assign thumbnails_position = 'bottom_combined' -%}
+  {%- when 'without-thumbs' -%}
+    {%- assign thumbnails_position = 'without' -%}
+    {%- assign full_width = true -%}
+    {%- assign product_image_width = 12 -%}
+    {%- assign tabs_layout = 'accordion' -%}
+    {%- assign tabs_location = 'right' -%}
+
+  {%- when 'images-small' -%}
+    {%- assign thumbnails_position = 'bottom_grid' -%}
+    {%- assign full_width = false -%}
+    {%- assign product_image_width = 5 -%}
+  {%- when 'images-large' -%}
+    {%- assign thumbnails_position = 'bottom_combined' -%}
+    {%- assign full_width = false -%}
+    {%- assign product_image_width = 7 -%}
+    {%- assign tabs_layout = 'accordion' -%}
+    {%- assign tabs_location = 'right' -%}
+
+  {%- when 'images-zoom' -%}
+    {%- assign enable_zoom_image = true -%}
+  {%- when 'images-sticky' -%}
+    {%- assign thumbnails_position = 'bottom_column' -%}
+    {%- assign enable_sticky_product = true -%}
+
+  {%- when 'layout-1' -%}
+    {%- assign full_width = false -%}
+    {%- assign header_overlap = false -%}
+    {%- assign thumbnails_position = 'left' -%}
+    {%- assign product_image_width = 6 -%}
+    {%- assign enable_zoom_image = true -%}
+
+  {%- when 'layout-2' -%}
+    {%- assign full_width = true -%}
+    {%- assign header_overlap = true -%}
+    {%- assign thumbnails_position = 'right' -%}
+    {%- assign product_image_width = 6 -%}
+    {%- assign enable_zoom_image = true -%}
+
+  {%- when 'layout-3' -%}
+    {%- assign full_width = true -%}
+    {%- assign header_overlap = true -%}
+    {%- assign thumbnails_position = 'bottom' -%}
+    {%- assign product_image_width = 12 -%}
+    {%- assign enable_zoom_image = false -%}
+
+  {%- when 'layout-4' -%}
+    {%- assign full_width = true -%}
+    {%- assign header_overlap = true -%}
+    {%- assign thumbnails_position = 'bottom_column' -%}
+    {%- assign product_image_width = 6 -%}
+    {%- assign enable_zoom_image = true -%}
+    {%- assign enable_sticky_product = true -%}
+
+  {%- when 'layout-5' -%}
+    {%- assign full_width = false -%}
+    {%- assign header_overlap = false -%}
+    {%- assign thumbnails_position = 'bottom_grid' -%}
+    {%- assign product_image_width = 6 -%}
+    {%- assign enable_zoom_image = true -%}
+    {%- assign enable_sticky_product = true -%}
+
+  {%- when 'layout-6' -%}
+    {%- assign full_width = false -%}
+    {%- assign header_overlap = false -%}
+    {%- assign thumbnails_position = 'bottom_combined' -%}
+    {%- assign product_image_width = 6 -%}
+    {%- assign enable_zoom_image = true -%}
+    {%- assign enable_sticky_product = true -%}
+
+  {%- endcase -%}
+{%- endif -%}
+
+{%- if product_image_width < 12 -%}
+  {%- assign product_description_width = 12 | minus: product_image_width -%}
+{%- endif -%}
+
+{%- if product.metafields.info.external_btn != blank and product.metafields.info.external_link != blank -%}
+  {%- assign is_external_product = true -%}
+{%- endif -%}
+
+{%- if product.metafields.info.grouped != blank and linklists[product.metafields.info.grouped].links.size > 0 -%}
+  {%- assign is_grouped_product = true -%}
+{%- endif -%}
+
+<div class="ProductSection-{{ section_id }} product__{{ product.id }} product-template__container {% if header_overlap == false %}no-{% endif %}overlap content-area" itemscope itemtype="http://schema.org/Product" data-section-id="{{ section_id }}" data-section-type="product-template" data-enable-history-state="true" data-product_swatch_color_advanced="{{ product_swatch_color_advanced }}" data-product_swatch_color="{{ product_swatch_color }}" data-product_swatch_size="{{ product_swatch_size }}">
+  <meta itemprop="mpn" content="{{ product.id }}" />
+  <meta itemprop="name" content="{{ product.title | escape }}" />
+  <link itemprop="image" href="{{ product.featured_image.src | img_url: '800x' }}" />
+  
+  {%- include 'product-single', function: 'navigation' -%}
+  <div class="product-single container{% if full_width == true %}-fluid{% endif %}{% if product_image_width == 12 %} product-view__full{% endif %}">
+    <div class="row row-0">
+      <div class="col-12 col-md-{{ product_image_width }}">
+        <div class="product-single__photos {{ thumbnails_position }}">
+          {%- include 'product-labels', my_product: product -%}
+          {%- include 'product-single-images' -%}
+          {%- if product_image_width == 12 -%}
+          <div class="product-single__inner">
+            <div class="product-single__left">
+              {%- include 'product-single', function: 'title' -%}
+              <div class="product-single__middle">
+                {%- include 'product-single', function: 'review' -%}
+                {%- include 'product-single', function: 'price' -%}
+              </div>
+            </div>
+            <div class="product-single__right">
+              <div class="carousel-status"></div>
+              {%- include 'product-single', function: 'share_buttons' -%}
+            </div>
+          </div>
+          {%- endif -%}
+        </div>
+      </div>
+      <div class="col-12 col-md-{{ product_description_width }}">
+        <div class="d-flex justify-content-center">
+          <div class="product-single__content"{% if enable_sticky_product %} data-sticky="true"{% endif %} itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+            <link itemprop="url" href="{{ shop.url }}{{ product.url }}" />
+            <meta itemprop="availability" content="http://schema.org/{% if product.available %}InStock{% else %}OutOfStock{% endif %}" />
+            <meta itemprop="priceCurrency" content="{{ shop.currency }}" />
+            <meta itemprop="price" content="{{ product.price | divided_by: 100.00 }}" />
+
+            {%- assign form_class = 'product-single__form product-single__form-' | append: section_id -%}
+            {%- unless section.settings.show_variant_labels -%}
+              {%- assign form_class = form_class | append: ' hide-variant-labels' -%}
+            {%- endunless -%}
+
+            {%- unless product_image_width == 12 -%}
+            <div class="product-single__top">
+              {%- include 'product-single', function: 'title', share_buttons: true -%}
+            </div>
+            {%- endunless -%}
+
+            <div class="product-single__middle">
+              {%- unless product_image_width == 12 -%}
+              {%- include 'product-single', function: 'review' -%}
+              {%- include 'product-single', function: 'price' -%}
+              {%- endunless -%}
+              <div class="clearfix"></div>
+              <div class="d-table">
+                {%- include 'product-single', function: 'total_sold' -%}
+                {%- include 'product-single', function: 'stock_countdown' -%}
+                {%- include 'product-single', function: 'countdown' -%}
+              </div>
+              <div class="clearfix"></div>
+              {%- include 'product-single', function: 'short_desc' -%}
+            </div>
+
+            <div class="product-single__bottom">
+              {%- unless product.available == false or product.has_only_default_variant or is_grouped_product == true -%}
+              <div class="product-form__variants">
+                <div class="variations-{{section_id}}">
+                  <div class="variations-content-{{section_id}}">
+                    {%- for option in product.options_with_values -%}
+                    <div class="selector-wrapper variation-select {{ option.name | handlezie | downcase }} variation-select-{{ section_id }}-{{ forloop.index0 }}">
+                      <label class="option-select-label{% if option.name == 'default' %} hide{% endif %}" for="single-option-selector-{{ forloop.index0 }}">
+                        {{- option.name -}}
+                        {%- if product_swatch_color_advanced -%}: <span class="option-select-value option-select-value-{{ section_id }}-{{ forloop.index0 }}">{{ option.selected_value }}</span>{%- endif -%}
+                      </label>
+                      <div class="select-wrapper">
+                        <select class="single-option-selector-{{ section_id }}-{{ forloop.index0 }} single-option-selector single-option-selector-{{ section_id }}" data-index="option{{ forloop.index }}" data-option="option{{ forloop.index }}">
+                          {%- for value in option.values -%}
+                          <option value="{{ value | escape }}"{% if option.selected_value == value %} selected="selected"{% endif %}>{{ value }}</option>
+                          {%- endfor -%}
+                        </select>
+                      </div>
+                    </div>
+                    {%- endfor -%}
+                  </div>
+                </div>
+              </div>
+              {%- endunless -%}
+
+              {%- if is_grouped_product == true -%}
+                {%- include 'product-single', function: 'grouped_product' -%}
+              {%- endif -%}
+
+              {%- if section.settings.show_incoming_message and product.available == false and current_variant.incoming -%}
+              <div class="product-single__incoming" style="color: {{ section.settings.incoming_message_color }};">
+                {%- assign incoming_date = current_variant.next_incoming_date | date: format: 'month_day_year' -%}
+                {{- 'products.product.incoming' | t: date: incoming_date -}}
+              </div>
+              {%- endif -%}
+
+              {%- if product.available == false -%}
+                {%- if current_variant.incoming == false -%}
+                <div class="product-single__incoming" style="color: {{ section.settings.incoming_message_color }};">{{ 'products.stock_notification_form.sold_out' | t }}</div>
+                {%- endif -%}
+              
+                {%- include 'product-single', function: 'stock_notification_form' -%}
+                {%- include 'product-single', function: 'btn_exts' -%}
+              {%- else -%}
+                {%- if section.settings.before_addtocart != blank -%}
+                <div class="product-single__before">{{ section.settings.before_addtocart }}</div>
+                {%- endif -%}
+              
+                {%- form 'product', product, class: form_class, data-section: section_id -%}
+                  {%- if section.settings.show_incoming_message -%}
+                  <div class="InComing-{{ section_id }} product-single__incoming{% if current_variant.available %} hide{% endif %}" style="color: {{ section.settings.incoming_message_color }};">
+                    {%- if current_variant.available == false and current_variant.incoming -%}
+                      {%- assign incoming_date = current_variant.next_incoming_date | date: format: 'month_day_year' -%}
+                      {{- 'products.product.incoming' | t: date: incoming_date -}}
+                    {%- endif -%}
+                  </div>
+                  {%- endif -%}
+                  
+                  {% if product.type == "SCRUBS" or product.type == "LABCOAT" %}
+                  <span class="thr-size-chart-btn">Size guide</span>
+                  {% endif %}
+                  {%- comment -%}{% include 'e-e' %}{%- endcomment -%}
+
+                  <div class="row row-30 align-items-center">
+                    {%- if product.available and is_external_product == false and is_grouped_product == false -%}
+                    <select name="id" class="ProductSelect-{{ section_id }} hide" data-section="{{ section_id }}">
+                      {%- for variant in product.variants -%}
+                        {%- if variant.available -%}
+                          <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %} value="{{ variant.id }}">
+                            {{- variant.title -}}
+                          </option>
+                        {%- else -%}
+                          <option disabled="disabled">{{ variant.title }} - {{ 'products.product.sold_out' | t }}</option>
+                        {%- endif -%}
+                      {%- endfor -%}
+                    </select>
+                    {%- endif -%}
+
+                    {%- if product.available and section.settings.show_quantity_selector and is_external_product == false and is_grouped_product == false -%}
+                    <div class="col-auto product-form__item--quantity{% unless current_variant.available %} btn-disabled{% endunless %}">
+                      <button type="button" class="ris ri-minus minus"></button>
+                      <input type="text" name="quantity" value="1" min="1" class="quantity product-form__input" pattern="[0-9]*" />
+                      <button type="button" class="ris ri-plus plus"></button>
+                    </div>
+                    {%- endif -%}
+
+                    <div class="col-auto product-form__item--submit">
+                      {%- if is_external_product == false -%}
+                        {%- if is_grouped_product == false -%}
+                        <button type="submit" name="add"{% unless current_variant.available %} disabled="disabled"{% endunless %} class="AddToCart-{{ section_id }} btn btn-primary progress-btn product-form__cart-submit">
+                          <span class="AddToCartText-{{ section_id }} btn-text">
+                            {%- unless current_variant.available -%}
+                              {{- 'products.product.sold_out' | t -}}
+                            {%- else -%}
+                              {%- if current_variant.inventory_quantity <= 0 and current_variant.inventory_management == 'shopify' -%}
+                                {{- 'products.product.pre_order' | t -}}
+                              {%- else -%}
+                                {{- 'products.product.add_to_cart' | t -}}
+                              {%- endif -%}
+                            {%- endunless -%}
+                          </span>
+                          <div class="progress"></div>
+                          <div class="checked"></div>
+                        </button>
+                        {%- else -%}
+                        <button type="submit" name="add" class="AddToCart-{{ section_id }} btn btn-primary progress-btn product-form__cart-submit--grouped" disabled="">
+                          <span class="btn-text">
+                            {%- if current_variant.inventory_quantity <= 0 and current_variant.inventory_management == 'shopify' -%}
+                              {{- 'products.product.pre_order' | t -}}
+                            {%- else -%}
+                              {{- 'products.product.add_to_cart' | t -}}
+                            {%- endif -%}
+                          </span>
+                          <div class="progress"></div>
+                          <div class="checked"></div>
+                        </button>
+                        {%- endif -%}
+                      {%- else -%}
+                      <a href="{{ product.metafields.info.external_link }}" class="btn btn-primary">{{ product.metafields.info.external_btn }}</a>
+                      {%- endif -%}
+                    </div>
+                  </div>
+                
+
+                  {%- include 'product-single', function: 'dynamic_checkout_buttons' -%}
+                  {%- include 'product-single', function: 'btn_exts' -%}
+                  {%- include 'product-single', function: 'visitor_counter' -%}
+                {%- endform -%}
+              
+                {%- if section.settings.after_addtocart != blank -%}
+                <div class="product-single__after">{{ section.settings.after_addtocart }}</div>
+                {%- endif -%}
+              {%- endif -%}
+
+              {%- if tabs_location == 'right' -%}
+                {%- include 'product-single-tabs', layout: 'right' -%}
+              {%- endif -%}
+            </div>
+            {% include 'thr-complete-the-look' %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  {%- if tabs_location == 'bottom' or section.settings.show_sku or section.settings.show_collection or section.settings.show_vendor -%}
+  <div class="product-single__inview">
+    {%- if tabs_location == 'bottom' -%}
+      {%- include 'product-single-tabs', layout: 'bottom' -%}
+    {%- endif -%}
+
+    {%- include 'product-single', function: 'meta_ins' -%}
+  </div>
+  {%- endif -%}
+  
+  {%- unless product == empty -%}
+  <script type="application/json" class="ProductJson-{{ section_id }}">{{ product | json }}</script>
+  <script type="application/json" class="ProductSwatchJson-{{ section_id }}">{{ product.metafields.texture | json }}</script>
+  <script type="application/json" class="ProductMoreJson-{{ section_id }}">{% capture product_more_json %}{% include 'product-json', product: product %}{% endcapture %}{{ product_more_json | strip_newlines | remove: "  " }}</script>
+  {%- endunless -%}
+  
+  <div class="product-template__end"></div>
+</div>
+
+{%- if section.blocks.size > 0 -%}
+<div class="product-single__inview">
+  {%- for block in section.blocks -%}
+  
+    {%- assign is_container = true -%}
+    {%- assign container_begin = '<div class="container">' -%}
+    {%- assign container_end = '</div>' -%}
+    {%- if block.settings.full_width -%}
+      {%- assign is_container = false -%}
+      {%- assign container_begin = '' -%}
+      {%- assign container_end = '' -%}
+    {%- endif -%}
+
+    {%- capture style_section -%}
+      padding:{{ block.settings.padding_top }}px {{ block.settings.padding_right }}px {{ block.settings.padding_bottom }}px {{ block.settings.padding_left }}px;
+    {%- endcapture -%}
+  
+    {{- container_begin -}}
+    <div class="container-section products-section{% if block.settings.mobile_disable %} mb-hidden{% endif %}{% if block.type == 'viewed' %} products-slider_hide hide{% endif %}" style="{{ style_section | strip_newlines | remove: "  " }}">
+      <div class="wrapper{% if block.settings.full_width and block.settings.no_spacing == false %} container{% assign is_container = true %}{% endif %}">
+        {%- include 'headings', type: 'index', object: block -%}
+        
+        {%- assign my_collection = collections[block.settings.collection] -%}
+        {%- assign heading = block.settings.heading -%}
+        {%- assign grid_num = block.settings.grid_num -%}
+        {%- assign grid_row = block.settings.grid_row -%}
+        {%- assign max_pages = block.settings.max_pages -%}
+        {%- if my_collection != blank -%}
+          {%- assign max_pages_collection = my_collection.all_products_count | divided_by: grid_num | divided_by: grid_row -%}
+          {%- if max_pages_collection < max_pages -%}
+            {%- assign max_pages = max_pages_collection -%}
+          {%- endif -%}
+        {%- endif -%}
+        {%- assign shop_product_spacing = block.settings.spacing -%}
+
+        {%- if block.settings.shop_product_options -%}
+          {%- assign shop_image_ratio = block.settings.shop_image_ratio -%}
+          {%- assign shop_image_ratio_crop = block.settings.shop_image_ratio_crop -%}
+          {%- assign shop_image_second = block.settings.shop_image_second -%}
+          {%- assign shop_image_overlay = block.settings.shop_image_overlay -%}
+          {%- assign shop_product_hover = block.settings.shop_product_hover -%}
+          {%- assign shop_vendor_enable = block.settings.shop_vendor_enable -%}
+          {%- assign shop_review_enable = block.settings.shop_review_enable -%}
+          {%- assign shop_quickview_enable = block.settings.shop_quickview_enable -%}
+          {%- assign shop_wishlist_enable = block.settings.shop_wishlist_enable -%}
+          {%- assign shop_compare_enable = block.settings.shop_compare_enable -%}
+        {%- endif -%}
+
+        {%- case block.type -%}
+          {%- when 'related' -%}
+            <div class="related-products-{{ section_id }}" {{ block.shopify_attributes }}>
+              {%- assign cat_id = collection.handle | default: 'all' -%}
+              {%- include 'products-slider', section_id: block.id, heading: '', cat_id: cat_id, grid_num: grid_num, grid_row: grid_row, max_pages: max_pages, is_container: is_container, is_sub: true -%}
+            </div>
+          {%- when 'viewed' -%}
+            <div class="recently-viewed-{{ section_id }}" {{ block.shopify_attributes }}>
+              {%- assign cat_id = false -%}
+              {%- assign storage_id = 'recentlyViewed' -%}
+              {%- include 'products-slider', section_id: block.id, heading: '', cat_id: cat_id, grid_num: grid_num, grid_row: grid_row, max_pages: max_pages, is_container: is_container, storage_id: storage_id, is_sub: true -%}
+            </div>
+          {%- when 'upsell' -%}
+            <div class="upsell-products-{{ section_id }}" {{ block.shopify_attributes }}>
+              {%- assign cat_id = block.settings.collection -%}
+              {%- include 'products-slider', section_id: block.id, heading: '', cat_id: cat_id, grid_num: grid_num, grid_row: grid_row, max_pages: max_pages, is_container: is_container, is_sub: true -%}
+            </div>
+        {%- endcase -%}
+      </div>
+    </div>
+    {{- container_end -}}
+  {%- endfor -%}
+</div>
+{%- endif -%}
+
+{%- if product.metafields.info.instagram_token != blank and product.metafields.info.instagram_limit != blank -%}
+<div class="product-single__inview">
+  <div class="container{% if product_image_width == 12 %} product-view__full{% endif %}">
+    <div class="instagram-section" data-section-id="{{ section_id }}" data-section-type="instagram" data-access_token="{{ product.metafields.info.instagram_token | escape }}" data-count="{{ product.metafields.info.instagram_limit | plus: 0 }}">
+      {%- if product.metafields.info.instagram_btn != blank -%}
+      <h3 class="page-subheading">{{ product.metafields.info.instagram_btn }}</h3>
+      {%- endif -%}
+      <div id="instagram-{{ section_id }}" class="listing d-flex flex-wrap grid-{{ product.metafields.info.instagram_limit | divided_by: 2 }} has-likes has-comments"></div>
+    </div>
+  </div>
+</div>
+{%- endif -%}
+
+{% schema %}
+  {
+    "name": "Product pages",
+    "settings": [
+      {
+        "type": "header",
+        "content": "General"
+      },
+      {
+        "type": "checkbox",
+        "id": "full_width",
+        "label": "Wide display",
+        "info": "You can make your content wrapper boxed or full width."
+      },
+      {
+        "type": "checkbox",
+        "id": "header_overlap",
+        "label": "Header overlaps the content"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_navigation",
+        "label": "Show navigation",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_sticky_product",
+        "label": "Sticky product"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_breadcrumbs",
+        "label": "Show breadcrumbs",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_product_reviews",
+        "label": "Show product reviews",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_short_description",
+        "label": "Show short description",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_variant_labels",
+        "label": "Show variant labels",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_quantity_selector",
+        "label": "Show quantity selector",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_wishlist_button",
+        "label": "Show wishlist button",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_compare_button",
+        "label": "Show compare button",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_dynamic_checkout_buttons",
+        "label": "Show dynamic checkout buttons",
+        "default": true
+      }, 
+      {
+        "type": "checkbox",
+        "id": "show_share_buttons",
+        "label": "Show social sharing buttons",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_sku",
+        "label": "Show SKU",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_collection",
+        "label": "Show collection",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_vendor",
+        "label": "Show vendor",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_countdown_timer",
+        "label": "Show countdown timer",
+        "info": "Show timer for products that have scheduled date for the sale price."
+      },
+      {
+        "type": "html",
+        "id": "before_addtocart",
+        "label": "Before \"Add to cart button\" text area"
+      },
+      {
+        "type": "html",
+        "id": "after_addtocart",
+        "label": "After \"Add to cart button\" text area"
+      },
+      {
+        "type": "header",
+        "content": "Images"
+      },
+      {
+        "type": "select",
+        "id": "image_size",
+        "label": "Image size",
+        "info": "You can choose different page layout depending on the product image size you need.",
+        "options": [
+          {
+            "value": "5",
+            "label": "Small"
+          },
+          {
+            "value": "6",
+            "label": "Medium"
+          },
+          {
+            "value": "7",
+            "label": "Large"
+          },
+          {
+            "value": "12",
+            "label": "Full-width"
+          }
+        ],
+        "default": "6"
+      },
+      {
+        "type": "select",
+        "id": "thumbnails_position",
+        "label": "Thumbnails position",
+        "info": "Use vertical or horizontal position for thumbnails.",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left (vertical position)"
+          },
+          {
+            "value": "right",
+            "label": "Right (vertical position)"
+          },
+          {
+            "value": "bottom",
+            "label": "Bottom (horizontal carousel)"
+          },
+          {
+            "value": "bottom_column",
+            "label": "Bottom (1 column)"
+          },
+          {
+            "value": "bottom_grid",
+            "label": "Bottom (2 columns)"
+          },
+          {
+            "value": "bottom_combined",
+            "label": "Combined grid"
+          },
+          {
+            "value": "without",
+            "label": "Without"
+          }
+        ],
+        "default": "left"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_zoom_image",
+        "label": "Enable zoom image",
+        "info": "Show a bigger size product image on mouseover.",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_images_gallery",
+        "label": "Enable images gallery",
+        "info": "Open product gallery images in a lightbox.",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Size chart"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_size_chart",
+        "label": "Show size chart"
+      },
+      {
+        "type": "page",
+        "id": "size_chart_page",
+        "label": "Size chart page"
+      },
+      {
+        "type": "header",
+        "content": "Out of stock"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_stock_notification_form",
+        "label": "Show stock notification form",
+        "info": "Customers can let you know if they want to be informed when a sold out product becomes available again.",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_incoming_message",
+        "label": "Show incoming message",
+        "default": true
+      },
+      {
+        "type": "color",
+        "id": "incoming_message_color",
+        "label": "Incoming message color",
+        "default": "#da4343"
+      },
+      {
+        "type": "header",
+        "content": "Stock countdown",
+        "info": "Display the limited availability of your products. Create scarcity, increase the perceived value of your products. Make customers buy faster."
+      },
+      {
+        "type": "checkbox",
+        "id": "show_stock_countdown",
+        "label": "Show stock countdown",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "stock_countdown_color",
+        "label": "Progress bar color",
+        "options": [
+          {
+            "value": "color_1",
+            "label": "Color 1"
+          },
+          {
+            "value": "color_2",
+            "label": "Color 2"
+          },
+          {
+            "value": "color_3",
+            "label": "Color 3"
+          },
+          {
+            "value": "color_4",
+            "label": "Color 4"
+          },
+          {
+            "value": "color_5",
+            "label": "Color 5"
+          },
+          {
+            "value": "custom",
+            "label": "Customize"
+          }
+        ],
+        "default": "color_2"
+      },
+      {
+        "type": "color",
+        "id": "stock_countdown_custom_color",
+        "label": "Custom process color ",
+        "default": "#00c9b7"
+      },
+      {
+        "type": "color",
+        "id": "stock_countdown_custom_bground",
+        "label": "Custom background color",
+        "default": "#f2f2f8"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_stock_countdown_fake",
+        "label": "Use simulation mode",
+        "info": "If you want to run this feature in simulation mode, it will be applied on all products.",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "stock_countdown_fake_from",
+        "min": 1,
+        "max": 20,
+        "step": 1,
+        "label": "Random from",
+        "default": 10
+      },
+      {
+        "type": "range",
+        "id": "stock_countdown_fake_to",
+        "min": 21,
+        "max": 100,
+        "step": 1,
+        "label": "Random to",
+        "default": 40
+      },
+      {
+        "type": "header",
+        "content": "Visitor counter",
+        "info": "This tiny feature make fake visitor counter for your store. It is not real but you can use just for fun ;)"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_visitor_counter",
+        "label": "Show visitor counter",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "visitor_counter_max",
+        "min": 10,
+        "max": 1000,
+        "step": 10,
+        "label": "Maxium visitors",
+        "default": 120
+      },
+      {
+        "type": "range",
+        "id": "visitor_counter_interval",
+        "min": 1,
+        "max": 30,
+        "step": 1,
+        "label": "Interval time",
+        "unit": "sec",
+        "default": 2
+      },
+      {
+        "type": "color",
+        "id": "visitor_counter_color",
+        "label": "Highlight color",
+        "default": "#da4343"
+      },
+      {
+        "type": "header",
+        "content": "Total sold",
+        "info": "This tiny feature make fake total sold for your store. It is not real but you can use just for fun ;)"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_total_sold",
+        "label": "Show total sold",
+        "default": true
+      },
+      {
+        "type": "image_picker",
+        "id": "total_sold_icon",
+        "label": "Flash icon"
+      },
+      {
+        "type": "range",
+        "id": "total_sold_qty_min",
+        "min": 1,
+        "max": 100,
+        "step": 1,
+        "label": "Min quantity",
+        "default": 5
+      },
+      {
+        "type": "range",
+        "id": "total_sold_qty_max",
+        "min": 1,
+        "max": 100,
+        "step": 1,
+        "label": "Max quantity",
+        "default": 20
+      },
+      {
+        "type": "range",
+        "id": "total_sold_time_min",
+        "min": 1,
+        "max": 24,
+        "step": 1,
+        "label": "Min time",
+        "default": 4
+      },
+      {
+        "type": "range",
+        "id": "total_sold_time_max",
+        "min": 1,
+        "max": 24,
+        "step": 1,
+        "label": "Min time",
+        "default": 24
+      },
+      {
+        "type": "color",
+        "id": "total_sold_color",
+        "label": "Highlight color",
+        "default": "#da4343"
+      },
+      {
+        "type": "header",
+        "content": "Tabs"
+      },
+      {
+        "type": "select",
+        "id": "tabs_layout",
+        "label": "Tabs layout",
+        "options": [
+          {
+            "value": "tabs",
+            "label": "Tabs"
+          },
+          {
+            "value": "accordion",
+            "label": "Accordion"
+          },
+          {
+            "value": "plain",
+            "label": "Plain"
+          }
+        ],
+        "default": "tabs"
+      },
+      {
+        "type": "select",
+        "id": "tabs_location",
+        "label": "Tabs location",
+        "options": [
+          {
+            "value": "right",
+            "label": "Right"
+          },
+          {
+            "value": "bottom",
+            "label": "Bottom"
+          }
+        ],
+        "default": "bottom"
+      },
+      {
+        "type": "text",
+        "id": "additional_tab_title",
+        "label": "Additional tab title",
+        "info": "Leave empty to disable custom tab."
+      },
+      {
+        "type": "html",
+        "id": "additional_tab_content",
+        "label": "Additional tab content"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "related",
+        "name": "Related products",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this section on mobile devices."
+          },
+          {
+            "type": "checkbox",
+            "id": "full_width",
+            "label": "Wide display",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "no_spacing",
+            "label": "No spacing",
+            "info": "When Wide display is checked, use this option to remove the bilateral spaces."
+          },
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading",
+            "default": "Related products"
+          },
+          {
+            "type": "text",
+            "id": "subheading",
+            "label": "Subheading"
+          },
+          {
+            "type": "select",
+            "id": "alignment",
+            "label": "Headings alignment",
+            "default": "center",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ]
+          },
+          {
+            "type": "header",
+            "content": "— Heading style"
+          },
+          {
+            "type": "color",
+            "id": "heading_color",
+            "label": "Color",
+            "default": "#000"
+          },
+          {
+            "type": "range",
+            "id": "heading_size",
+            "label": "Font size",
+            "max": 100,
+            "min": 10,
+            "step": 1,
+            "unit": "px",
+            "default": 42
+          },
+          {
+            "type": "range",
+            "id": "heading_weight",
+            "label": "Font weight",
+            "max": 700,
+            "min": 300,
+            "step": 100,
+            "default": 600
+          },
+          {
+            "type": "range",
+            "id": "heading_spacing",
+            "label": "Bottom spacing",
+            "min": 0,
+            "max": 100,
+            "step": 5,
+            "unit": "px",
+            "default": 60
+          },
+          {
+            "type": "header",
+            "content": "— Subheading style"
+          },
+          {
+            "type": "color",
+            "id": "subheading_color",
+            "label": "Color",
+            "default": "#666666"
+          },
+          {
+            "type": "range",
+            "id": "subheading_size",
+            "label": "Font size",
+            "max": 100,
+            "min": 10,
+            "step": 1,
+            "unit": "px",
+            "default": 22
+          },
+          {
+            "type": "range",
+            "id": "subheading_weight",
+            "label": "Font weight",
+            "max": 700,
+            "min": 300,
+            "step": 100,
+            "default": 400
+          },
+          {
+            "type": "range",
+            "id": "subheading_spacing",
+            "label": "Bottom spacing",
+            "min": 0,
+            "max": 100,
+            "step": 5,
+            "unit": "px",
+            "default": 60
+          },
+          {
+            "type": "header",
+            "content": "— Paddings"
+          },
+          {
+            "type": "range",
+            "id": "padding_top",
+            "label": "Top padding",
+            "min": 0,
+            "max": 250,
+            "step": 5,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "padding_bottom",
+            "label": "Bottom padding",
+            "min": 0,
+            "max": 250,
+            "step": 5,
+            "unit": "px",
+            "default": 40
+          },
+          {
+            "type": "range",
+            "id": "padding_left",
+            "label": "Left padding",
+            "min": 0,
+            "max": 250,
+            "step": 5,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "padding_right",
+            "label": "Right padding",
+            "min": 0,
+            "max": 250,
+            "step": 5,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "header",
+            "content": "— Options"
+          },
+          {
+            "type": "range",
+            "id": "grid_num",
+            "min": 2,
+            "max": 6,
+            "step": 1,
+            "label": "Products per row",
+            "default": 4
+          },
+          {
+            "type": "range",
+            "id": "grid_row",
+            "min": 1,
+            "max": 3,
+            "step": 1,
+            "label": "Number of rows",
+            "default": 1
+          },
+          {
+            "type": "range",
+            "id": "max_pages",
+            "min": 1,
+            "max": 10,
+            "step": 1,
+            "label": "Max pages",
+            "info": "Set 2 or more to use carousel.",
+            "default": 2
+          },
+          {
+            "type": "range",
+            "id": "spacing",
+            "min": 0,
+            "max": 60,
+            "step": 10,
+            "unit": "px",
+            "label": "Space between products",
+            "default": 0,
+            "info": "Choose 0 to use default style."
+          },
+          {
+            "type": "header",
+            "content": "— Product options"
+          },
+          {
+            "type": "checkbox",
+            "id": "shop_product_options",
+            "label": "Custom product options"
+          },
+          {
+            "type": "select",
+            "id": "shop_image_ratio",
+            "label": "Image ratio",
+            "default": "75",
+            "options": [
+              {
+                "value": "0",
+                "label": "Disabled"
+              },
+              {
+                "value": "1",
+                "label": "Square 1:1"
+              },
+              {
+                "value": "75",
+                "label": "Portrait 3:4"
+              },
+              {
+                "value": "667",
+                "label": "Portrait 2:3"
+              },
+              {
+                "value": "1333",
+                "label": "Landscape 4:3"
+              },
+              {
+                "value": "15",
+                "label": "Landscape 3:2"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "id": "shop_image_ratio_crop",
+            "label": "Automatically crop images",
+            "default": true
+          },
+          {
+            "type": "select",
+            "id": "shop_product_hover",
+            "label": "Product grid layout",
+            "default": "2",
+            "options": [
+              {
+                "value": "1",
+                "label": "Layout 1"
+              },
+              {
+                "value": "2",
+                "label": "Layout 2"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "id": "shop_image_second",
+            "label": "2nd product image on hover"
+          },
+          {
+            "type": "range",
+            "id": "shop_image_overlay",
+            "min": 0,
+            "max": 100,
+            "step": 10,
+            "unit": "%",
+            "label": "Product image overlay on hover",
+            "default": 0
+          },
+          {
+            "type": "checkbox",
+            "id": "shop_vendor_enable",
+            "label": "Show product vendor",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "shop_review_enable",
+            "label": "Show product reviews",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "shop_quickview_enable",
+            "label": "Show quickview button",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "shop_wishlist_enable",
+            "label": "Show wishlist button",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "shop_compare_enable",
+            "label": "Show compare button",
+            "default": true
+          },
+          {
+            "type": "range",
+            "id": "product_spacing",
+            "label": "Bottom spacing",
+            "min": 0,
+            "max": 50,
+            "step": 1,
+            "unit": "px",
+            "default": 10
+          }
+        ]
+      },
+      {
+        "type": "viewed",
+        "name": "Recently viewed products",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this section on mobile devices."
+          },
+          {
+            "type": "checkbox",
+            "id": "full_width",
+            "label": "Wide display",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "no_spacing",
+            "label": "No spacing",
+            "info": "When Wide display is checked, use this option to remove the bilateral spaces."
+          },
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading",
+            "default": "Recently viewed products"
+          },
+          {
+            "type": "text",
+            "id": "subheading",
+            "label": "Subheading"
+          },
+          {
+            "type": "select",
+            "id": "alignment",
+            "label": "Headings alignment",
+            "default": "center",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ]
+          },
+          {
+            "type": "header",
+            "content": "— Heading style"
+          },
+          {
+            "type": "color",
+            "id": "heading_color",
+            "label": "Color",
+            "default": "#000"
+          },
+          {
+            "type": "range",
+            "id": "heading_size",
+            "label": "Font size",
+            "max": 100,
+            "min": 10,
+            "step": 1,
+            "unit": "px",
+            "default": 42
+          },
+          {
+            "type": "range",
+            "id": "heading_weight",
+            "label": "Font weight",
+            "max": 700,
+            "min": 300,
+            "step": 100,
+            "default": 600
+          },
+          {
+            "type": "range",
+            "id": "heading_spacing",
+            "label": "Bottom spacing",
+            "min": 0,
+            "max": 100,
+            "step": 5,
+            "unit": "px",
+            "default": 60
+          },
+          {
+            "type": "header",
+            "content": "— Subheading style"
+          },
+          {
+            "type": "color",
+            "id": "subheading_color",
+            "label": "Color",
+            "default": "#666666"
+          },
+          {
+            "type": "range",
+            "id": "subheading_size",
+            "label": "Font size",
+            "max": 100,
+            "min": 10,
+            "step": 1,
+            "unit": "px",
+            "default": 22
+          },
+          {
+            "type": "range",
+            "id": "subheading_weight",
+            "label": "Font weight",
+            "max": 700,
+            "min": 300,
+            "step": 100,
+            "default": 400
+          },
+          {
+            "type": "range",
+            "id": "subheading_spacing",
+            "label": "Bottom spacing",
+            "min": 0,
+            "max": 100,
+            "step": 5,
+            "unit": "px",
+            "default": 60
+          },
+          {
+            "type": "header",
+            "content": "— Paddings"
+          },
+          {
+            "type": "range",
+            "id": "padding_top",
+            "label": "Top padding",
+            "min": 0,
+            "max": 250,
+            "step": 5,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "padding_bottom",
+            "label": "Bottom padding",
+            "min": 0,
+            "max": 250,
+            "step": 5,
+            "unit": "px",
+            "default": 40
+          },
+          {
+            "type": "range",
+            "id": "padding_left",
+            "label": "Left padding",
+            "min": 0,
+            "max": 250,
+            "step": 5,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "padding_right",
+            "label": "Right padding",
+            "min": 0,
+            "max": 250,
+            "step": 5,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "header",
+            "content": "— Options"
+          },
+          {
+            "type": "range",
+            "id": "grid_num",
+            "min": 2,
+            "max": 6,
+            "step": 1,
+            "label": "Products per row",
+            "default": 4
+          },
+          {
+            "type": "range",
+            "id": "grid_row",
+            "min": 1,
+            "max": 3,
+            "step": 1,
+            "label": "Number of rows",
+            "default": 1
+          },
+          {
+            "type": "range",
+            "id": "max_pages",
+            "min": 1,
+            "max": 10,
+            "step": 1,
+            "label": "Max pages",
+            "info": "Set 2 or more to use carousel.",
+            "default": 2
+          },
+          {
+            "type": "range",
+            "id": "spacing",
+            "min": 0,
+            "max": 60,
+            "step": 10,
+            "unit": "px",
+            "label": "Space between products",
+            "default": 0,
+            "info": "Choose 0 to use default style."
+          },
+          {
+            "type": "header",
+            "content": "— Product options"
+          },
+          {
+            "type": "checkbox",
+            "id": "shop_product_options",
+            "label": "Custom product options"
+          },
+          {
+            "type": "select",
+            "id": "shop_image_ratio",
+            "label": "Image ratio",
+            "default": "75",
+            "options": [
+              {
+                "value": "0",
+                "label": "Disabled"
+              },
+              {
+                "value": "1",
+                "label": "Square 1:1"
+              },
+              {
+                "value": "75",
+                "label": "Portrait 3:4"
+              },
+              {
+                "value": "667",
+                "label": "Portrait 2:3"
+              },
+              {
+                "value": "1333",
+                "label": "Landscape 4:3"
+              },
+              {
+                "value": "15",
+                "label": "Landscape 3:2"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "id": "shop_image_ratio_crop",
+            "label": "Automatically crop images",
+            "default": true
+          },
+          {
+            "type": "select",
+            "id": "shop_product_hover",
+            "label": "Product grid layout",
+            "default": "2",
+            "options": [
+              {
+                "value": "1",
+                "label": "Layout 1"
+              },
+              {
+                "value": "2",
+                "label": "Layout 2"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "id": "shop_image_second",
+            "label": "2nd product image on hover"
+          },
+          {
+            "type": "range",
+            "id": "shop_image_overlay",
+            "min": 0,
+            "max": 100,
+            "step": 10,
+            "unit": "%",
+            "label": "Product image overlay on hover",
+            "default": 0
+          },
+          {
+            "type": "checkbox",
+            "id": "shop_vendor_enable",
+            "label": "Show product vendor",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "shop_review_enable",
+            "label": "Show product reviews",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "shop_quickview_enable",
+            "label": "Show quickview button",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "shop_wishlist_enable",
+            "label": "Show wishlist button",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "shop_compare_enable",
+            "label": "Show compare button",
+            "default": true
+          },
+          {
+            "type": "range",
+            "id": "product_spacing",
+            "label": "Bottom spacing",
+            "min": 0,
+            "max": 50,
+            "step": 1,
+            "unit": "px",
+            "default": 10
+          }
+        ]
+      },
+      {
+        "type": "upsell",
+        "name": "Upsell products",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this section on mobile devices."
+          },
+          {
+            "type": "checkbox",
+            "id": "full_width",
+            "label": "Wide display",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "no_spacing",
+            "label": "No spacing",
+            "info": "When Wide display is checked, use this option to remove the bilateral spaces."
+          },
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading",
+            "default": "We also recommend"
+          },
+          {
+            "type": "text",
+            "id": "subheading",
+            "label": "Subheading"
+          },
+          {
+            "type": "select",
+            "id": "alignment",
+            "label": "Headings alignment",
+            "default": "center",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ]
+          },
+          {
+            "type": "header",
+            "content": "— Heading style"
+          },
+          {
+            "type": "color",
+            "id": "heading_color",
+            "label": "Color",
+            "default": "#000"
+          },
+          {
+            "type": "range",
+            "id": "heading_size",
+            "label": "Font size",
+            "max": 100,
+            "min": 10,
+            "step": 1,
+            "unit": "px",
+            "default": 42
+          },
+          {
+            "type": "range",
+            "id": "heading_weight",
+            "label": "Font weight",
+            "max": 700,
+            "min": 300,
+            "step": 100,
+            "default": 600
+          },
+          {
+            "type": "range",
+            "id": "heading_spacing",
+            "label": "Bottom spacing",
+            "min": 0,
+            "max": 100,
+            "step": 5,
+            "unit": "px",
+            "default": 60
+          },
+          {
+            "type": "header",
+            "content": "— Subheading style"
+          },
+          {
+            "type": "color",
+            "id": "subheading_color",
+            "label": "Color",
+            "default": "#666666"
+          },
+          {
+            "type": "range",
+            "id": "subheading_size",
+            "label": "Font size",
+            "max": 100,
+            "min": 10,
+            "step": 1,
+            "unit": "px",
+            "default": 22
+          },
+          {
+            "type": "range",
+            "id": "subheading_weight",
+            "label": "Font weight",
+            "max": 700,
+            "min": 300,
+            "step": 100,
+            "default": 400
+          },
+          {
+            "type": "range",
+            "id": "subheading_spacing",
+            "label": "Bottom spacing",
+            "min": 0,
+            "max": 100,
+            "step": 5,
+            "unit": "px",
+            "default": 60
+          },
+          {
+            "type": "header",
+            "content": "— Paddings"
+          },
+          {
+            "type": "range",
+            "id": "padding_top",
+            "label": "Top padding",
+            "min": 0,
+            "max": 250,
+            "step": 5,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "padding_bottom",
+            "label": "Bottom padding",
+            "min": 0,
+            "max": 250,
+            "step": 5,
+            "unit": "px",
+            "default": 40
+          },
+          {
+            "type": "range",
+            "id": "padding_left",
+            "label": "Left padding",
+            "min": 0,
+            "max": 250,
+            "step": 5,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "padding_right",
+            "label": "Right padding",
+            "min": 0,
+            "max": 250,
+            "step": 5,
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "header",
+            "content": "— Options"
+          },
+          {
+            "id": "collection",
+            "type": "collection",
+            "label": "Choose a collection"
+          },
+          {
+            "type": "range",
+            "id": "grid_num",
+            "min": 2,
+            "max": 6,
+            "step": 1,
+            "label": "Products per row",
+            "default": 4
+          },
+          {
+            "type": "range",
+            "id": "grid_row",
+            "min": 1,
+            "max": 3,
+            "step": 1,
+            "label": "Number of rows",
+            "default": 1
+          },
+          {
+            "type": "range",
+            "id": "max_pages",
+            "min": 1,
+            "max": 10,
+            "step": 1,
+            "label": "Max pages",
+            "info": "Set 2 or more to use carousel.",
+            "default": 2
+          },
+          {
+            "type": "range",
+            "id": "spacing",
+            "min": 0,
+            "max": 60,
+            "step": 10,
+            "unit": "px",
+            "label": "Space between products",
+            "default": 0,
+            "info": "Choose 0 to use default style."
+          },
+          {
+            "type": "header",
+            "content": "— Product options"
+          },
+          {
+            "type": "checkbox",
+            "id": "shop_product_options",
+            "label": "Custom product options"
+          },
+          {
+            "type": "select",
+            "id": "shop_image_ratio",
+            "label": "Image ratio",
+            "default": "75",
+            "options": [
+              {
+                "value": "0",
+                "label": "Disabled"
+              },
+              {
+                "value": "1",
+                "label": "Square 1:1"
+              },
+              {
+                "value": "75",
+                "label": "Portrait 3:4"
+              },
+              {
+                "value": "667",
+                "label": "Portrait 2:3"
+              },
+              {
+                "value": "1333",
+                "label": "Landscape 4:3"
+              },
+              {
+                "value": "15",
+                "label": "Landscape 3:2"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "id": "shop_image_ratio_crop",
+            "label": "Automatically crop images",
+            "default": true
+          },
+          {
+            "type": "select",
+            "id": "shop_product_hover",
+            "label": "Product grid layout",
+            "default": "2",
+            "options": [
+              {
+                "value": "1",
+                "label": "Layout 1"
+              },
+              {
+                "value": "2",
+                "label": "Layout 2"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "id": "shop_image_second",
+            "label": "2nd product image on hover"
+          },
+          {
+            "type": "range",
+            "id": "shop_image_overlay",
+            "min": 0,
+            "max": 100,
+            "step": 10,
+            "unit": "%",
+            "label": "Product image overlay on hover",
+            "default": 0
+          },
+          {
+            "type": "checkbox",
+            "id": "shop_vendor_enable",
+            "label": "Show product vendor",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "shop_review_enable",
+            "label": "Show product reviews",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "shop_quickview_enable",
+            "label": "Show quickview button",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "shop_wishlist_enable",
+            "label": "Show wishlist button",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "shop_compare_enable",
+            "label": "Show compare button",
+            "default": true
+          },
+          {
+            "type": "range",
+            "id": "product_spacing",
+            "label": "Bottom spacing",
+            "min": 0,
+            "max": 50,
+            "step": 1,
+            "unit": "px",
+            "default": 10
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

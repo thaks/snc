@@ -1,0 +1,16 @@
+<div class="header__cart d-position-{{ block.settings.dropdown_position }}">
+  <a class="cart__link d-flex align-items-center" href="/cart">
+    {%- if block.settings.show_icon -%}
+      <i class="ris ri-cart"></i>
+    {%- else -%}
+      {{- 'general.accessibility.menu_shopping_cart' | t -}}
+    {%- endif -%}
+    {%- if block.settings.show_total -%}
+      <span class="cart__amount{% if cart.total_price == 0 %} hide{% endif %}"><span class="money">{{ cart.total_price | money }}</span></span>
+    {%- endif -%}
+    {%- if block.settings.show_count -%}
+      <span class="cart__count">{{ cart.item_count }}</span>
+    {%- endif -%}
+  </a>
+  {%- include 'mini-cart' -%}
+</div>

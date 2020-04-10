@@ -1,0 +1,95 @@
+{%- assign borders_class = '' -%}
+{%- if block.settings.borders_top -%}
+  {%- assign borders_class = borders_class | append: ' border-top' -%}
+{%- endif -%}
+{%- if block.settings.borders_bottom -%}
+  {%- assign borders_class = borders_class | append: ' border-bottom' -%}
+{%- endif -%}
+{%- if block.settings.borders_left -%}
+  {%- assign borders_class = borders_class | append: ' border-left' -%}
+{%- endif -%}
+{%- if block.settings.borders_right -%}
+  {%- assign borders_class = borders_class | append: ' border-right' -%}
+{%- endif -%}
+{%- if block.settings.borders_mb_top -%}
+  {%- assign borders_class = borders_class | append: ' border-mb-top' -%}
+{%- endif -%}
+{%- if block.settings.borders_mb_bottom -%}
+  {%- assign borders_class = borders_class | append: ' border-mb-bottom' -%}
+{%- endif -%}
+{%- if block.settings.borders_mb_left -%}
+  {%- assign borders_class = borders_class | append: ' border-mb-left' -%}
+{%- endif -%}
+{%- if block.settings.borders_mb_right -%}
+  {%- assign borders_class = borders_class | append: ' border-mb-right' -%}
+{%- endif -%}
+
+{%- assign border_style = '' -%}
+{%- if borders_class != '' -%}
+  {%- capture border_style -%}
+    border-color: {{ block.settings.border_color }};
+    border-width: {{ block.settings.border_width }}px;
+  {%- endcapture -%}
+{%- endif -%}
+
+{%- assign _linklist = linklists[block.settings.linklist] -%}
+{%- assign _image = block.settings.image -%}
+{%- assign _banner_style = '' -%}
+
+{%- capture _banner_style -%}
+  {%- if block.settings.position_vertical == 'start' -%}
+    padding-top:{{ block.settings.padding_vertical }}%;
+  {%- elsif block.settings.position_vertical == 'end' -%}
+    padding-bottom:{{ block.settings.padding_vertical }}%;
+  {%- endif -%}
+  {%- unless block.settings.position_vertical == 'center' -%}
+    max-height:{{ 100 | minus: block.settings.padding_vertical }}%;
+  {%- endunless -%}
+  {%- if block.settings.position_horizontal == 'start' -%}
+    left:{{ block.settings.padding_horizontal }}%;
+  {%- elsif block.settings.position_horizontal == 'end' -%}
+    right:{{ block.settings.padding_horizontal }}%;
+  {%- endif -%}
+  {%- unless block.settings.position_horizontal == 'center' -%}
+    max-width:{{ 100 | minus: block.settings.padding_horizontal }}%;
+  {%- endunless -%}
+{%- endcapture -%}
+
+<div class="d-flex col-p-{{ block.settings.width }} col-pm-{{ block.settings.width_mb }}" {{ block.shopify_attributes }}>
+  <div id="rich-banner-{{ block.id }}" class="rich-banner-{{ block.id }} rich-banner banners-section d-flex w100" {{ block.shopify_attributes }}>
+    <div class="banner__widget d-flex w100 flex-wrap align-items-{{ block.settings.position_vertical }} align-content-{{ block.settings.position_vertical }} justify-content-{{ block.settings.position_horizontal }} text-{{ block.settings.text_alignment }}{% if block.settings.tilt_effect %} has--tilt-effect{% endif %}{% if block.settings.rounded_edge %} has--rounded-edge{% endif %}{% if block.settings.box_shadow %} has--box-shadow{% endif %}{{ borders_class }}" style="background-color:{{ block.settings.bground_color }};{{ border_style | strip_newlines | remove: "  " }}">
+      {%- if _image -%}
+        <div class="w100">
+          {%- assign img_url = _image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+          {%- capture img_sizes -%}{% if _image > 1 %}x3{% else %}3x{% endif %}{%- endcapture -%}
+          <img class="w100 lazyload"
+             src="{{ _image | img_url: img_sizes }}"
+             data-src="{{ img_url }}"
+             data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+             data-aspectratio="{{ _image.aspect_ratio }}"
+             data-sizes="auto"
+             tabindex="-1"
+             alt="{{ _image.alt | escape }}" />
+        </div>
+      {%- endif -%}
+      
+      {%- if _linklist != blank -%}
+        <div class="category-wall{% if block.settings.image_position == 'bottom' %} order-first{% endif %}" style="{{ _banner_style | strip_newlines | remove: "  " }}">
+          <h4 class="weight-{{ block.settings.title_weight }} size-{{ block.settings.title_size }} font-{{ block.settings.title_font }}" style="color:{{ block.settings.title_color }};line-height:{{ block.settings.title_line_height }};letter-spacing:{{ block.settings.title_letter_spacing }}px;margin-bottom:{{ block.settings.title_spacing }}px;border-bottom-color:{{ block.settings.title_border }};">{{ block.settings.title }}</h4>
+          
+          <ul class="banner__links weight-{{ block.settings.linklist_weight }} size-{{ block.settings.linklist_size }} font-{{ block.settings.linklist_font }}" style="color:{{ block.settings.linklist_color }};line-height:{{ block.settings.linklist_line_height }};letter-spacing:{{ block.settings.linklist_letter_spacing }}px;margin-bottom:{{ block.settings.linklist_spacing }}px;">
+            {%- for _link in _linklist.links -%}
+            <li>
+              <a href="{{ _link.url }}">{{ _link.title }}</a>
+            </li>
+            {%- endfor -%}
+          </ul>
+
+          {%- if block.settings.button_label != blank and block.settings.button_link != blank -%}
+            <a href="{{ block.settings.button_link }}" class="btn{% unless block.settings.button_custom %} btn-primary{% else %} btn-secondary btn-{{ block.settings.button_type }} size-{{ block.settings.button_size }} weight-{{ block.settings.button_weight }} font-{{ block.settings.button_font }}{% endunless %}{% if block.settings.button_as_link %} btn-link{% endif %}"{% if block.settings.button_custom %} style="color:{{ block.settings.button_color }};background-color:{{ block.settings.button_bground }};border-color:{{ block.settings.button_border }};"{% endif %}>{{ block.settings.button_label }}</a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>

@@ -1,0 +1,547 @@
+{%- assign container_begin = '<div class="container">' -%}
+{%- assign container_end = '</div>' -%}
+{%- if section.settings.full_width -%}
+  {%- assign container_begin = '<div class="container-fluid">' -%}
+{%- endif -%}
+
+<div class="header__mobile{% if section.settings.header_fixed %} is-fixed{% endif %}" data-section-id="{{ section.id }}" data-section-type="header-mobile" style="padding:{{ section.settings.padding_top }}px {{ section.settings.padding_right }}px {{ section.settings.padding_bottom }}px {{ section.settings.padding_left }}px;">
+  {{- container_begin -}}
+    {%- if section.blocks.size > 0 -%}
+      {%- assign mobile_start = '' -%}
+      {%- assign mobile_end = '</div></div>' -%}
+
+      {%- assign column_start = '<div class="mobile__column col col-p-$width d-flex flex-wrap align-items-center justify-content-$alignment"><div class="row row-$spacing align-items-center">' -%}
+      {%- assign column_end = '</div></div>' -%}
+
+      {%- comment -%} check if there have any columns? {%- endcomment -%}
+      {%- assign has_column_type = false -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'column' -%}
+          {%- assign has_column_type = true -%}
+          {%- break -%}
+        {%- endif -%}
+      {%- endfor -%}
+
+      {%- if has_column_type == false -%}
+        {%- assign mobile_start = '<div class="mobile__column d-flex flex-wrap align-items-center col-12"><div class="row align-items-center">' -%}
+      {%- endif -%}
+      <div class="row align-items-center">
+        {{- mobile_start -}}
+        
+        {%- assign first_column = true -%}
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+          {%- when 'column' -%}
+            {%- if first_column == false -%}
+              {{- column_end -}}
+            {%- endif -%}
+            {%- assign column_start_new = column_start | replace: '$width', block.settings.width | replace: '$alignment', block.settings.alignment | replace: '$spacing', block.settings.spacing -%}
+            {{- column_start_new -}}
+            {%- assign first_column = false -%}
+
+          {%- when 'logo' -%}
+            <div class="mobile__widget col-auto" {{ block.shopify_attributes }}>
+              <div class="mobile__link mobile-header__logo">
+                <a href="{{ shop.url }}">
+                  {%- if block.settings.logo -%}
+                    {%- assign logo_size = 'x' | append: block.settings.logo_max_height -%}
+                    {%- assign logo_alt = block.settings.logo.alt | default: shop.name -%}
+                    <img src="{{ block.settings.logo | img_url: logo_size }}" srcset="{{ block.settings.logo | img_url: logo_size }} 1x, {{ block.settings.logo | img_url: logo_size, scale: 2 }} 2x" alt="{{ logo_alt | escape }}" style="max-height:{{ block.settings.logo_max_height }}px;" />
+                  {%- else -%}
+                    <span>{{ shop.name | escape }}</span>
+                  {%- endif -%}
+                </a>
+              </div>
+            </div>
+          {%- when 'account' -%}
+            <div class="mobile__widget col-auto header__customer" {{ block.shopify_attributes }}>
+              <a class="mobile__link customer__link d-icon d-flex align-items-center" href="/account">
+                <i class="ris ri-account"></i>
+              </a>
+            </div>
+          {%- when 'cart' -%}
+            <div class="mobile__widget col-auto header__cart d-position-{{ block.settings.dropdown_position }}" {{ block.shopify_attributes }}>
+              <a class="mobile__link cart__link d-flex align-items-center" href="/cart">
+                {%- if block.settings.show_icon -%}
+                  <i class="ris ri-cart"></i>
+                {%- else -%}
+                  {{- 'general.accessibility.menu_shopping_cart' | t -}}
+                {%- endif -%}
+                {%- if block.settings.show_count -%}
+                  <span class="cart__count">{{ cart.item_count }}</span>
+                {%- endif -%}
+              </a>
+              {%- include 'mini-cart' -%}
+            </div>
+          {%- when 'menu' -%}
+            <div class="mobile__widget col-auto mobile-header__nav" {{ block.shopify_attributes }}>
+              <div class="mobile__link mobile-nav__open menu-trigger d-flex align-items-center">
+                <div class="nav_burger">
+                  <span class="burger_top"></span>
+                  <span class="burger_middle"></span>
+                  <span class="burger_bottom"></span>
+                </div>
+                <div class="menu-title">{{ 'general.accessibility.menu_title' | t }}</div>
+              </div>
+              <div class="mobile__menu-wrapper">
+                <nav class="mobile__menu{% if block.settings.show_currency or block.settings.show_language %} has-ext{% endif %}{% if block.settings.show_mega_menu %} has-megamenu{% endif %}">
+                  <ul class="listitem-0">
+                    {%- if block.settings.linklist != blank -%}
+                      {%- for link in linklists[block.settings.linklist].links -%}
+                        {%- if link.links != blank -%}
+                        <li class="listitem-1"><span>{{ link.title }}</span>
+                          <ul>
+                            {%- for childlink in link.links -%}
+                              {%- if childlink.links != blank -%}
+                              <li><span>{{ childlink.title }}</span>
+                                <ul>
+                                  {%- for grandchildlink in childlink.links -%}
+                                  <li><a href="{{ grandchildlink.url }}">{{ grandchildlink.title }}</a></li>
+                                  {%- endfor -%}
+                                </ul>
+                              </li>
+                              {%- else -%}
+                              <li><a href="{{ childlink.url }}">{{ childlink.title }}</a></li>
+                              {%- endif -%}
+                            {%- endfor -%}
+                          </ul>
+                        </li>
+                        {%- else -%}
+                        <li class="listitem-1"><a href="{{ link.url }}">{{ link.title }}</a></li>
+                        {%- endif -%}
+                      {%- endfor -%}
+                    {%- endif -%}
+                    {%- if block.settings.show_wishlist or block.settings.show_account -%}
+                      <li class="listitem"></li>
+                      {%- if block.settings.show_account and shop.customer_accounts_enabled -%}
+                      <li class="listitem-2">
+                        <a class="site-nav__link d-flex flex-wrap align-items-center" href="/account">
+                          <i class="ris ri-account"></i>
+                          <span>{% if customer %}{{ 'general.accessibility.menu_account' | t }}{% else %}{{ 'general.accessibility.menu_login_register' | t }}{% endif %}</span>
+                        </a>
+                        {%- if customer -%}
+                        <ul class="submenu">
+                          <li><a class="site-nav__link" href="/account"><span>{{ 'layout.customer.dashboard' | t }}</span></a></li>
+                          <li><a class="site-nav__link" href="/account/orders"><span>{{ 'layout.customer.orders' | t }}</span></a></li>
+                          <li><a class="site-nav__link" href="/account/addresses"><span>{{ 'layout.customer.addresses' | t }}</span></a></li>
+                          {%- if settings.shop_wishlist and settings.wishlist_page != blank -%}
+                          <li><a class="site-nav__link" href="/pages/{{ settings.wishlist_page }}"><span>{{ 'layout.customer.wishlist' | t }}</span></a></li>
+                          {%- endif -%}
+                          <li><a class="site-nav__link" href="/account/logout"><span>{{ 'layout.customer.log_out' | t }}</span></a></li>
+                        </ul>
+                        {%- endif -%}
+                      </li>
+                      {%- endif -%}
+                      {%- if block.settings.show_wishlist and settings.shop_wishlist and settings.wishlist_page != blank -%}
+                      <li class="listitem-2">
+                        <a class="site-nav__link d-flex flex-wrap align-items-center" href="/pages/{{ settings.wishlist_page }}">
+                          <i class="ris ri-wishlist-empty"></i>
+                          <span>{{ 'general.accessibility.menu_wishlist' | t }}</span>
+                        </a>
+                      </li>
+                      {%- endif -%}
+                    {%- endif -%}
+                    {%- assign contact_info = block.settings.contact_info | strip_html -%}
+                    {%- if contact_info != '' -%}
+                    <li class="listitem-line"></li>
+                    <li class="listitem-3">
+                      {{- block.settings.contact_info -}}
+                    </li>
+                    {%- endif -%}
+                  </ul>
+                </nav>
+                {%- if block.settings.show_currency or block.settings.show_language -%}
+                <div class="mobile__menu-ext d-flex flex-wrap align-items-center">
+                  {%- assign dropdown_position = 'left' -%}
+                  {%- if block.settings.show_language -%}
+                    {%- include 'language-picker', dropdown_position: dropdown_position -%}
+                    {%- assign dropdown_position = 'right' -%}
+                  {%- endif -%}
+                  {%- if block.settings.show_currency -%}
+                    {%- include 'currency-picker', dropdown_position: dropdown_position -%}
+                  {%- endif -%}
+                </div>
+                {%- endif -%}
+              </div>
+              <div class="mobile-nav__close"></div>
+            </div>
+          {%- when 'search' -%}
+            <div class="mobile__widget col-auto header__search" {{ block.shopify_attributes }}>
+              <a class="mobile__link d-flex align-items-center search__toggle" href="/search"><svg class="svg-icon"><use xlink:href="#global__symbols-search"></use></svg></a>
+              <div class="search__overlay"></div>
+              <div class="search__fullscreen d-flex flex-column align-items-stretch">
+                <div class="search__fullscreen-inner">
+                  <div class="container">
+                    <div class="search__header">
+                      <div class="search__close search__toggle close-icon">×</div>
+                      <p class="search__infotext">{{ 'layout.search.info_text' | t }}</p>
+                      <form action="/search" method="GET" role="search"{% if block.settings.quick_search %} class="search__ajax no-js" data-limit="{{ block.settings.search_limit | default: 20 }}" data-featured="{{ block.settings.featured }}" data-featured_limit="{{ block.settings.featured_limit | default: 10 }}"{% endif %}>
+                        <input type="hidden" name="type" value="product" />
+                        <input class="search__input" type="text" name="q" autocomplete="off" placeholder="{{ 'layout.search.placeholder' | t | escape }}" />
+                        {%- if block.settings.typewriter_effect -%}
+                        <div class="search__label d-flex align-items-center">
+                          <div class="search__label-text" data-first_time="0" data-typedtext="{{ block.settings.typewriter_text | escape }}" data-typedtext_2="{{ 'layout.search.placeholder' | t | escape }}"></div>
+                        </div>
+                        {%- endif -%}
+                        <button class="search__btn" type="submit"><i class="ion ion-ios-search"></i></button>
+                      </form>
+                      {%- if block.settings.quick_search -%}
+                      <div class="search__results-wrapper">
+                        <div class="search__results"></div>
+                        <div class="search__loader d-flex align-items-center justify-content-center"></div>
+                      </div>
+                      {%- endif -%}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {%- when 'wishlist' -%}
+            {%- if settings.shop_wishlist and settings.wishlist_page != blank -%}
+            <div class="mobile__widget col-auto header__wishlist" {{ block.shopify_attributes }}>
+              <a class="mobile__link wishlist__link d-flex align-items-center" href="/pages/{{ settings.wishlist_page }}">
+                <svg class="svg-icon"><use xlink:href="#global__symbols-wishlist"></use></svg>
+                {%- if block.settings.show_count -%}
+                  {%- assign wishlist_size = customer.metafields.wishlist | size -%}
+                  <sup class="wishlist__count{% if wishlist_size == 0 %} hide{% endif %}">{{ wishlist_size }}</sup>
+                {%- endif -%}
+              </a>
+            </div>
+            {%- endif -%}
+          {%- when 'line' -%}
+            <div class="mobile__line" {{ block.shopify_attributes }}></div>
+          {%- when 'spacing' -%}
+            <div class="mobile__spacing" style="height:{{ block.settings.height }}px;" {{ block.shopify_attributes }}></div>
+          {%- endcase -%}
+        {%- endfor -%}
+        
+        {{- mobile_end -}}
+      </div>
+    {%- else -%}
+      {%- include 'no-blocks' -%}
+    {%- endif -%}
+  {{- container_end -}}
+</div>
+
+{% schema %}
+  {
+    "name": "Mobile header",
+    "class": "header-mobile__placeholder",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "full_width",
+        "label": "Wide display",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "— Paddings"
+      },
+      {
+        "type": "range",
+        "id": "padding_top",
+        "label": "Top padding",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "unit": "px",
+        "default": 10
+      },
+      {
+        "type": "range",
+        "id": "padding_bottom",
+        "label": "Bottom padding",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "unit": "px",
+        "default": 10
+      },
+      {
+        "type": "range",
+        "id": "padding_left",
+        "label": "Left padding",
+        "min": 0,
+        "max": 100,
+        "step": 5,
+        "unit": "px",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "padding_right",
+        "label": "Right padding",
+        "min": 0,
+        "max": 100,
+        "step": 5,
+        "unit": "px",
+        "default": 0
+      },
+      {
+        "type": "header",
+        "content": "— Options"
+      },
+      {
+        "type": "checkbox",
+        "id": "header_fixed",
+        "label": "Use fixed header",
+        "default": true
+      }
+    ],
+    "blocks": [
+      {
+        "type": "column",
+        "name": "— Column",
+        "settings": [
+		  {
+            "type": "range",
+            "id": "width",
+            "label": "Width",
+            "min": 1,
+            "max": 100,
+            "step": 1,
+            "unit": "%",
+            "default": 100
+          },
+          {
+            "type": "select",
+            "id": "alignment",
+            "label": "Alignment",
+            "default": "start",
+            "options": [
+              {
+                "value": "start",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "end",
+                "label": "Right"
+              }
+            ]
+          },
+          {
+            "type": "range",
+            "id": "spacing",
+            "min": 10,
+            "max": 60,
+            "step": 10,
+            "unit": "px",
+            "label": "Space between items",
+            "default": 30
+          }
+        ]
+      },
+      {
+        "type": "logo",
+        "name": "Logo",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "logo",
+            "label": "Logo image"
+          },
+		  {
+            "type": "range",
+            "id": "logo_max_height",
+            "label": "Custom logo height",
+            "min": 10,
+            "max": 200,
+            "step": 2,
+            "unit": "px",
+            "default": 30
+          }
+        ]
+      },
+      {
+        "type": "cart",
+        "name": "Cart",
+        "limit": 1,
+        "settings": [
+		  {
+            "type": "checkbox",
+            "id": "show_icon",
+            "label": "Use icon instead text"
+          },
+		  {
+            "type": "checkbox",
+            "id": "show_count",
+            "label": "Show items count",
+            "default": true
+          },
+          {
+            "type": "select",
+            "id": "after_click",
+            "label": "Event on click",
+            "default": "sidebar",
+            "options": [
+              {
+                "label": "Redirect to cart page",
+                "value": ""
+              },
+              {
+                "label": "Show cart frame",
+                "value": "frame"
+              },
+              {
+                "label": "Show cart sidebar",
+                "value": "sidebar"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "dropdown_position",
+            "label": "Dropdown position to start",
+            "default": "right",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ]
+          }
+        ]
+      },
+        {
+        "type": "account",
+        "name": "Customer account",
+        "limit": 1
+      },
+      {
+        "type": "menu",
+        "name": "Menu",
+        "limit": 1,
+        "settings": [
+		  {
+            "type": "link_list",
+            "id": "linklist",
+            "label": "Choose a menu"
+          },
+  		  {
+            "type": "checkbox",
+            "id": "show_mega_menu",
+            "label": "Use mega menu instead of"
+          },
+  		  {
+            "type": "checkbox",
+            "id": "show_account",
+            "label": "Show customer account"
+          },
+  		  {
+            "type": "checkbox",
+            "id": "show_wishlist",
+            "label": "Show wishlist"
+          },
+  		  {
+            "type": "checkbox",
+            "id": "show_currency",
+            "label": "Show currency picker"
+          },
+  		  {
+            "type": "checkbox",
+            "id": "show_language",
+            "label": "Show language picker"
+          },
+          {
+            "type": "richtext",
+            "id": "contact_info",
+            "label": "Contact info",
+            "default": "<p><a href=\"mailto:info@yourwebsite.com\">info@yourwebsite.com<\/a><br><a href=\"tel:+12(0)12-345-678\">+12 (0) 12-345-678<\/a><\/p>"
+          }
+        ]
+      },
+      {
+        "type": "search",
+        "name": "Search",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "quick_search",
+            "label": "Enable quick search",
+            "default": true
+          },
+          {
+            "type": "range",
+            "id": "search_limit",
+            "min": 1,
+            "max": 50,
+            "step": 1,
+            "label": "Searched products limit",
+            "default": 10
+          },
+          {
+            "type": "collection",
+            "id": "featured",
+            "label": "Featured products",
+            "info": "Displayed if no products available."
+          },
+          {
+            "type": "range",
+            "id": "featured_limit",
+            "min": 1,
+            "max": 50,
+            "step": 1,
+            "label": "Featured products limit",
+            "default": 5
+          },
+          {
+            "type": "checkbox",
+            "id": "typewriter_effect",
+            "label": "Enabe typewriter effect",
+            "default": true
+          },
+          {
+            "type": "text",
+            "id": "typewriter_text",
+            "label": "Typewriter text",
+            "default": "Chair, Lamp, anything"
+          }
+        ]
+      },
+      {
+        "type": "wishlist",
+        "name": "Wishlist",
+        "limit": 1,
+          "settings": [
+		  {
+            "type": "checkbox",
+            "id": "show_count",
+            "label": "Show items count",
+            "default": true
+          }
+        ]
+      },
+      {
+        "type": "line",
+        "name": "Line"
+      },
+      {
+        "type": "spacing",
+        "name": "Spacing",
+        "settings": [
+          {
+            "type": "range",
+            "id": "height",
+            "min": 1,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "label": "Height",
+            "default": 20
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

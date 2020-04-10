@@ -1,0 +1,11 @@
+{%- capture images_render -%}{% include 'shortcode-render' render:'images' %}{%- endcapture -%}
+{%- assign images = images_render | remove: ' ' | split: ',' -%}
+{%- if images.size > 0 -%}
+<div class="slick__gallery">
+  {%- for image in images -%}
+  <div class="slick-slide">
+    <img src="{{ image }}" crossOrigin="anonymous" alt="" />
+  </div>
+  {%- endfor -%}
+</div>
+{%- endif -%}

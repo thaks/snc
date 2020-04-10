@@ -1,0 +1,64 @@
+{%- if settings.social_twitter_link != blank and twitter -%}
+<li class="col-auto">
+  <a class="social-icons__link" href="{{ settings.social_twitter_link | escape }}" title="{{ 'layout.footer.social_platform' | t: name: shop.name, platform: 'Twitter' }}">
+    <svg style="width:{{ size }}px;height:{{ size }}px;"><use xlink:href="#global__symbols-twitter"></use></svg>
+    <span class="circle_bg"></span>
+  </a>
+</li>
+{%- endif -%}
+{%- if settings.social_facebook_link != blank and facebook -%}
+<li class="col-auto">
+  <a class="social-icons__link" href="{{ settings.social_facebook_link | escape }}" title="{{ 'layout.footer.social_platform' | t: name: shop.name, platform: 'Facebook' }}">
+    <svg style="width:{{ size }}px;height:{{ size }}px;"><use xlink:href="#global__symbols-facebook"></use></svg>
+    <span class="circle_bg"></span>
+  </a>
+</li>
+{%- endif -%}
+{%- if settings.social_pinterest_link != blank and pinterest -%}
+<li class="col-auto">
+  <a class="social-icons__link" href="{{ settings.social_pinterest_link | escape }}" title="{{ 'layout.footer.social_platform' | t: name: shop.name, platform: 'Pinterest' }}">
+    <svg style="width:{{ size }}px;height:{{ size }}px;"><use xlink:href="#global__symbols-pinterest"></use></svg>
+    <span class="circle_bg"></span>
+  </a>
+</li>
+{%- endif -%}
+{%- if settings.social_instagram_link != blank and instagram -%}
+<li class="col-auto">
+  <a class="social-icons__link" href="{{ settings.social_instagram_link | escape }}" title="{{ 'layout.footer.social_platform' | t: name: shop.name, platform: 'Instagram' }}">
+    <svg style="width:{{ size }}px;height:{{ size }}px;"><use xlink:href="#global__symbols-instagram"></use></svg>
+    <span class="circle_bg"></span>
+  </a>
+</li>
+{%- endif -%}
+{%- if settings.social_tumblr_link != blank and tumblr -%}
+<li class="col-auto">
+  <a class="social-icons__link" href="{{ settings.social_tumblr_link | escape }}" title="{{ 'layout.footer.social_platform' | t: name: shop.name, platform: 'Tumblr' }}">
+    <svg style="width:{{ size }}px;height:{{ size }}px;"><use xlink:href="#global__symbols-tumblr"></use></svg>
+    <span class="circle_bg"></span>
+  </a>
+</li>
+{%- endif -%}
+{%- if settings.social_googleplus_link != blank and googleplus -%}
+<li class="col-auto">
+  <a class="social-icons__link" href="{{ settings.social_googleplus_link | escape }}" title="{{ 'layout.footer.social_platform' | t: name: shop.name, platform: 'Google Plus' }}">
+    <svg style="width:{{ size }}px;height:{{ size }}px;"><use xlink:href="#global__symbols-gplus"></use></svg>
+    <span class="circle_bg"></span>
+  </a>
+</li>
+{%- endif -%}
+{%- if settings.social_youtube_link != blank and youtube -%}
+<li class="col-auto">
+  <a class="social-icons__link" href="{{ settings.social_youtube_link | escape }}" title="{{ 'layout.footer.social_platform' | t: name: shop.name, platform: 'YouTube' }}">
+    <svg style="width:{{ size }}px;height:{{ size }}px;"><use xlink:href="#global__symbols-youtube"></use></svg>
+    <span class="circle_bg"></span>
+  </a>
+</li>
+{%- endif -%}
+{%- if settings.social_vimeo_link != blank and vimeo -%}
+<li class="col-auto">
+  <a class="social-icons__link" href="{{ settings.social_vimeo_link | escape }}" title="{{ 'layout.footer.social_platform' | t: name: shop.name, platform: 'Vimeo' }}">
+    <svg style="width:{{ size }}px;height:{{ size }}px;"><use xlink:href="#global__symbols-vimeo"></use></svg>
+    <span class="circle_bg"></span>
+  </a>
+</li>
+{%- endif -%}

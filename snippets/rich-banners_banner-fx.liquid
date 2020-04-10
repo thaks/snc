@@ -1,0 +1,51 @@
+{%-if fx_type == 'dominos'-%}
+<span class="text-wrapper">
+  <span class="letters">
+    {%-assign _l = fx_text | size | minus: 1-%}
+    {%-for i in (0.._l)-%}
+    {%-assign _t = fx_text | slice: i-%}
+    {%-if _t == ' '-%}{{' '}}{%-else-%}<span class='letter' style="transform-origin:0 0;display:inline-block;">{{ _t }}</span>{%-endif-%}
+    {%-endfor-%}
+  </span>
+</span>
+{%-elsif fx_type == 'vertical-lines'-%}
+<span class="text-wrapper">
+  <span class="line line1" style="background-color:{{ fx_color }};"></span>
+  <span class="letters">
+    {%-assign _l = fx_text | size | minus: 1-%}
+    {%-for i in (0.._l)-%}
+    {%-assign _t = fx_text | slice: i-%}
+    {%-if _t == ' '-%}{{' '}}{%-else-%}<span class='letter' style="transform-origin:0 0;display:inline-block;">{{ _t }}</span>{%-endif-%}
+    {%-endfor-%}
+  </span>
+  <span class="line line2" style="background-color:{{ fx_color }};"></span>
+</span>
+{%-elsif fx_type == 'fading'-%}
+  {%-assign _l = fx_text | size | minus: 1-%}
+  {%-for i in (0.._l)-%}
+  {%-assign _t = fx_text | slice: i-%}
+  {%-if _t == ' '-%}{{' '}}{%-else-%}<span class='letter' style="transform-origin:0 0;display:inline-block;">{{ _t }}</span>{%-endif-%}
+  {%-endfor-%}
+{%-elsif fx_type == 'intro'-%}
+  {%-assign _l = fx_text | size | minus: 1-%}
+  {%-for i in (0.._l)-%}
+  {%-assign _t = fx_text | slice: i-%}
+  {%-if _t == ' '-%}{{' '}}{%-else-%}<span class='letter' style="transform-origin:0 0;display:inline-block;">{{ _t }}</span>{%-endif-%}
+  {%-endfor-%}
+{%-elsif fx_type == 'surprising'-%}
+{%-assign _ts = fx_text | split: ' '-%}
+{%-for _w in _ts-%}
+<span class="word">{{_w}}</span>
+{%-endfor-%}
+{%-else-%}
+<span class="text-wrapper">
+  <span class="line line1"></span>
+  <span class="letters">
+    {%-assign _l = fx_text | size | minus: 1-%}
+    {%-for i in (0.._l)-%}
+    {%-assign _t = fx_text | slice: i-%}
+    {%-if _t == ' '-%}{{' '}}{%-else-%}<span class='letter' style="transform-origin:0 0;display:inline-block;">{{ _t }}</span>{%-endif-%}
+    {%-endfor-%}
+  </span>
+</span>
+{%-endif-%}

@@ -1,0 +1,214 @@
+<div class="page-list-collections" data-section-id="{{ section.id }}" data-section-type="list-collections">
+  {%- include 'page-header', page_title: page_title, page_breadcrumbs: true -%}
+  <div class="page-content content-area">
+    <div class="container">
+      {%- assign blocks = section.blocks | sort: 'collection.all_products_count' -%}
+
+      <div class="row row-{{ section.settings.spacing }} products products-grid grid-{{ section.settings.grid }} layout-{{ section.settings.layout }}">
+        {%- if section.settings.display_type == 'all' -%}
+          {%- case section.settings.sort -%}
+            {%- when 'products_high' or 'products_low' -%}
+              {%- assign collections = collections | sort: 'all_products_count' -%}
+            {%- when 'date' or 'date_reversed' -%}
+              {%- assign collections = collections | sort: 'published_at' -%}
+          {%- endcase -%}
+          {%- if section.settings.sort == 'products_low' or section.settings.sort == 'date' or section.settings.sort == 'alphabetical' -%}
+            {%- for collection in collections -%}
+              {%- assign cat_image = collection.image -%}
+              {%- unless collection.image -%}
+                {%- assign cat_image = collection.products.first.featured_image -%}
+              {%- endunless -%}
+              {%- include 'collection-item', featured_image: cat_image, cat_title: collection.title -%}
+            {%- endfor -%}
+          {%- else -%}
+            {%- for collection in collections reversed -%}
+              {%- assign cat_image = collection.image -%}
+              {%- unless collection.image -%}
+                {%- assign cat_image = collection.products.first.featured_image -%}
+              {%- endunless -%}
+              {%- include 'collection-item', featured_image: cat_image, cat_title: collection.title -%}
+            {%- endfor -%}
+          {%- endif -%}
+        {%- else -%}
+          {%- for block in section.blocks -%}
+            {%- assign collection = collections[block.settings.collection] -%}
+            {%- assign cat_title = collection.title -%}
+            {%- if block.settings.title != blank -%}
+              {%- assign cat_title = block.settings.title -%}
+            {%- endif -%}
+            {%- assign cat_image = collection.image -%}
+            {%- if block.settings.image -%}
+              {%- assign cat_image = block.settings.image -%}
+            {%- endif -%}
+            {%- include 'collection-item', featured_image: cat_image, cat_title: cat_title -%}
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Collections list page",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "All of your collections are listed by default. To customize your list, choose 'Selected' and add collections."
+      },
+      {
+        "type": "radio",
+        "id": "display_type",
+        "label": "Select collections to show",
+        "default": "all",
+        "options": [
+          {
+            "value": "all",
+            "label": "All"
+          },
+          {
+            "value": "selected",
+            "label": "Selected"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "sort",
+        "label": "Sort collections by:",
+        "info": "Sorting only applies when 'All' is selected.",
+        "default": "alphabetical",
+        "options": [
+          {
+            "value": "products_high",
+            "label": "Product count, high to low"
+          },
+          {
+            "value": "products_low",
+            "label": "Product count, low to high"
+          },
+          {
+            "value": "alphabetical",
+            "label": "Alphabetically, A-Z"
+          },
+          {
+            "value": "alphabetical_reversed",
+            "label": "Alphabetically, Z-A"
+          },
+          {
+            "value": "date",
+            "label": "Date, old to new"
+          },
+          {
+            "value": "date_reversed",
+            "label": "Date, new to old"
+          }
+        ]
+      },
+      {
+        "type": "range",
+        "id": "grid",
+        "label": "Collections columns",
+        "info": "How many collections you want to show per row.",
+        "min": 2,
+        "max": 6,
+        "step": 1,
+        "default": 4
+      },
+      {
+        "type": "range",
+        "id": "spacing",
+        "min": 0,
+        "max": 60,
+        "step": 10,
+        "unit": "px",
+        "label": "Space between collections",
+        "default": 0,
+        "info": "Choose 0 to use default style."
+      },
+      {
+        "type": "select",
+        "id": "layout",
+        "label": "Collection grid layout",
+        "default": "2",
+        "options": [
+          {
+            "value": "1",
+            "label": "Layout 1"
+          },
+          {
+            "value": "2",
+            "label": "Layout 2"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "products_count",
+        "label": "Show products count",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Image settings"
+      },
+      {
+        "type": "select",
+        "id": "image_ratio",
+        "label": "Image ratio",
+        "default": "75",
+        "options": [
+          {
+            "value": "1",
+            "label": "Square 1:1"
+          },
+          {
+            "value": "75",
+            "label": "Portrait 3:4"
+          },
+          {
+            "value": "667",
+            "label": "Portrait 2:3"
+          },
+          {
+            "value": "1333",
+            "label": "Landscape 4:3"
+          },
+          {
+            "value": "15",
+            "label": "Landscape 3:2"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "image_ratio_crop",
+        "label": "Automatically crop images",
+        "default": true
+      }
+    ],
+    "blocks": [
+      {
+        "type": "collection",
+        "name": "Collection",
+        "settings": [
+          {
+            "label": "Collection",
+            "id": "collection",
+            "type": "collection"
+          },
+          {
+            "label": "Custom title",
+            "id": "title",
+            "type": "text"
+          },
+          {
+            "label": "Custom image",
+            "id": "image",
+            "type": "image_picker"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

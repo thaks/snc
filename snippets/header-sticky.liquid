@@ -1,0 +1,25 @@
+<div class="header-sticky__placeholder">
+  <header class="site-header header-7 header-sticky">
+    <div class="site-header__main d-none d-lg-block">
+      <div class="container-fluid">
+        <div class="site-header__wrap d-flex align-items-center">
+          {%- if section.settings.header_fixed_logo -%}
+          <div class="site-header__left">
+            {%- include 'header-logo', logo:'sticky' -%}
+          </div>
+          {%- endif -%}
+          <div class="site-header__center">
+            {%- include 'header-menu' -%}
+          </div>
+          <div class="site-header__right d-flex align-items-center">
+            {%- include 'header-search' -%}
+            {%- include 'header-config' -%}
+            {%- include 'header-account', account_icon: true -%}
+            {%- include 'header-wishlist' -%}
+            {%- include 'header-cart' -%}
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+</div>

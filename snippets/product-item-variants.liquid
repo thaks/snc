@@ -1,0 +1,80 @@
+{%- if my_product.available and my_product.variants.size > 1 and is_external_product == false and is_grouped_product == false -%}
+  <div class="ProductSection-{{ my_section_id }} product__form d-flex align-items-center justify-content-center" data-section-id="{{ my_section_id }}" data-section-type="line_item" data-section-state="false">
+    <div class="close_btn"><i class="ris ri-remove"></i></div>
+    <div class="clearfix">
+      <div class="product-form__variants">
+        {%- unless my_product.has_only_default_variant -%}
+        <div class="variations-{{ my_section_id }}">
+          <div class="variations-content-{{ my_section_id }}">
+            {%- for option in my_product.options_with_values -%}
+            <div class="selector-wrapper variation-select {{ option.name | handlezie | downcase }} variation-select-{{ my_section_id }}-{{ forloop.index0 }}">
+              <label class="option-select-label{% if option.name == 'default' %} hide{% endif %}">
+                {{- option.name -}}: <span class="option-select-value option-select-value-{{ my_section_id }}-{{ forloop.index0 }}">{{ option.selected_value }}</span>
+              </label>
+              <div class="select-wrapper">
+                <select class="single-option-selector single-option-selector-{{ my_section_id }} single-option-selector-{{ my_section_id }}-{{ forloop.index0 }}" data-index="option{{ forloop.index }}" data-option="option{{ forloop.index }}">
+                  {%- for value in option.values -%}
+                  <option value="{{ value | escape }}"{% if option.selected_value == value %} selected="selected"{% endif %}>{{ value }}</option>
+                  {%- endfor -%}
+                </select>
+              </div>
+            </div>
+            {%- endfor -%}
+          </div>
+        </div>
+        {%- endunless -%}
+
+        <select name="id" class="ProductSelect-{{ my_section_id }} hide" data-section="{{ my_section_id }}">
+          {%- for variant in my_product.variants -%}
+          {%- if variant.available -%}
+          <option {% if variant == my_product.selected_or_first_available_variant %} selected="selected" {% endif %} value="{{ variant.id }}">
+            {{- variant.title -}}
+          </option>
+          {%- else -%}
+          <option disabled="disabled">{{ variant.title }} - {{ 'products.product.sold_out' | t }}</option>
+          {%- endif -%}
+          {%- endfor -%}
+        </select>
+        {%- include 'product-single', function: 'price', product: my_product, section_id: my_section_id -%}
+      </div>
+      <div class="product-form__item--submit">
+        {%- if is_external_product == false -%}
+          {%- if is_grouped_product == false -%}
+          <button type="submit" name="add"{% unless current_variant.available %} disabled="disabled"{% endunless %} class="AddToCart-{{ my_section_id }} btn btn-primary progress-btn product-form__cart-submit">
+            <span class="AddToCartText-{{ my_section_id }} btn-text">
+              {%- unless current_variant.available -%}
+                {{- 'products.product.sold_out' | t -}}
+              {%- else -%}
+                {%- if current_variant.inventory_quantity <= 0 and current_variant.inventory_management == 'shopify' -%}
+                  {{- 'products.product.pre_order' | t -}}
+                {%- else -%}
+                  {{- 'products.product.add_to_cart' | t -}}
+                {%- endif -%}
+              {%- endunless -%}
+            </span>
+            <div class="progress"></div>
+            <div class="checked"></div>
+          </button>
+          {%- else -%}
+          <button type="submit" name="add" class="AddToCart-{{ my_section_id }} btn btn-primary progress-btn product-form__cart-submit--grouped" disabled="">
+            <span class="btn-text">
+              {%- if current_variant.inventory_quantity <= 0 and current_variant.inventory_management == 'shopify' -%}
+                {{- 'products.product.pre_order' | t -}}
+              {%- else -%}
+                {{- 'products.product.add_to_cart' | t -}}
+              {%- endif -%}
+            </span>
+            <div class="progress"></div>
+            <div class="checked"></div>
+          </button>
+          {%- endif -%}
+        {%- else -%}
+        <a href="{{ my_product.metafields.info.external_link }}" class="btn btn-primary">{{ my_product.metafields.info.external_btn }}</a>
+        {%- endif -%}
+      </div>
+    </div>
+    <script type="application/json" class="ProductJson-{{ my_section_id }}">{{ my_product | json }}</script>
+    <script type="application/json" class="ProductSwatchJson-{{ my_section_id }}">{{ my_product.metafields.texture | json }}</script>
+    <script type="application/json" class="ProductMoreJson-{{ my_section_id }}">{% capture product_more_json %}{% include 'product-json', product: my_product %}{% endcapture %}{{ product_more_json | strip_newlines | remove: "  " }}</script>
+  </div>
+{%- endif -%}

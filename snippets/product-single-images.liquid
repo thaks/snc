@@ -1,0 +1,107 @@
+<div class="product-single__photo-wrapper">
+  <div class="product-single__photo-inner product-single__photos-{{ section_id }}"{% if product_image_width == 12 %} data-center_mode="true"{% endif %}>
+    {%- assign featured_image = product.selected_or_first_available_variant.featured_image | default: product.featured_image -%}
+    {%- assign img_url = featured_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+    <div class="product-single__photo-container">
+      <div class="product-single__photo product-single__photo-{{ section_id }}{% if enable_zoom_image %} zoom-enabled{% endif %}{% if enable_images_gallery %} photoswipe-enabled{% endif %}" data-image_id="{{ featured_image.id }}"{% if enable_zoom_image %} data-zoom="{{ featured_image | img_url: product_image_zoom_size, scale: product_image_scale }}"{% endif %}{% if enable_images_gallery %} data-index="0"{% endif %}>
+        <img class="feature-row__image feature-row__image-featured lazyload"
+             src="{{ featured_image | img_url: '100x' }}"
+             data-src="{{ img_url }}"
+             data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+             data-aspectratio="{{ featured_image.aspect_ratio }}"
+             data-sizes="auto"
+             data-large_image="{{ featured_image | img_url: 'master' }}"
+             data-large_image_width="{{ featured_image.width }}"
+             data-large_image_height="{{ featured_image.height }}"
+             alt="{{ featured_image.alt | escape }}" />
+      </div>
+      {%- if product_video != blank -%}
+      <ul class="product-single__tools">
+        <li><div class="product-single__show-video placeholder-icon has-tooltip"><span class="tooltip">{{ 'products.product.video' | t }}</span></div></li>
+      </ul>
+      {%- endif -%}
+    </div>
+
+    {%- for image in product.images -%}
+    {%- unless image == featured_image -%}
+    {%- assign img_url = image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+    <div class="product-single__photo-container">
+      <div class="product-single__photo product-single__photo-{{ section_id }}{% if enable_zoom_image %} zoom-enabled{% endif %}{% if enable_images_gallery %} photoswipe-enabled{% endif %}" data-image_id="{{ image.id }}"{% if enable_zoom_image %} data-zoom="{{ image | img_url: product_image_zoom_size, scale: product_image_scale }}"{% endif %}{% if enable_images_gallery %} data-index="{{ forloop.index0 }}"{% endif %}>
+        <img class="feature-row__image lazyload lazypreload"
+             src="{{ image | img_url: '100x' }}"
+             data-src="{{ img_url }}"
+             data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+             data-aspectratio="{{ image.aspect_ratio }}"
+             data-sizes="auto"
+             data-large_image="{{ image | img_url: 'master' }}"
+             data-large_image_width="{{ image.width }}"
+             data-large_image_height="{{ image.height }}"
+             alt="{{ image.alt | escape }}" />
+      </div>
+      {%- if product_video != blank -%}
+      <ul class="product-single__tools">
+        <li><div class="product-single__show-video placeholder-icon has-tooltip"><span class="tooltip">{{ 'products.product.video' | t }}</span></div></li>
+      </ul>
+      {%- endif -%}
+    </div>
+    {%- endunless -%}
+    {%- endfor -%}
+  </div>
+  {%- if product_image_width == 12 and product_video != blank -%}
+  <ul class="product-single__tools">
+    <li><div class="product-single__show-video placeholder-icon has-tooltip"><span class="tooltip">{{ 'products.product.video' | t }}</span></div></li>
+  </ul>
+  {%- endif -%}
+</div>
+{%- if product_video != blank -%}
+<div class="product-single__video-wrapper">
+  <div class="product-single__video" data-image_id="{{ product.id }}">
+    {%- if product_video contains 'youtube' -%}
+    {%- capture product_video_shortcode -%}[youtube video="{{ product_video }}"]{%- endcapture -%}
+    {%- elsif product_video contains 'vimeo' -%}
+    {%- capture product_video_shortcode -%}[vimeo video="{{ product_video }}"]{%- endcapture -%}
+    {%- else -%}
+    {%- capture product_video_shortcode -%}[video src="{{ product_video }}" poster="{{ featured_image | img_url: '1024x1024' }}"]{%- endcapture -%}
+    {%- endif -%}
+
+    {%- if product_video_shortcode != blank -%}
+    {%- include 'shortcode' load: product_video_shortcode -%}
+    {%- endif -%}
+  </div>
+</div>
+{%- endif -%}
+{%- if product_images_size > 1 -%}
+<div class="product-single__thumbnail-wrapper{% if product.images.size <=4 %} no-scroll{% endif %}">
+  <div class="product-single__thumbnails product-single__thumbnails-{{ section_id }} d-flex"{% if thumbnails_position == 'left' or thumbnails_position == 'right' %} data-vertical="true"{% endif %} data-parallax='{"y" : 30, "smoothness": 20}'>
+    <div class="product-single__thumbnails-item">
+      <a href="{{ featured_image.src | img_url: product_image_zoom_size, scale: product_image_scale }}"
+         class="product-single__thumbnail product-single__thumbnail--{{ section_id }}"
+         data-thumbnail_id="{{ featured_image.id }}"
+         {% if enable_zoom_image %}data-zoom="{{ featured_image.src | img_url: product_image_zoom_size, scale: product_image_scale }}"{% endif %}>
+        <div class="aspect__ratio aspect__ratio-1 aspect__ratio-crop">
+          <div class="aspect__ratio-container">
+            <div class="aspect__ratio-image product-single__thumbnail-image lazyload" data-bgset="{{ featured_image | img_url: '100x' }} 1x, {{ featured_image | img_url: '200x' }} 2x" data-sizes="auto" data-parent-fit="cover" style="background-image:url('{{ featured_image | img_url: '100x' }}');"></div>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    {%- for image in product.images -%}
+    {%- unless image == featured_image -%}
+    <div class="product-single__thumbnails-item">
+      <a href="{{ image.src | img_url: product_image_zoom_size, scale: product_image_scale }}"
+         class="product-single__thumbnail product-single__thumbnail--{{ section_id }}"
+         data-thumbnail_id="{{ image.id }}"
+         {% if enable_zoom_image %}data-zoom="{{ image.src | img_url: product_image_zoom_size, scale: product_image_scale }}"{% endif %}>
+        <div class="aspect__ratio aspect__ratio-1 aspect__ratio-crop">
+          <div class="aspect__ratio-container">
+            <div class="aspect__ratio-image product-single__thumbnail-image lazyload" data-bgset="{{ image | img_url: '100x' }} 1x, {{ image | img_url: '200x' }} 2x" data-sizes="auto" data-parent-fit="cover" style="background-image:url('{{ image | img_url: '100x' }}');"></div>
+          </div>
+        </div>
+      </a>
+    </div>
+    {%- endunless -%}
+    {%- endfor -%}
+  </div>
+</div>
+{%- endif -%}

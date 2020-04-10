@@ -1,0 +1,183 @@
+.line-item {
+    background-color: rgb(255, 255, 255);
+    width: 100%;
+    margin: 20px 0;
+    margin-top: 35px;
+
+    &__heading {
+        margin: 20px 0;
+        display: block;
+        font-weight: 400;
+        font-size: 18px;
+        color: #000;
+
+        span {
+            display: inline;
+            font-weight: 300;
+            font-size: 16px;
+            opacity: .6;
+            color: #000;
+        }
+    }
+
+    &__content { 
+
+    }
+
+    &__selectbox {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    &__label {
+        display: inline-block;
+        font-weight: 300;
+        font-size: 16px;
+        margin-bottom: 0;
+    }
+
+    &__extra-div {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 10px;
+    }
+
+    &__embroidery-save-button {
+        display: block;
+        width: 100%;
+        background-color: #000;
+        color: white;
+        padding: 10px;
+        text-transform: uppercase;
+        text-align: center;
+        cursor: pointer;
+        font-size: 13px;
+        margin-bottom: 20px;
+
+        &:hover {
+            opacity: 0.8;
+        }
+
+
+    }
+
+    &__show-text {
+        font-size: 23px;
+        font-weight: 400;
+        text-align: center;
+        background-color: white;
+    }
+
+    &__close-button {
+        
+    }
+
+    &__confirm {
+        position: relative;
+    }
+
+    &__embroidery-close-button {
+        position: absolute;
+        right: 0;
+        top: 0;
+        background: url(https://i.allheart.com/test/APPAH-2856/images/remove.png) 0 0 no-repeat;
+        width: 35px;
+        height: 35px;
+        overflow: hidden;
+        background-size: contain;
+        cursor: pointer;
+    }
+}
+
+
+
+.thr-steth-tube-engraving {
+    background-color: rgb(255, 255, 255);
+    width: 100%;
+    margin: 20px 0;
+    margin-top: 35px;
+
+    &__heading {
+        margin: 20px 0;
+        display: block;
+        font-weight: 400;
+        font-size: 18px;
+        color: #000;
+
+        span {
+            display: inline;
+            font-weight: 300;
+            font-size: 16px;
+            opacity: .6;
+            color: #000;
+        }
+    }
+
+    &__content { 
+
+    }
+
+    &__selectbox {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    &__label {
+        display: inline-block;
+        font-weight: 300;
+        font-size: 16px;
+        margin-bottom: 0;
+    }
+
+    &__extra-div {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 10px;
+    }
+
+    &__embroidery-save-button {
+        display: block;
+        width: 100%;
+        background-color: #000;
+        color: white;
+        padding: 10px;
+        text-transform: uppercase;
+        text-align: center;
+        cursor: pointer;
+        font-size: 13px;
+        margin-bottom: 20px;
+
+        &:hover {
+            opacity: 0.8;
+        }
+
+
+    }
+
+    &__show-text {
+        font-size: 23px;
+        font-weight: 400;
+        text-align: center;
+        background-color: white;
+    }
+
+    &__close-button {
+        
+    }
+
+    &__confirm {
+        position: relative;
+    }
+
+    &__embroidery-close-button {
+        position: absolute;
+        right: 0;
+        top: 0;
+        background: url(https://i.allheart.com/test/APPAH-2856/images/remove.png) 0 0 no-repeat;
+        width: 35px;
+        height: 35px;
+        overflow: hidden;
+        background-size: contain;
+        cursor: pointer;
+    }
+}

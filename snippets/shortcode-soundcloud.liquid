@@ -1,0 +1,6 @@
+{%- capture my_video -%}{% include 'shortcode-render' render:'video' %}{%- endcapture -%}
+{%- if my_video != blank -%}
+<div class="video__wrapper">
+  <div class="soundcloud__audio" data-video="{{ my_video }}"></div>
+</div>
+{%- endif -%}

@@ -1,0 +1,29 @@
+{% schema %}
+{
+    "name": "Video",
+    "settings": [],
+    "presets": [
+        {
+            "name": "Video",
+            "category": "THAHIR"
+        }
+    ]
+}
+{% endschema %}
+
+<div class="homescreen-video">
+    <div class="homescreen-video__video-container">
+        <video class="homescreen-video__video" autoplay loop muted playsinline>
+            <source type="video/mp4" src="https://cdn.shopify.com/s/files/1/2610/4676/files/backgroundvideo.mp4">
+        </video>
+    </div>
+    <div class="homescreen-video__overlay">
+        <div class="homescreen-video__text-container">
+            <p>{{ 'thr.header.main-text' | t }}</p>
+            <div class="homescreen-video__button-box">
+                <a href="https://www.shopscrubsandclogs.com/collections/womens" class="homescreen-video__button-box__btn">{{ 'thr.header.shop-women-button' | t }}</a>
+                <a href="https://www.shopscrubsandclogs.com/collections/mens" class="homescreen-video__button-box__btn">{{ 'thr.header.shop-men-button' | t }}</a>
+            </div>
+        </div>
+    </div>
+</div>

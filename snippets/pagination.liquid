@@ -1,0 +1,25 @@
+{%- if paginate.pages > 1 -%}
+<nav class="site-pagination">
+  <ul class="notranslate d-flex align-items-center justify-content-center">
+    {%- if paginate.previous.is_link -%}
+    <li><a class="prev page-numbers d-flex align-items-center" title="{{ 'general.pagination.previous' | t | escape }}" href="{{ paginate.previous.url }}">←</a></li>
+    {%- endif -%}
+    
+    {%- for part in paginate.parts -%}
+      {%- if part.is_link -%}
+      <li><a class="page-numbers d-flex align-items-center" href="{{ part.url }}">{{ part.title }}</a></li>
+      {%- else -%}
+        {%- if part.title == '&hellip;' -%}
+        <li><span class="btn-disabled page-numbers d-flex align-items-center">{{ part.title }}</span></li>
+        {%- else -%}
+        <li><span class="btn-active page-numbers d-flex align-items-center">{{ part.title }}</span></li>
+        {%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+    
+    {%- if paginate.next.is_link -%}
+    <li><a class="next page-numbers d-flex align-items-center" title="{{ 'general.pagination.next' | t | escape }}" href="{{ paginate.next.url }}">→</a></li>
+    {%- endif -%}
+  </ul>
+</nav>
+{%- endif -%}

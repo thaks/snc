@@ -1,0 +1,42 @@
+<div class="currency__picker ml__picker{% if settings.currency_flag == false %} noflag{% endif %}{% if settings.currency_code == false %} nocode{% endif %}{% unless settings.shop_enabled_currencies %} ml__js{% endunless %} d-position-{{ dropdown_position | default: 'left' }}">
+  {%- if settings.shop_enabled_currencies -%}
+    <span class="intro-text">{{ 'layout.topbar.my_currency' | t }}</span>
+    <div class="has-drop">
+      <div class="ml__current notranslate" data-code="{{ cart.currency.iso_code }}">{{ cart.currency.iso_code }}</div>
+      <div class="ml__dropdown">  
+        <ul class="ml__switcher">
+          <li><a href="javascript:void(0);" class="currency active notranslate" data-code="{{ cart.currency.iso_code }}">{{ cart.currency.iso_code }}</a></li>
+          {%- for currency in shop.enabled_currencies -%}
+          {%- if currency != cart.currency -%}
+          <li><a href="javascript:void(0);" class="currency notranslate" data-code="{{ currency.iso_code }}">{{ currency.iso_code }}</a></li>
+          {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      </div>
+    </div>
+  {%- else -%}
+    {%- assign codes = 'USD,EUR,GBP,CAD,ALL,DZD,AOA,ARS,AMD,AWG,AUD,BBD,AZN,BDT,BSD,BHD,BYR,BZD,BTN,BAM,BRL,BOB,BWP,BND,BGN,MMK,KHR,KYD,XAF,CLP,CNY,COP,CRC,HRK,CZK,DKK,DOP,XCD,EGP,ETB,XPF,FJD,GMD,GHS,GTQ,GYD,GEL,HNL,HKD,HUF,ISK,INR,IDR,ILS,JMD,JPY,JEP,JOD,KZT,KES,KWD,KGS,LVL,LBP,LTL,MGA,MKD,MOP,MVR,MXN,MYR,MUR,MDL,MAD,MNT,MZN,NAD,NPR,ANG,NZD,NIO,NGN,NOK,OMR,PKR,PGK,PYG,PEN,PHP,PLN,QAR,RON,RUB,RWF,WST,SAR,STD,RSD,SCR,SGD,SYP,ZAR,KRW,LKR,SEK,CHF,TWD,THB,TZS,TTD,TND,TRY,UGX,UAH,AED,UYU,VUV,VEF,VND,XBT,XOF,ZMW,AFN,CVE,KMF,CDF,HTG,LAK,LSL,LRD,MWK,SDG,SBD,SRD,SZL,TMT,UZS,YER' | split: ',' -%}
+    {%- assign supported_codes = settings.currency_supported | split: ' ' -%}
+    <span class="intro-text">{{ 'layout.topbar.my_currency' | t }}</span>
+    <div class="has-drop">
+      <div class="ml__current notranslate" data-code="{{ cart.currency.iso_code }}">{{ cart.currency.iso_code }}</div>
+      <div class="ml__dropdown">
+        <ul class="ml__switcher">
+          <li><a href="javascript:void(0);" class="currency active notranslate" data-code="{{ shop.currency }}">{{ shop.currency }}</a></li>
+          {%- for code in supported_codes -%}
+            {%- if code != shop.currency and codes contains code -%}
+            <li><a href="javascript:void(0);" class="currency notranslate" data-code="{{ code }}">{{ code }}</a></li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      </div>
+    </div>
+    <input type="hidden" class="currency_format" value="{{ settings.currency_format | default: 'money_with_currency_format' | escape }}" />
+    <input type="hidden" class="shop_currency" value="{{ cart.currency.iso_code | escape }}" />
+    <input type="hidden" class="default_currency" value="{{ cart.currency.iso_code | escape }}" />
+    <input type="hidden" class="money_with_currency_format" value="{{ shop.money_with_currency_format | strip_html | escape }}" />
+    <input type="hidden" class="money_format" value="{{ shop.money_format | strip_html | escape }}" />
+    <input type="hidden" class="auto_switch" value="{{ settings.currency_auto_switch | escape }}" />
+    <input type="hidden" class="original_price" value="{{ settings.currency_original_price | escape }}" />
+  {%- endif -%}
+</div>

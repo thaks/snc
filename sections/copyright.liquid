@@ -1,0 +1,620 @@
+{%- unless template.name == 'index' and section.settings.index_disable -%}
+  {%- if section.blocks.size > 0 -%}
+    {%- if section.blocks.size == 1 and section.blocks[0].type == 'totop' -%}
+      {%- assign block = section.blocks[0] -%}
+      <div class="progress-page has-tooltip{% if block.settings.mobile_disable %} mb-hidden{% endif %}" {{ block.shopify_attributes }}><div class="scrolltotop is-active is-visible"><div class="arrow-top"></div><div class="arrow-top-line"></div><span class="tooltip">{{ block.settings.tooltip }}</span></div><svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102"><path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/></svg></div>
+    {%- else -%}
+
+    <div class="site-copyright" style="padding:{{ section.settings.padding_top }}px {{ section.settings.padding_right }}px {{ section.settings.padding_bottom }}px {{ section.settings.padding_left }}px;">
+      <div class="container">
+        <div class="row">
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+            {%- when 'totop' -%}
+              <div class="progress-page has-tooltip{% if block.settings.mobile_disable %} mb-hidden{% endif %}" {{ block.shopify_attributes }}><div class="scrolltotop is-active is-visible"><div class="arrow-top"></div><div class="arrow-top-line"></div><span class="tooltip">{{ block.settings.tooltip }}</span></div><svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102"><path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/></svg></div>
+
+            {%- when 'empty_column' -%}
+            <div class="col col-p-{{ block.settings.width }} col-pm-{{ block.settings.width_mb }}{% if block.settings.mobile_disable %} mb-hidden{% endif %}" {{ block.shopify_attributes }}></div>
+
+            {%- when 'html' -%}
+            <div class="col col-p-{{ block.settings.width }} col-pm-{{ block.settings.width_mb }}{% if block.settings.mobile_disable %} mb-hidden{% endif %}" {{ block.shopify_attributes }}>
+              <div class="footer__widget text-{{ block.settings.text_alignment }} text-m-{{ block.settings.text_alignment_mb }}">
+                <div class="html">{{ block.settings.content }}</div>
+              </div>
+            </div>
+
+            {%- when 'navigation' -%}
+            <div class="col col-p-{{ block.settings.width }} col-pm-{{ block.settings.width_mb }}{% if block.settings.mobile_disable %} mb-hidden{% endif %}" {{ block.shopify_attributes }}>
+              <div class="footer__widget text-{{ block.settings.text_alignment }} text-m-{{ block.settings.text_alignment_mb }}">
+                <ul class="linklist">
+                  {%- for link in linklists[block.settings.linklist].links -%}
+                  <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+                  {%- endfor -%}
+                </ul>
+              </div>
+            </div>
+
+            {%- when 'payment' -%}
+            <div class="col col-p-{{ block.settings.width }} col-pm-{{ block.settings.width_mb }}{% if block.settings.mobile_disable %} mb-hidden{% endif %}" {{ block.shopify_attributes }}>
+              <div class="footer__widget text-{{ block.settings.text_alignment }} text-m-{{ block.settings.text_alignment_mb }}">
+                <ul class="payment_providers">
+                  {%- for type in shop.enabled_payment_types -%}
+                  <li>{{ type | payment_type_svg_tag }}</li>
+                  {%- endfor -%}
+                </ul>
+              </div>
+            </div>
+
+            {%- when 'social' -%}
+            <div class="col col-p-{{ block.settings.width }} col-pm-{{ block.settings.width_mb }}{% if block.settings.mobile_disable %} mb-hidden{% endif %}" {{ block.shopify_attributes }}>
+              <div class="footer__widget text-{{ block.settings.text_alignment }} text-m-{{ block.settings.text_alignment_mb }}">
+                <ul class="social-icons{% if block.settings.social_border %} social--has-border{% endif %} row row-{{ block.settings.social_spacing }}">
+                  {%- include 'social-icons', facebook: block.settings.social_facebook, twitter: block.settings.social_twitter, pinterest: block.settings.social_pinterest, instagram: block.settings.social_instagram, tumblr: block.settings.social_tumblr, googleplus: block.settings.social_googleplus, youtube: block.settings.social_youtube, vimeo: block.settings.social_vimeo, size: block.settings.social_size -%}
+                </ul>
+              </div>
+            </div>
+
+            {%- when 'spacing' -%}
+            <div class="col col-p-{{ block.settings.width }} col-pm-{{ block.settings.width_mb }}{% if block.settings.mobile_disable %} mb-hidden{% endif %}" {{ block.shopify_attributes }}>
+              <div class="col-12" style="min-height:{{ block.settings.height | append:'px' }};"></div>
+            </div>
+            {%- endcase -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+    {%- endif -%}
+  {%- endif -%}
+{%- endunless -%}
+
+{% schema %}
+  {
+    "name": "Copyright",
+    "settings": [
+      {
+        "type": "header",
+        "content": "— Paddings"
+      },
+      {
+        "type": "range",
+        "id": "padding_top",
+        "label": "Top padding",
+        "min": 0,
+        "max": 250,
+        "step": 5,
+        "unit": "px",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "padding_bottom",
+        "label": "Bottom padding",
+        "min": 0,
+        "max": 250,
+        "step": 5,
+        "unit": "px",
+        "default": 20
+      },
+      {
+        "type": "range",
+        "id": "padding_left",
+        "label": "Left padding",
+        "min": 0,
+        "max": 250,
+        "step": 5,
+        "unit": "px",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "padding_right",
+        "label": "Right padding",
+        "min": 0,
+        "max": 250,
+        "step": 5,
+        "unit": "px",
+        "default": 0
+      },
+      {
+        "type": "header",
+        "content": "— Options"
+      },
+      {
+        "type": "checkbox",
+        "id": "index_disable",
+        "label": "Disable on homepage",
+        "info": "Check to disable copyright on homepage."
+      }
+    ],
+    "blocks": [
+    {
+        "type": "totop",
+        "name": "Back to top button",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this block on mobile devices."
+          },
+		  {
+            "type": "text",
+            "id": "tooltip",
+            "label": "Tooltip",
+            "default": "Back to Top"
+          }
+        ]
+      },
+      {
+        "type": "html",
+        "name": "HTML",
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this block on mobile devices."
+          },
+          {
+            "type": "range",
+            "id": "width",
+            "label": "Width",
+            "min": 1,
+            "max": 100,
+            "step": 1,
+            "unit": "%",
+            "default": 100
+          },
+          {
+            "type": "range",
+            "id": "width_mb",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "%",
+            "label": "Width on mobile",
+            "default": 50
+          },
+          {
+            "type": "select",
+            "id": "text_alignment",
+            "label": "Text alignment",
+            "default": "left",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "text_alignment_mb",
+            "label": "Text alignment on mobile",
+            "default": "left",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ]
+          },
+          {
+            "type": "header",
+            "content": "— Options"
+          },
+		  {
+            "type": "html",
+            "id": "content",
+            "label": "Content"
+          }
+        ]
+      },
+      {
+        "type": "navigation",
+        "name": "Navigation",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this block on mobile devices."
+          },
+          {
+            "type": "range",
+            "id": "width",
+            "label": "Width",
+            "min": 1,
+            "max": 100,
+            "step": 1,
+            "unit": "%",
+            "default": 100
+          },
+          {
+            "type": "range",
+            "id": "width_mb",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "%",
+            "label": "Width on mobile",
+            "default": 50
+          },
+          {
+            "type": "select",
+            "id": "text_alignment",
+            "label": "Text alignment",
+            "default": "left",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "text_alignment_mb",
+            "label": "Text alignment on mobile",
+            "default": "left",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ]
+          },
+          {
+            "type": "header",
+            "content": "— Options"
+          },
+		  {
+            "type": "link_list",
+            "id": "linklist",
+            "label": "Choose a link list"
+          }
+        ]
+      },
+      {
+        "type": "payment",
+        "name": "Payment providers",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this block on mobile devices."
+          },
+          {
+            "type": "range",
+            "id": "width",
+            "label": "Width",
+            "min": 1,
+            "max": 100,
+            "step": 1,
+            "unit": "%",
+            "default": 100
+          },
+          {
+            "type": "range",
+            "id": "width_mb",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "%",
+            "label": "Width on mobile",
+            "default": 50
+          },
+          {
+            "type": "select",
+            "id": "text_alignment",
+            "label": "Text alignment",
+            "default": "left",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "text_alignment_mb",
+            "label": "Text alignment on mobile",
+            "default": "left",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ]
+          },
+          {
+            "type": "header",
+            "content": "— Options"
+          },
+		  {
+            "type": "paragraph",
+            "content": "The list of payment types is based on those accepted by your store's enabled payment providers."
+          }
+        ]
+      },
+      {
+        "type": "social",
+        "name": "Social media",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this block on mobile devices."
+          },
+          {
+            "type": "range",
+            "id": "width",
+            "label": "Width",
+            "min": 1,
+            "max": 100,
+            "step": 1,
+            "unit": "%",
+            "default": 100
+          },
+          {
+            "type": "range",
+            "id": "width_mb",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "%",
+            "label": "Width on mobile",
+            "default": 50
+          },
+          {
+            "type": "select",
+            "id": "text_alignment",
+            "label": "Text alignment",
+            "default": "left",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "text_alignment_mb",
+            "label": "Text alignment on mobile",
+            "default": "left",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ]
+          },
+          {
+            "type": "header",
+            "content": "— Options"
+          },
+		  {
+            "type": "paragraph",
+            "content": "Theme settings > Social media, to change social links."
+          },
+          {
+            "type": "range",
+            "id": "social_spacing",
+            "min": 0,
+            "max": 30,
+            "step": 10,
+            "unit": "px",
+            "label": "Space between icons",
+            "default": 10
+          },
+          {
+            "type": "range",
+            "id": "social_size",
+            "min": 10,
+            "max": 50,
+            "step": 1,
+            "unit": "px",
+            "label": "Icon size",
+            "default": 14
+          },
+          {
+            "type": "checkbox",
+            "id": "social_border",
+            "label": "Has border",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "social_facebook",
+            "label": "Show facebook",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "social_twitter",
+            "label": "Show twitter",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "social_pinterest",
+            "label": "Show pinterest",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "social_instagram",
+            "label": "Show instagram",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "social_tumblr",
+            "label": "Show tumblr"
+          },
+          {
+            "type": "checkbox",
+            "id": "social_googleplus",
+            "label": "Show google plus"
+          },
+          {
+            "type": "checkbox",
+            "id": "social_youtube",
+            "label": "Show youtube"
+          },
+          {
+            "type": "checkbox",
+            "id": "social_vimeo",
+            "label": "Show vimeo"
+          }
+        ]
+      },
+      {
+        "type": "empty_column",
+        "name": "Empty column",
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this block on mobile devices."
+          },
+          {
+            "type": "range",
+            "id": "width",
+            "label": "Width",
+            "min": 1,
+            "max": 100,
+            "step": 1,
+            "unit": "%",
+            "default": 100
+          },
+          {
+            "type": "range",
+            "id": "width_mb",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "%",
+            "label": "Width on mobile",
+            "default": 50
+          }
+        ]
+      },
+      {
+        "type": "spacing",
+        "name": "Spacing",
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this block on mobile devices."
+          },
+          {
+            "type": "range",
+            "id": "width",
+            "label": "Width",
+            "min": 1,
+            "max": 100,
+            "step": 1,
+            "unit": "%",
+            "default": 100
+          },
+          {
+            "type": "range",
+            "id": "width_mb",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "%",
+            "label": "Width on mobile",
+            "default": 50
+          },
+		  {
+            "type": "range",
+            "id": "height",
+            "min": 1,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "label": "Height",
+            "default": 30
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,423 @@
+{%- assign is_container = true -%}
+{%- assign container_begin = '<div class="container">' -%}
+{%- assign container_end = '</div>' -%}
+{%- if section.settings.full_width -%}
+  {%- assign is_container = false -%}
+  {%- assign container_begin = '' -%}
+  {%- assign container_end = '' -%}
+{%- endif -%}
+
+{{- container_begin -}}
+<div class="container-section posts-section{% if section.settings.mobile_disable %} mb-hidden{% endif %}" style="padding:{{ section.settings.padding_top }}px {{ section.settings.padding_right }}px {{ section.settings.padding_bottom }}px {{ section.settings.padding_left }}px;">
+  {%- assign blocks_size = section.blocks.size -%}
+  {%- if section.blocks.size > 0 -%}
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'background' -%}
+        {%- assign blocks_size = blocks_size | minus: 1 -%}
+        {%- include 'bgimage' -%}
+        {%- break -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endif -%}
+  
+  <div class="wrapper{% if section.settings.full_width and section.settings.no_spacing == false %} container{% assign is_container = true %}{% endif %}">
+    {%- include 'headings', type: 'index', object: section -%}
+
+    {%- assign blog = blogs[section.settings.blog] -%}
+    {%- if blog != blank and blog.articles_count > 0 -%}
+      <div class="blog__listing row row-{{ section.settings.spacing }}">
+        {%- for article in blog.articles limit: section.settings.post_limit -%}
+        <div class="col-12 col-md-6 col-lg-3 article__listing{% if article.image %} has-thumbnail{% endif %}">
+          {%- if article.image -%}
+          <div class="article__image">
+            <div class="aspect__ratio aspect__ratio-crop aspect__ratio-{{ section.settings.image_ratio }}">
+              <a href="{{ article.url }}" class="aspect__ratio-container{% if section.settings.enable_parallax %} prllx" data-prllx="35{% endif %}">
+                <div class="aspect__ratio-image lazyload" data-bgset="{% include 'bgset', image: article.image %}" data-sizes="auto" data-parent-fit="cover" style="background-image:url({{ 'transparent.png.jpg' | asset_url }});"></div>
+              </a>
+            </div>
+            {%- if section.settings.show_date -%}
+            <div class="article__meta">
+              <time class="article__date" datetime="{{ article.published_at }}"><span>{{ article.published_at | date: "%-d, %b" }}</span></time>
+            </div>
+            {%- endif -%}
+          </div>
+          {%- endif -%}
+          <div class="article__content">
+            {%- if section.settings.show_date -%}
+            <div class="article__meta">
+              <time class="article__date" datetime="{{ article.published_at }}"><span>{{ article.published_at | date: "%-d, %b" }}</span></time>
+            </div>
+            {%- endif -%}
+            <h2 class="article__title"><a href="{{ article.url }}">{{ article.title }}</a></h2>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      {%- include 'no-blocks' -%}
+    {%- endif -%}
+  </div>
+</div>
+{{- container_end -}}
+
+{% schema %}
+  {
+    "name": "Blog posts",
+    "class": "index-section",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "mobile_disable",
+        "label": "Disable on mobile",
+        "info": "Check to disable this section on mobile devices"
+      },
+      {
+        "type": "checkbox",
+        "id": "full_width",
+        "label": "Wide display",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "no_spacing",
+        "label": "No spacing",
+        "info": "When Wide display is checked, use this option to remove the bilateral spaces"
+      },
+      {
+        "type": "text",
+        "id": "heading",
+        "label": "Heading",
+        "default": "Latest news"
+      },
+      {
+        "type": "text",
+        "id": "subheading",
+        "label": "Subheading",
+        "default": "The new blog today"
+      },
+      {
+        "type": "select",
+        "id": "alignment",
+        "label": "Headings alignment",
+        "default": "center",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ]
+      },
+      {
+        "type": "header",
+        "content": "— Heading style"
+      },
+      {
+        "type": "color",
+        "id": "heading_color",
+        "label": "Color",
+        "default": "#000"
+      },
+      {
+        "type": "range",
+        "id": "heading_size",
+        "label": "Font size",
+        "max": 100,
+        "min": 10,
+        "step": 1,
+        "unit": "px",
+        "default": 32
+      },
+      {
+        "type": "range",
+        "id": "heading_weight",
+        "label": "Font weight",
+        "max": 700,
+        "min": 300,
+        "step": 100,
+        "default": 600
+      },
+      {
+        "type": "range",
+        "id": "heading_spacing",
+        "label": "Bottom spacing",
+        "min": 0,
+        "max": 100,
+        "step": 5,
+        "unit": "px",
+        "default": 5
+      },
+      {
+        "type": "header",
+        "content": "— Subheading style"
+      },
+      {
+        "type": "color",
+        "id": "subheading_color",
+        "label": "Color",
+        "default": "#666"
+      },
+      {
+        "type": "range",
+        "id": "subheading_size",
+        "label": "Font size",
+        "max": 100,
+        "min": 10,
+        "step": 1,
+        "unit": "px",
+        "default": 22
+      },
+      {
+        "type": "range",
+        "id": "subheading_weight",
+        "label": "Font weight",
+        "max": 700,
+        "min": 300,
+        "step": 100,
+        "default": 300
+      },
+      {
+        "type": "range",
+        "id": "subheading_spacing",
+        "label": "Bottom spacing",
+        "min": 0,
+        "max": 100,
+        "step": 5,
+        "unit": "px",
+        "default": 55
+      },
+      {
+        "type": "header",
+        "content": "— Paddings"
+      },
+      {
+        "type": "range",
+        "id": "padding_top",
+        "label": "Top padding",
+        "min": 0,
+        "max": 250,
+        "step": 5,
+        "unit": "px",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "padding_bottom",
+        "label": "Bottom padding",
+        "min": 0,
+        "max": 250,
+        "step": 5,
+        "unit": "px",
+        "default": 40
+      },
+      {
+        "type": "range",
+        "id": "padding_left",
+        "label": "Left padding",
+        "min": 0,
+        "max": 250,
+        "step": 5,
+        "unit": "px",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "padding_right",
+        "label": "Right padding",
+        "min": 0,
+        "max": 250,
+        "step": 5,
+        "unit": "px",
+        "default": 0
+      },
+      {
+        "type": "header",
+        "content": "— Options"
+      },
+      {
+        "id": "blog",
+        "type": "blog",
+        "label": "Blog"
+      },
+      {
+        "type": "range",
+        "id": "post_limit",
+        "label": "Posts",
+        "min": 2,
+        "max": 4,
+        "step": 1,
+        "default": 4
+      },
+      {
+        "type": "select",
+        "id": "image_ratio",
+        "label": "Image ratio",
+        "info": "Grid with image only",
+        "default": "15",
+        "options": [
+          {
+            "value": "1",
+            "label": "Square 1:1"
+          },
+          {
+            "value": "075",
+            "label": "Portrait 3:4"
+          },
+          {
+            "value": "0667",
+            "label": "Portrait 2:3"
+          },
+          {
+            "value": "1333",
+            "label": "Landscape 4:3"
+          },
+          {
+            "value": "15",
+            "label": "Landscape 3:2"
+          },
+          {
+            "value": "16",
+            "label": "Landscape 8:5"
+          },
+          {
+            "value": "1777",
+            "label": "Landscape 16:9"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_parallax",
+        "label": "Enable parallax for post images",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_date",
+        "label": "Show date",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "spacing",
+        "min": 0,
+        "max": 60,
+        "step": 10,
+        "unit": "px",
+        "label": "Space between posts",
+        "default": 0,
+        "info": "Choose 0 to use default style."
+      }
+    ],
+    "blocks": [
+      {
+        "type": "background",
+        "name": "🏷 Background",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "color",
+            "id": "bground_color",
+            "label": "Background color",
+            "default": "#00c9b7"
+          },
+          {
+            "type": "range",
+            "id": "bground_opacity",
+            "label": "Background opacity",
+            "min": 0,
+            "max": 100,
+            "step": 5,
+            "unit": "%",
+            "default": 100
+          },
+          {
+            "type": "header",
+            "content": "— Background image",
+            "info": "Reduce background opacity to use background image"
+          },
+          {
+            "type": "image_picker",
+            "id": "bground_image",
+            "label": "Upload image"
+          },
+          {
+            "type": "select",
+            "id": "bground_position",
+            "label": "Background position to start",
+            "options": [
+              {
+                "value": "center_center",
+                "label": "Center"
+              },
+              {
+                "value": "top_left",
+                "label": "Top left"
+              },
+              {
+                "value": "top_right",
+                "label": "Top right"
+              },
+              {
+                "value": "top_center",
+                "label": "Top center"
+              },
+              {
+                "value": "bottom_left",
+                "label": "Bottom left"
+              },
+              {
+                "value": "bottom_right",
+                "label": "Bottom right"
+              },
+              {
+                "value": "bottom_center",
+                "label": "Bottom center"
+              }
+            ],
+            "default": "center_center"
+          },
+          {
+            "type": "checkbox",
+            "id": "parallax_effect",
+            "label": "Parallax scrolling effect",
+            "info": "Parallax scrolling will be turn of on mobile devices"
+          },
+          {
+            "type": "header",
+            "content": "— Scroll down anchor"
+          },
+          {
+            "type": "checkbox",
+            "id": "show_anchor",
+            "label": "Show anchor icon"
+          },
+          {
+            "type": "color",
+            "id": "anchor_color",
+            "label": "Anchor color",
+            "default": "#00c9b7"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Blog posts",
+        "category": "Blog",
+        "settings": {
+          "blog": "News",
+          "post_limit": 2
+        }
+      }
+    ]
+  }
+{% endschema %}

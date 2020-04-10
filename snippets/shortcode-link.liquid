@@ -1,0 +1,6 @@
+{%- capture my_href -%}{% include 'shortcode-render' render:'href' %}{%- endcapture -%}
+{%- capture my_content -%}{% include 'shortcode-render' render:'content' %}{%- endcapture -%}
+{%- capture my_target -%}{% include 'shortcode-render' render:'target' %}{%- endcapture -%}
+{%- if my_href != blank -%}
+<a class="highlight" href="{{ my_href }}" target="{{ my_target }}" rel="noopener noreferrer">{{ my_content }}</a>
+{%- endif -%}

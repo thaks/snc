@@ -1,0 +1,96 @@
+{%- assign _items = linklists[block.settings.linklist].links -%}
+{%- assign _columns = block.settings.linklist_col -%}
+{%- assign _sub_visible = block.settings.linklist_sub_visible -%}
+{%- assign _row_fluid = 12 -%}
+{%- case _columns -%}
+  {%- when 1 -%}
+    {%- assign _row_fluid = 12 -%}
+  {%- when 2 -%}
+    {%- assign _row_fluid = 6 -%}
+  {%- when 3 -%}
+    {%- assign _row_fluid = 4 -%}
+  {%- when 4 -%}
+    {%- assign _row_fluid = 3 -%}
+  {%- when 5 -%}
+    {%- assign _row_fluid = 25 -%}
+  {%- when 6 -%}
+    {%- assign _row_fluid = 2 -%}
+{%- endcase -%}
+
+{%- assign _menu_class = 'site-nav--has-dropdown' -%}
+{%- if _sub_visible -%}
+  {%- assign _menu_class = '' -%}
+{%- endif -%}
+
+<div class="row row-{{ parent_block.settings.submenu_spacing }}">
+  {%- assign _items_length = _items | size -%}
+  {%- assign _min_index = 0 -%}
+  {%- for _i in (1.._items_length) -%}
+    {%- if _i <= _min_index -%}{% continue %}{%- endif -%}
+    <div class="col-12 col-lg-{{ _row_fluid }}">
+      <ul class="submenu">
+        {%- assign _j = _items_length | divided_by: _columns -%}
+        {%- assign _remainder = _items_length | modulo: _columns -%}
+
+        {%- if _remainder > 0 -%}
+          {%- assign _j = _j | plus: 1 -%}
+        {%- endif -%}
+        {%- assign _j = _j | plus: _i | minus: 1 -%}
+
+        {%- for _k in (_i.._j) -%}
+          {%- assign _real_index = _k | minus: 1 -%}
+
+          {%- if _real_index >= _items_length -%}
+            {%- continue -%}
+          {%- endif -%}
+
+          {%- assign _item = _items[_real_index] -%}
+          {%- assign _object = _item.object -%}
+
+          {%- assign _mixed_text = _item.title | strip -%}
+          {%- assign _f_letter = _mixed_text | slice: 0 -%}
+          {%- assign _l_letter = _mixed_text | slice: -1, 1 -%}
+        
+          {%- if _f_letter != '{' -%}
+            {%- assign _mixed_text = _mixed_text | prepend: '{ }' -%}
+          {%- endif -%}
+        
+          {%- if _l_letter != '}' -%}
+            {%- assign _mixed_text = _mixed_text | append: '{ }' -%}
+          {%- endif -%}
+        
+          {%- assign _texts = _mixed_text | split: '}' -%}
+          {%- assign _label = _texts[0] | remove: '{' | strip -%}
+          {%- assign _texts = _texts[1] | split: '{' -%}
+          {%- assign _name = _texts[0] | strip -%}
+          {%- assign _desc = _texts[1] | strip -%}
+          {%- assign _img_url = '' -%}
+          {%- assign _has_children = false -%}
+          {%- assign _handle = _item.title | handle -%}
+        
+          {%- if linklists[_handle] != empty -%}
+            {%- assign _has_children = true -%}
+          {%- endif -%}
+
+          {%- assign _link = _item.url -%}
+
+          {%- assign _html_name = _name -%}
+          {%- if _label != '' -%}
+            {%- capture _html_name -%}{{ _html_name }}<span class="megamenu-label" style="{% if _label_color != '' %}color:{{ _label_color }};{% endif %}{% if _label_bg_color != '' %}background-color:{{ _label_bg_color }};border-color:{{ _label_bg_color }};{% endif %}">{{ _label }}</span>{%- endcapture -%}
+          {%- endif -%}
+
+          {%- assign _sub_columns = block.settings.linklist_sub_col -%}
+
+          <li{% if _has_children and _sub_visible == false %} class="{{ _menu_class }}"{% endif %}>
+            <a href="{{ _link }}" class="site-nav__link{% if _has_children and _sub_visible %} site-nav__link-bold{% endif %}{% if _label != '' %} site-nav__link-label{% endif %}">{{ _html_name }}</a>
+            {%- if _has_children -%}
+              {%- assign _children = linklists[_handle].links -%}
+              {%- include 'mega-menu-subitem_linklist-children' -%}
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+        {%- assign _min_index = _j -%}
+      </ul>
+    </div>
+  {%- endfor -%}
+</div>

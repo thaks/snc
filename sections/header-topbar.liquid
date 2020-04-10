@@ -1,0 +1,584 @@
+{%- if section.blocks.size > 0 -%}
+  {%- assign container_begin = '<div class="container">' -%}
+  {%- assign container_end = '</div>' -%}
+  {%- if section.settings.full_width -%}
+    {%- assign container_begin = '' -%}
+    {%- assign container_end = '' -%}
+  {%- endif -%}
+
+  {{- container_begin -}}
+  <div class="site-header__top" data-section-id="{{ section.id }}" data-section-type="header-section" style="padding:{{ section.settings.padding_top }}px {{ section.settings.padding_right }}px {{ section.settings.padding_bottom }}px {{ section.settings.padding_left }}px;">
+    <div class="wrapper{% if section.settings.full_width == true and section.settings.no_spacing == false %} container{% endif %}">
+      {%- assign topbar_start = '' -%}
+      {%- assign topbar_end = '</div></div>' -%}
+
+      {%- assign column_start = '<div class="col col-p-$width d-flex flex-wrap align-items-center justify-content-$alignment"><div class="row row-$spacing">' -%}
+      {%- assign column_end = '</div></div>' -%}
+
+      {%- comment -%} check if there have any columns? {%- endcomment -%}
+      {%- assign has_column_type = false -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'column' -%}
+          {%- assign has_column_type = true -%}
+          {%- break -%}
+        {%- endif -%}
+      {%- endfor -%}
+
+      {%- if has_column_type == false -%}
+        {%- assign topbar_start = '<div class="col d-flex flex-wrap align-items-center"><div class="row">' -%}
+      {%- endif -%}
+
+      <div class="row">
+        {{- topbar_start -}}
+
+        {%- assign first_column = true -%}
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+          {%- when 'column' -%}
+            {%- if first_column == false -%}
+              {{- column_end -}}
+            {%- endif -%}
+            {%- assign column_start_new = column_start | replace: '$width', block.settings.width | replace: '$alignment', block.settings.alignment | replace: '$spacing', block.settings.spacing -%}
+            {{- column_start_new -}}
+            {%- assign first_column = false -%}
+
+          {%- when 'account' -%}
+            {%- if shop.customer_accounts_enabled -%}
+            <div class="header__widget col-auto d-flex align-items-center" {{ block.shopify_attributes }}>
+              {%- include 'header-account' -%}
+            </div>
+            {%- endif -%}
+        
+          {%- when 'announcement' -%}
+            <div class="header__widget col-auto d-flex align-items-center" {{ block.shopify_attributes }}>
+              {%- include 'header-announcement' -%}
+            </div>
+        
+          {%- when 'cart' -%}
+            <div class="header__widget col-auto d-flex align-items-center" {{ block.shopify_attributes }}>
+              {%- include 'header-cart' -%}
+            </div>
+
+          {%- when 'contact' -%}
+            <div class="header__widget col-auto d-flex align-items-center" {{ block.shopify_attributes }}>
+              {%- include 'header-contact' -%}
+            </div>
+        
+          {%- when 'currency' -%}
+            <div class="header__widget col-auto d-flex align-items-center" {{ block.shopify_attributes }}>
+              {%- include 'currency-picker', dropdown_position: block.settings.dropdown_position -%}
+            </div>
+        
+          {%- when 'language' -%}
+            <div class="header__widget col-auto d-flex align-items-center" {{ block.shopify_attributes }}>
+              {%- include 'language-picker', dropdown_position: block.settings.dropdown_position -%}
+            </div>
+        
+          {%- when 'search' -%}
+            <div class="header__widget col-auto d-flex align-items-center" {{ block.shopify_attributes }}>
+              {%- include 'header-search' -%}
+            </div>
+
+          {%- when 'social' -%}
+            <div class="header__widget col-auto d-flex align-items-center" {{ block.shopify_attributes }}>
+              <ul class="social-icons row row-{{ block.settings.social_spacing }}">
+                {%- include 'social-icons', facebook: block.settings.social_facebook, twitter: block.settings.social_twitter, pinterest: block.settings.social_pinterest, instagram: block.settings.social_instagram, tumblr: block.settings.social_tumblr, googleplus: block.settings.social_googleplus, youtube: block.settings.social_youtube, vimeo: block.settings.social_vimeo, size: block.settings.social_size -%}
+              </ul>
+            </div>
+        
+          {%- when 'wishlist' -%}
+            {%- if settings.shop_wishlist and settings.wishlist_page != blank -%}
+            <div class="header__widget col-auto d-flex align-items-center" {{ block.shopify_attributes }}>
+              {%- include 'header-wishlist' -%}
+            </div>
+            {%- endif -%}
+
+          {%- endcase -%}
+        {%- endfor -%}
+
+        {{- topbar_end -}}
+      </div>
+    </div>
+  </div>
+  {{- container_end -}}
+{%- endif -%}
+
+{% schema %}
+  {
+    "name": "Top bar",
+    "class": "site-header-main d-none d-lg-block",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "full_width",
+        "label": "Wide display",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "no_spacing",
+        "label": "No spacing",
+        "info": "When Wide display is checked, use this option to remove the bilateral spaces."
+      },
+      {
+        "type": "header",
+        "content": "— Paddings"
+      },
+      {
+        "type": "range",
+        "id": "padding_top",
+        "label": "Top padding",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "unit": "px",
+        "default": 10
+      },
+      {
+        "type": "range",
+        "id": "padding_bottom",
+        "label": "Bottom padding",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "unit": "px",
+        "default": 10
+      },
+      {
+        "type": "range",
+        "id": "padding_left",
+        "label": "Left padding",
+        "min": 0,
+        "max": 100,
+        "step": 5,
+        "unit": "px",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "padding_right",
+        "label": "Right padding",
+        "min": 0,
+        "max": 100,
+        "step": 5,
+        "unit": "px",
+        "default": 0
+      }
+    ],
+    "blocks": [
+      {
+        "type": "column",
+        "name": "— Column",
+        "settings": [
+		  {
+            "type": "range",
+            "id": "width",
+            "label": "Width",
+            "min": 1,
+            "max": 100,
+            "step": 1,
+            "unit": "%",
+            "default": 25
+          },
+          {
+            "type": "select",
+            "id": "alignment",
+            "label": "Alignment",
+            "default": "start",
+            "options": [
+              {
+                "value": "start",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "end",
+                "label": "Right"
+              }
+            ]
+          },
+          {
+            "type": "range",
+            "id": "spacing",
+            "min": 10,
+            "max": 60,
+            "step": 10,
+            "unit": "px",
+            "label": "Space between items",
+            "default": 30
+          }
+        ]
+      },
+      {
+        "type": "announcement",
+        "name": "Announcement",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "Limited time offer:"
+          },
+          {
+            "type": "text",
+            "id": "caption",
+            "label": "Caption",
+            "default": "Sale up to 50% up."
+          },
+          {
+            "type": "text",
+            "id": "button",
+            "label": "Button label",
+            "default": "Shop now"
+          },
+          {
+            "type": "url",
+            "id": "link",
+            "label": "Button link"
+          }
+        ]
+      },
+      {
+        "type": "contact",
+        "name": "Contact info",
+        "limit": 1,
+        "settings": [
+		  {
+            "type": "text",
+            "id": "phone",
+            "label": "Phone",
+            "default": "+01 23456789"
+          },
+          {
+            "type": "text",
+            "id": "email",
+            "label": "Email",
+            "default": "contact@barberry.com"
+          }
+        ]
+      },
+      {
+        "type": "currency",
+        "name": "Currency picker",
+        "limit": 1,
+        "settings": [
+		  {
+            "type": "paragraph",
+            "content": "Theme settings > Currency, to change more settings."
+          },
+          {
+            "type": "select",
+            "id": "dropdown_position",
+            "label": "Dropdown position to start",
+            "default": "left",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "account",
+        "name": "Customer account",
+        "limit": 1,
+        "settings": [
+		  {
+            "type": "paragraph",
+            "content": "Settings > Checkout > Customer accounts, to change more settings."
+          },
+          {
+            "type": "checkbox",
+            "id": "show_icon",
+            "label": "Show icon only",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "show_form",
+            "label": "Show login form",
+            "default": true
+          },
+          {
+            "type": "select",
+            "id": "dropdown_position",
+            "label": "Dropdown position to start",
+            "default": "left",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "language",
+        "name": "Language picker",
+        "limit": 1,
+        "settings": [
+		  {
+            "type": "paragraph",
+            "content": "Install the Weketing app, to change more settings."
+          },
+          {
+            "type": "select",
+            "id": "dropdown_position",
+            "label": "Dropdown position to start",
+            "default": "left",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "cart",
+        "name": "Mini cart",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "show_icon",
+            "label": "Show icon only",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "show_count",
+            "label": "Show items count",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "show_total",
+            "label": "Show total price",
+            "default": true
+          },
+          {
+            "type": "select",
+            "id": "after_click",
+            "label": "Event on click",
+            "default": "frame",
+            "options": [
+              {
+                "label": "Redirect to cart page",
+                "value": ""
+              },
+              {
+                "label": "Show cart frame",
+                "value": "frame"
+              },
+              {
+                "label": "Show cart sidebar",
+                "value": "sidebar"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "id": "message",
+            "label": "Promotional message",
+            "default": "Free Shipping on All Orders Over $75"
+          },
+          {
+            "type": "select",
+            "id": "dropdown_position",
+            "label": "Dropdown position to start",
+            "default": "right",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "search",
+        "name": "Search box",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "show_icon",
+            "label": "Show icon only",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "quick_search",
+            "label": "Enabe quick search",
+            "default": true
+          },
+          {
+            "type": "range",
+            "id": "search_limit",
+            "min": 2,
+            "max": 50,
+            "step": 2,
+            "label": "Searched products limit",
+            "default": 20
+          },
+          {
+            "type": "collection",
+            "id": "featured",
+            "label": "Featured products",
+            "info": "Displayed if no products available."
+          },
+          {
+            "type": "range",
+            "id": "featured_limit",
+            "min": 2,
+            "max": 50,
+            "step": 2,
+            "label": "Featured products limit",
+            "default": 10
+          },
+          {
+            "type": "select",
+            "id": "dropdown_position",
+            "label": "Dropdown position to start",
+            "default": "left",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "social",
+        "name": "Social media icons",
+        "limit": 1,
+        "settings": [
+		  {
+            "type": "paragraph",
+            "content": "Theme settings > Social media, to change social links."
+          },
+          {
+            "type": "range",
+            "id": "social_spacing",
+            "min": 0,
+            "max": 30,
+            "step": 10,
+            "unit": "px",
+            "label": "Space between icons",
+            "default": 20
+          },
+          {
+            "type": "range",
+            "id": "social_size",
+            "min": 10,
+            "max": 50,
+            "step": 1,
+            "unit": "px",
+            "label": "Icon size",
+            "default": 14
+          },
+          {
+            "type": "checkbox",
+            "id": "social_facebook",
+            "label": "Show facebook",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "social_twitter",
+            "label": "Show twitter",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "social_pinterest",
+            "label": "Show pinterest",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "social_instagram",
+            "label": "Show instagram",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "social_tumblr",
+            "label": "Show tumblr"
+          },
+          {
+            "type": "checkbox",
+            "id": "social_googleplus",
+            "label": "Show google plus"
+          },
+          {
+            "type": "checkbox",
+            "id": "social_youtube",
+            "label": "Show youtube"
+          },
+          {
+            "type": "checkbox",
+            "id": "social_vimeo",
+            "label": "Show vimeo"
+          }
+        ]
+      },
+      {
+        "type": "wishlist",
+        "name": "Wishlist",
+        "limit": 1,
+        "settings": [
+		  {
+            "type": "paragraph",
+            "content": "Theme settings > Wishlist, to choose wishlist page."
+          },
+          {
+            "type": "checkbox",
+            "id": "show_icon",
+            "label": "Show icon only",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "show_count",
+            "label": "Show count",
+            "label": "Only show when have items in wishlist.",
+            "default": true
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

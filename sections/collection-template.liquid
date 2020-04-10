@@ -1,0 +1,1456 @@
+{%- assign default_per_page = section.settings.per_page -%}
+{%- assign show_per_pages = section.settings.show_per_pages -%}
+{%- if show_per_pages -%}
+  {%- assign per_page_options = section.settings.per_page_options | split: ',' | uniq -%}
+  {%- capture per_page -%}{% include 'querystring', name: 'limit', default: default_per_page %}{%- endcapture -%}
+  {%- assign default_per_page = per_page | plus: 0 -%}
+{%- endif -%}
+
+{%- assign current_grid = section.settings.grid -%}
+{%- assign shop_view_options = section.settings.shop_view -%}
+{%- assign current_shop_view = shop_view_options | split: '_' | first -%}
+{%- assign per_row_options = section.settings.per_row_options | default: '2,3,4' | split: ',' | uniq -%}
+
+{%- assign show_per_row_selector = section.settings.show_per_row_selector -%}
+{%- if show_per_row_selector -%}
+  {%- capture shop_view -%}{% include 'querystring', name: 'view' %}{%- endcapture -%}
+
+  {%- if shop_view == 'list' -%}
+    {%- assign current_shop_view = 'list' -%}
+  {%- elsif shop_view contains 'grid' -%}
+    {%- assign current_shop_view = 'grid' -%}
+    {%- assign custom_per_row = shop_view | split: '-' | uniq | last -%}
+    {%- if '2,3,4,5,6' contains custom_per_row -%}
+      {%- assign current_grid = custom_per_row -%}
+    {%- endif -%}
+  {%- endif -%}
+{%- endif -%}
+
+{%- assign show_grid_list = true -%}
+{%- if shop_view_options == 'list' -%}
+  {%- assign show_grid_list = false -%}
+{%- endif -%}
+{%- if shop_view_options == 'grid' and show_per_row_selector == false -%}
+  {%- assign show_grid_list = false -%}
+{%- endif -%}
+{%- if shop_view_options == 'grid' and per_row_options.size == 0 -%}
+  {%- assign show_grid_list = false -%}
+{%- endif -%}
+
+{%- assign show_sorting = section.settings.show_sorting -%}
+{%- assign show_sidebar = section.settings.show_sidebar -%}
+{%- assign sidebar_design = section.settings.sidebar_design -%}
+{%- assign sidebar_sticky = section.settings.sidebar_sticky -%}
+{%- assign shop_pagination = section.settings.pagination -%}
+{%- assign shop_label_shape = settings.shop_label_shape -%}
+{%- assign shop_image_ratio = settings.shop_image_ratio -%}
+{%- assign shop_product_spacing = section.settings.spacing -%}
+{%- assign shop_product_hover = settings.shop_product_hover -%}
+{%- assign shop_image_overlay = settings.shop_image_overlay -%}
+{%- assign shop_quickview_enable = settings.shop_quickview_enable -%}
+{%- assign shop_wishlist_enable = settings.shop_wishlist_enable -%}
+{%- assign shop_compare_enable = settings.shop_compare_enable -%}
+
+{%- if settings.roar_themedemo -%}
+  {%- capture shop_demo -%}{% include 'querystring', name: 'type' %}{%- endcapture -%}
+  {%- case shop_demo -%}
+  {%- when 'filters-area' -%}
+    {%- assign sidebar_design = '3' -%}
+  {%- when 'hidden-sidebar' -%}
+    {%- assign sidebar_design = '2' -%}
+  {%- when 'with-sidebar' -%}
+    {%- assign sidebar_design = '1' -%}
+
+  {%- when 'labels-bordered' -%}
+    {%- assign shop_label_shape = 'bordered' -%}
+  {%- when 'labels-solid' -%}
+    {%- assign shop_label_shape = 'solid' -%}
+
+  {%- when 'pagination' -%}
+    {%- assign shop_pagination = '1' -%}
+  {%- when 'load-more' -%}
+    {%- assign shop_pagination = '2' -%}
+  {%- when 'infinite-scrolling' -%}
+    {%- assign shop_pagination = '3' -%}
+
+  {%- when 'image-portrait' -%}
+    {%- assign shop_image_ratio = '075' -%}
+  {%- when 'image-squared' -%}
+    {%- assign shop_image_ratio = '1' -%}
+  {%- when 'image-landscape' -%}
+    {%- assign shop_image_ratio = '1333' -%}
+
+  {%- when 'product-classic' -%}
+    {%- assign shop_product_hover = '1' -%}
+  {%- when 'product-modern' -%}
+    {%- assign shop_product_hover = '2' -%}
+
+  {%- endcase -%}
+{%- endif -%}
+
+{%- assign page_class = 'page-collection' -%}
+{%- if show_sidebar -%}
+  {%- case sidebar_design -%}
+  {%- when '1' -%}
+    {%- assign page_class = page_class | append: ' has-sidebar' -%}
+  {%- when '2' -%}
+    {%- assign page_class = page_class | append: ' offcanvas-sidebar' -%}
+  {%- when '3' -%}
+    {%- assign page_class = page_class | append: ' filters-sidebar' -%}
+  {%- endcase -%}
+{%- endif -%}
+
+{%- paginate collection.products by default_per_page -%}
+<div class="{{ page_class }}" data-section-id="{{ section.id }}" data-section-type="collection-template">
+  {%- assign my_menu = linklists[section.settings.collection_list] -%}
+  {%- if section.settings.show_collection_desc -%}
+    {%- assign page_subtitle = collection.description -%}
+  {%- endif -%}
+  {%- include 'page-header', page_object: collection, page_title: collection.title, page_subtitle: page_subtitle, page_categories: my_menu.links, page_breadcrumbs: true -%}
+  <div class="page-content content-area" style="padding-left:{{ section.settings.padding_left }}px;padding-right:{{ section.settings.padding_right }}px;">
+    <div class="container{% if section.settings.full_width %}-fluid{% endif %}">
+      <div class="row row-60">
+        {%- include 'sidebar' -%}
+        <div id="site-primary" class="col-12{% if show_sidebar %}{% if sidebar_design == '1' or sidebar_design == '3' %} col-p-{{ 100 | minus: section.settings.sidebar_width }}{% endif %}{% endif %}">
+          <div class="collection-bar">
+            {%- if show_grid_list or show_per_pages or show_sorting or show_sidebar -%}
+              <div class="d-flex align-items-center collection-toolbar">
+                {%- if show_grid_list -%}
+                <ul class="toolbar-left d-none d-lg-block">
+                  {%- if shop_view_options != 'grid' -%}
+                  <li>
+                    <div class="shop__view{% if current_shop_view == 'list' %} active{% endif %}" data-view="list">
+                      <svg class="svg-icon"><use xlink:href="#global__symbols-list"></use></svg>
+                    </div>
+                  </li>
+                  {%- endif -%}
+                  {%- if show_per_row_selector and per_row_options.size > 0 -%}
+                    {%- for column in per_row_options -%}
+                    {%- assign column = column | plus: 0 -%}
+                    <li class="grid-{{ column }}">
+                      <div class="shop__view{% if current_shop_view == 'grid' and current_grid == column %} active{% endif %}" data-view="grid" data-per_row="{{ column }}">
+                      {%- case column -%}
+                      {%- when '2' -%}
+                        <svg class="svg-icon"><use xlink:href="#global__symbols-grid"></use></svg>{% if per_row_options.size > 1 %}<span>2</span>{% endif %}
+                      {%- when '3' -%}
+                        <svg class="svg-icon"><use xlink:href="#global__symbols-grid"></use></svg>{% if per_row_options.size > 1 %}<span>3</span>{% endif %}
+                      {%- when '4' -%}
+                        <svg class="svg-icon"><use xlink:href="#global__symbols-grid"></use></svg>{% if per_row_options.size > 1 %}<span>4</span>{% endif %}
+                      {%- when '5' -%}
+                        <svg class="svg-icon"><use xlink:href="#global__symbols-grid"></use></svg>{% if per_row_options.size > 1 %}<span>5</span>{% endif %}
+                      {%- when '6' -%}
+                        <svg class="svg-icon"><use xlink:href="#global__symbols-grid"></use></svg>{% if per_row_options.size > 1 %}<span>6</span>{% endif %}
+                      {%- endcase -%}
+                      </div>
+                    </li>
+                    {%- endfor -%}
+                  {%- elsif shop_view_options contains 'grid' -%}
+                  <li>
+                    <div class="shop__view{% if current_shop_view == 'grid' %} active{% endif %}" data-view="grid" data-per_row="{{ current_grid }}">
+                      <svg class="svg-icon"><use xlink:href="#global__symbols-grid"></use></svg>
+                    </div>
+                  </li>
+                  {%- endif -%}
+                </ul>
+                {%- else -%}
+                <ul class="toolbar-left d-none d-lg-block">
+                  <li class="product-found"><p>{{ 'collections.general.product_found_html' | t: count:collection.products_count }}</p></li>
+                </ul>
+                {%- endif -%}
+                
+                {%- if show_sidebar -%}
+                  {%- if sidebar_design == '1' or sidebar_design == '3' -%}
+                  <div class="toolbar-left d-block d-lg-none">
+                    <div class="sidebar__btn d-flex align-items-center justify-content-center">
+                      <svg class="svg-icon" width="16" height="16"><use xlink:href="#global__symbols-sidebar"></use></svg>
+                    </div>
+                  </div>
+                  {%- endif -%}
+                {%- endif -%}
+
+                {%- if show_per_pages or show_sorting or show_sidebar -%}
+                <ul class="toolbar-right">
+                  {%- if show_per_pages and per_page_options.size > 1 -%}
+                  <li>
+                    <div class="select-wrapper d-none d-md-block">
+                      <select name="PerPage" id="PerPage" class="hidden">
+                        {%- for l in per_page_options -%}
+                          {%- assign limit = l | plus: 0 -%}
+                          <option value="{{ limit }}"{% if default_per_page == limit %} selected="selected"{% endif %}>{{ 'collections.general.show_per_pages' | t: count:limit }}</option>
+                        {%- endfor -%}
+                      </select>
+                      <input id="DefaultPerPage" type="hidden" value="{{ default_per_page }}" />
+                    </div>
+                  </li>
+                  {%- endif -%}
+
+                  {%- if show_sorting -%}
+                  <li>
+                    {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+                    <div class="select-wrapper">
+                      <select name="SortBy" id="SortBy" class="hidden">
+                        {%- if sort_by == collection.default_sort_by -%}
+                          <option value="title-ascending" selected="selected">{{ 'collections.sorting.title' | t }}</option>
+                          {%- if collection.default_sort_by != 'manual' -%}
+                            <option value="manual"{% if sort_by == "manual" %} selected="selected"{% endif %}>{{ 'collections.sorting.featured' | t }}</option>
+                          {%- endif -%}
+                          {%- if collection.default_sort_by != 'best-selling' -%}
+                            <option value="best-selling"{% if sort_by == "best-selling" %} selected="selected"{% endif %}>{{ 'collections.sorting.best_selling' | t }}</option>
+                          {%- endif -%}
+                          {%- if collection.default_sort_by != 'title-ascending' -%}
+                            <option value="title-ascending"{% if sort_by == "title-ascending"  %}selected="selected"{% endif %}>{{ 'collections.sorting.az' | t }}</option>
+                          {%- endif -%}
+                          {%- if collection.default_sort_by != 'title-descending' -%}
+                            <option value="title-descending"{% if sort_by == "title-descending" %} selected="selected"{% endif %}>{{ 'collections.sorting.za' | t }}</option>
+                          {%- endif -%}
+                          {%- if collection.default_sort_by != 'price-ascending' -%}
+                            <option value="price-ascending"{% if sort_by == "price-ascending" %} selected="selected"{% endif %}>{{ 'collections.sorting.price_ascending' | t }}</option>
+                          {%- endif -%}
+                          {%- if collection.default_sort_by != 'price-descending' -%}
+                            <option value="price-descending"{% if sort_by == "price-descending" %} selected="selected"{% endif %}>{{ 'collections.sorting.price_descending' | t }}</option>
+                          {%- endif -%}
+                          {%- if collection.default_sort_by != 'created-descending' -%}
+                            <option value="created-descending"{% if sort_by == "created-descending" %} selected="selected"{% endif %}>{{ 'collections.sorting.date_descending' | t }}</option>
+                          {%- endif -%}
+                          {%- if collection.default_sort_by != 'created-ascending' -%}
+                            <option value="created-ascending"{% if sort_by == "created-ascending" %} selected="selected"{% endif %}>{{ 'collections.sorting.date_ascending' | t }}</option>
+                          {%- endif -%}
+                        {%- else -%}
+                          <option value="manual"{% if sort_by == "manual" %} selected="selected"{% endif %}>{{ 'collections.sorting.featured' | t }}</option>
+                          <option value="best-selling"{% if sort_by == "best-selling" %} selected="selected"{% endif %}>{{ 'collections.sorting.best_selling' | t }}</option>
+                          <option value="title-ascending"{% if sort_by == "title-ascending"  %}selected="selected"{% endif %}>{{ 'collections.sorting.az' | t }}</option>
+                          <option value="title-descending"{% if sort_by == "title-descending" %} selected="selected"{% endif %}>{{ 'collections.sorting.za' | t }}</option>
+                          <option value="price-ascending"{% if sort_by == "price-ascending" %} selected="selected"{% endif %}>{{ 'collections.sorting.price_ascending' | t }}</option>
+                          <option value="price-descending"{% if sort_by == "price-descending" %} selected="selected"{% endif %}>{{ 'collections.sorting.price_descending' | t }}</option>
+                          <option value="created-descending"{% if sort_by == "created-descending" %} selected="selected"{% endif %}>{{ 'collections.sorting.date_descending' | t }}</option>
+                          <option value="created-ascending"{% if sort_by == "created-ascending" %} selected="selected"{% endif %}>{{ 'collections.sorting.date_ascending' | t }}</option>
+                        {%- endif -%}
+                      </select>
+                      <input id="DefaultSortBy" type="hidden" value="{{ collection.default_sort_by }}" />
+                    </div>
+                  </li>
+                  {%- endif -%}
+
+                  {%- if show_sidebar -%}
+                    {%- if sidebar_design == '2' -%}
+                    <li>
+                      <button type="button" class="sidebar__btn d-flex align-items-center justify-content-center">
+                        <span class="f-cross"><i class="f-plus"></i></span>
+                        <span class="f-switchtext">
+                          <span class="f-switchword is-show">{{ 'collections.general.sidebar' | t }}</span>
+                          <span class="f-switchword is-close">{{ 'collections.general.close' | t }}</span>
+                        </span>
+                      </button>
+                    </li>
+                    {%- elsif sidebar_design == '3' -%}
+                    <li>
+                      <button type="button" class="filters__btn d-flex align-items-center justify-content-center">
+                        <span class="f-cross"><i class="f-plus"></i></span>
+                        <span class="f-switchtext">
+                          <span class="f-switchword is-show">{{ 'collections.general.filters' | t }}</span>
+                          <span class="f-switchword is-close">{{ 'collections.general.close' | t }}</span>
+                        </span>
+                      </button>
+                    </li>
+                    {%- endif -%}
+                  {%- endif -%}
+                </ul>
+                {%- endif -%}
+              </div>
+              {%- if show_sidebar and sidebar_design == '3' -%}
+                <div class="shop__filtering"><div class="shop__filtering-inner"></div></div>
+              {%- endif -%}
+              {%- if show_sidebar -%}
+                <div class="filters__active">
+                  <div class="d-flex align-items-center flex-row flex-nowrap">
+                    <div class="clear_wrap"><label class="clear_all">{{ 'collections.general.clear_filters' | t }}</label></div>
+                    <div class="clear_nav d-inline-flex"></div>
+                  </div>
+                </div>
+              {%- endif -%}
+            {%- endif -%}
+          </div>
+
+          <div class="shop-loader"></div>
+          <div class="row row-{{ shop_product_spacing }} products products-{{ current_shop_view }}{% if current_shop_view == 'grid' %} grid-{{ current_grid }} layout-{{ shop_product_hover }}{% if show_sidebar and sidebar_design != '2' %} sidebar-active{% endif %}{% endif %}">
+            {%- if collection.products_count > 0 -%}
+              {%- for my_product in collection.products -%}
+                {%- include 'product-item', layout: current_shop_view, my_collection: collection -%}
+              {%- endfor -%}
+            {%- else -%}
+            <div class="no-products col-12">
+              <p>{{ 'collections.general.no_matches' | t | escape }}</p>
+            </div>
+            {%- endif -%}
+          </div>
+
+          <div id="site-pagination">
+            {%- case shop_pagination -%}
+              {%- when '2' -%}
+              <div class="ajax_load_button animated fadeIn">
+                <a href="javascript:void(0);" class="loadmore{% if collection.products_count <= default_per_page %} hide{% endif %}" data-processing="0" data-no_more="{{ 'general.pagination.no_more' | t | escape }}">
+                  <span>{{- 'general.pagination.load_more' | t -}}</span>
+                  <div><i></i><i></i><i></i></div>
+                </a>
+                {%- include 'pagination' -%}
+              </div>
+              {%- when '3' -%}
+              <div class="ajax_load_button ajax_load_hidden animated fadeIn">
+                <a href="javascript:void(0);" class="loadmore{% if collection.products_count <= default_per_page %} hide{% endif %}" data-processing="0" data-no_more="{{ 'general.pagination.no_more' | t | escape }}">
+                  <div><i></i><i></i><i></i></div>
+                </a>
+                {%- include 'pagination' -%}
+              </div>
+              {%- else -%}
+                {%- include 'pagination' -%}
+            {%- endcase -%}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{%- endpaginate -%}
+
+{% schema %}
+  {
+    "name": "Collection pages",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "full_width",
+        "label": "Wide display"
+      },
+      {
+        "type": "range",
+        "id": "padding_left",
+        "label": "Left padding",
+        "min": 0,
+        "max": 100,
+        "step": 5,
+        "unit": "px",
+        "default": 10
+      },
+      {
+        "type": "range",
+        "id": "padding_right",
+        "label": "Right padding",
+        "min": 0,
+        "max": 100,
+        "step": 5,
+        "unit": "px",
+        "default": 10
+      },
+      {
+        "type": "header",
+        "content": "Page title"
+      },
+      {
+        "type": "image_picker",
+        "id": "background",
+        "label": "Background"
+      },
+      {
+        "type": "link_list",
+        "id": "collection_list",
+        "label": "Category list",
+        "info": "Leave empty to disable category list."
+      },
+      {
+        "type": "checkbox",
+        "id": "show_collection_desc",
+        "label": "Show collection description"
+      },
+      {
+        "type": "header",
+        "content": "Product listing"
+      },
+      {
+        "type": "range",
+        "id": "per_page",
+        "min": 1,
+        "max": 50,
+        "step": 1,
+        "label": "Products per page",
+        "default": 12,
+        "info": "Number of products per page."
+      },
+      {
+        "type": "checkbox",
+        "id": "show_per_pages",
+        "label": "Products per page links",
+        "default": true,
+        "info": "Allow customers to change number of products per page."
+      },
+      {
+        "type": "text",
+        "id": "per_page_options",
+        "label": "Products per page variations",
+        "default": "12,24,36",
+        "info": "For ex.: 12,24,36. Maximum is 50."
+      },
+      {
+        "type": "range",
+        "id": "grid",
+        "label": "Products columns",
+        "info": "How many products you want to show per row.",
+        "min": 2,
+        "max": 6,
+        "step": 1,
+        "default": 4
+      },
+      {
+        "type": "checkbox",
+        "id": "show_per_row_selector",
+        "label": "Number of columns selector",
+        "default": true,
+        "info": "Allow customers to change number of columns per row."
+      },
+      {
+        "type": "text",
+        "id": "per_row_options",
+        "label": "Available products columns variations",
+        "default": "2,3,4",
+        "info": "What columns users may select to be displayed on the product page."
+      },
+      {
+        "type": "select",
+        "id": "shop_view",
+        "label": "Shop products view",
+        "default": "grid_list",
+        "options": [
+          {
+            "value": "grid",
+            "label": "Grid"
+          },
+          {
+            "value": "list",
+            "label": "List"
+          },
+          {
+            "value": "grid_list",
+            "label": "Grid — List"
+          },
+          {
+            "value": "list_grid",
+            "label": "List — Grid"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "show_sorting",
+        "label": "Show products sorting",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "pagination",
+        "label": "Products pagination",
+        "options": [
+          {
+            "value": "1",
+            "label": "Classic"
+          },
+          {
+            "value": "2",
+            "label": "Load more"
+          },
+          {
+            "value": "3",
+            "label": "Infinite"
+          }
+        ]
+      },
+      {
+        "type": "range",
+        "id": "spacing",
+        "min": 0,
+        "max": 60,
+        "step": 10,
+        "unit": "px",
+        "label": "Space between products",
+        "default": 0,
+        "info": "Choose 0 to use default style."
+      },
+      {
+        "type": "header",
+        "content": "Sidebar"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_sidebar",
+        "label": "Show sidebar"
+      },
+      {
+        "type": "select",
+        "id": "sidebar_design",
+        "label": "Sidebar design",
+        "options": [
+          {
+            "value": "1",
+            "label": "Default"
+          },
+          {
+            "value": "2",
+            "label": "Off canvas"
+          },
+          {
+            "value": "3",
+            "label": "Filters"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": "The settings below are applied to Default Sidebar only"
+      },
+      {
+        "type": "range",
+        "id": "sidebar_width",
+        "min": 15,
+        "max": 40,
+        "step": 1,
+        "default": 25,
+        "unit": "%",
+        "label": "Sidebar width"
+      },
+      {
+        "type": "checkbox",
+        "id": "sidebar_sticky",
+        "label": "Sticky sidebar",
+        "default": true
+      }
+    ],
+    "blocks": [
+      {
+        "type": "collections",
+        "name": "Collection list",
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this block on mobile devices."
+          },
+          {
+            "type": "checkbox",
+            "id": "show_toggle",
+            "label": "Show accordion toggle",
+            "default": true
+          },
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading",
+            "default": "Categories"
+          },
+          {
+            "type": "select",
+            "id": "sort",
+            "label": "Sort collections by:",
+            "default": "alphabetical",
+            "options": [
+              {
+                "value": "products_high",
+                "label": "Product count, high to low"
+              },
+              {
+                "value": "products_low",
+                "label": "Product count, low to high"
+              },
+              {
+                "value": "alphabetical",
+                "label": "Alphabetically, A-Z"
+              },
+              {
+                "value": "alphabetical_reversed",
+                "label": "Alphabetically, Z-A"
+              },
+              {
+                "value": "date",
+                "label": "Date, old to new"
+              },
+              {
+                "value": "date_reversed",
+                "label": "Date, new to old"
+              }
+            ]
+          },
+          {
+            "type": "header",
+            "content": "— Heading styling"
+          },
+          {
+            "type": "color",
+            "id": "title_color",
+            "label": "Color",
+            "default": "#000"
+          },
+          {
+            "type": "range",
+            "id": "title_size",
+            "label": "Font size",
+            "max": 100,
+            "min": 10,
+            "step": 1,
+            "unit": "px",
+            "default": 24
+          },
+          {
+            "type": "range",
+            "id": "title_weight",
+            "label": "Font weight",
+            "max": 700,
+            "min": 300,
+            "step": 100,
+            "default": 600
+          },
+          {
+            "type": "range",
+            "id": "title_spacing",
+            "label": "Bottom spacing",
+            "min": 0,
+            "max": 100,
+            "step": 5,
+            "unit": "px",
+            "default": 25
+          },
+          {
+            "type": "select",
+            "id": "title_transform",
+            "label": "Text transform",
+            "default": "default",
+            "options": [
+              {
+                "value": "default",
+                "label": "Default"
+              },
+              {
+                "value": "uppercase",
+                "label": "Uppercase"
+              },
+              {
+                "value": "lowercase",
+                "label": "Lowercase"
+              },
+              {
+                "value": "capitalize",
+                "label": "Capitalize"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "products",
+        "name": "Featured products",
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this block on mobile devices."
+          },
+          {
+            "type": "checkbox",
+            "id": "show_toggle",
+            "label": "Show accordion toggle",
+            "default": true
+          },
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading",
+            "default": "Featured products"
+          },
+          {
+            "type": "collection",
+            "id": "collection",
+            "label": "Collection",
+            "info": "Using current collection if empty."
+          },
+          {
+            "type": "range",
+            "id": "limit",
+            "min": 1,
+            "max": 10,
+            "step": 1,
+            "label": "Limit",
+            "default": 3
+          },
+          {
+            "type": "header",
+            "content": "— Heading styling"
+          },
+          {
+            "type": "color",
+            "id": "title_color",
+            "label": "Color",
+            "default": "#000"
+          },
+          {
+            "type": "range",
+            "id": "title_size",
+            "label": "Font size",
+            "max": 100,
+            "min": 10,
+            "step": 1,
+            "unit": "px",
+            "default": 24
+          },
+          {
+            "type": "range",
+            "id": "title_weight",
+            "label": "Font weight",
+            "max": 700,
+            "min": 300,
+            "step": 100,
+            "default": 600
+          },
+          {
+            "type": "range",
+            "id": "title_spacing",
+            "label": "Bottom spacing",
+            "min": 0,
+            "max": 100,
+            "step": 5,
+            "unit": "px",
+            "default": 25
+          },
+          {
+            "type": "select",
+            "id": "title_transform",
+            "label": "Text transform",
+            "default": "default",
+            "options": [
+              {
+                "value": "default",
+                "label": "Default"
+              },
+              {
+                "value": "uppercase",
+                "label": "Uppercase"
+              },
+              {
+                "value": "lowercase",
+                "label": "Lowercase"
+              },
+              {
+                "value": "capitalize",
+                "label": "Capitalize"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "html",
+        "name": "HTML",
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this block on mobile devices."
+          },
+          {
+            "type": "checkbox",
+            "id": "show_toggle",
+            "label": "Show accordion toggle",
+            "default": true
+          },
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading"
+          },
+          {
+            "type": "html",
+            "id": "code",
+            "label": "HTML"
+          },
+          {
+            "type": "header",
+            "content": "— Heading styling"
+          },
+          {
+            "type": "color",
+            "id": "title_color",
+            "label": "Color",
+            "default": "#000"
+          },
+          {
+            "type": "range",
+            "id": "title_size",
+            "label": "Font size",
+            "max": 100,
+            "min": 10,
+            "step": 1,
+            "unit": "px",
+            "default": 24
+          },
+          {
+            "type": "range",
+            "id": "title_weight",
+            "label": "Font weight",
+            "max": 700,
+            "min": 300,
+            "step": 100,
+            "default": 600
+          },
+          {
+            "type": "range",
+            "id": "title_spacing",
+            "label": "Bottom spacing",
+            "min": 0,
+            "max": 100,
+            "step": 5,
+            "unit": "px",
+            "default": 25
+          },
+          {
+            "type": "select",
+            "id": "title_transform",
+            "label": "Text transform",
+            "default": "default",
+            "options": [
+              {
+                "value": "default",
+                "label": "Default"
+              },
+              {
+                "value": "uppercase",
+                "label": "Uppercase"
+              },
+              {
+                "value": "lowercase",
+                "label": "Lowercase"
+              },
+              {
+                "value": "capitalize",
+                "label": "Capitalize"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "image",
+        "name": "Image",
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this block on mobile devices."
+          },
+          {
+            "type": "checkbox",
+            "id": "show_toggle",
+            "label": "Show accordion toggle",
+            "default": true
+          },
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading"
+          },
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+          },
+          {
+            "type": "url",
+            "id": "link",
+            "label": "Link"
+          },
+          {
+            "type": "header",
+            "content": "— Heading styling"
+          },
+          {
+            "type": "color",
+            "id": "title_color",
+            "label": "Color",
+            "default": "#000"
+          },
+          {
+            "type": "range",
+            "id": "title_size",
+            "label": "Font size",
+            "max": 100,
+            "min": 10,
+            "step": 1,
+            "unit": "px",
+            "default": 24
+          },
+          {
+            "type": "range",
+            "id": "title_weight",
+            "label": "Font weight",
+            "max": 700,
+            "min": 300,
+            "step": 100,
+            "default": 600
+          },
+          {
+            "type": "range",
+            "id": "title_spacing",
+            "label": "Bottom spacing",
+            "min": 0,
+            "max": 100,
+            "step": 5,
+            "unit": "px",
+            "default": 25
+          },
+          {
+            "type": "select",
+            "id": "title_transform",
+            "label": "Text transform",
+            "default": "default",
+            "options": [
+              {
+                "value": "default",
+                "label": "Default"
+              },
+              {
+                "value": "uppercase",
+                "label": "Uppercase"
+              },
+              {
+                "value": "lowercase",
+                "label": "Lowercase"
+              },
+              {
+                "value": "capitalize",
+                "label": "Capitalize"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "linklist",
+        "name": "Link list",
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this block on mobile devices."
+          },
+          {
+            "type": "checkbox",
+            "id": "show_toggle",
+            "label": "Show accordion toggle",
+            "default": true
+          },
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading"
+          },
+          {
+            "type": "link_list",
+            "id": "linklist",
+            "label": "Link list"
+          },
+          {
+            "type": "header",
+            "content": "— Heading styling"
+          },
+          {
+            "type": "color",
+            "id": "title_color",
+            "label": "Color",
+            "default": "#000"
+          },
+          {
+            "type": "range",
+            "id": "title_size",
+            "label": "Font size",
+            "max": 100,
+            "min": 10,
+            "step": 1,
+            "unit": "px",
+            "default": 24
+          },
+          {
+            "type": "range",
+            "id": "title_weight",
+            "label": "Font weight",
+            "max": 700,
+            "min": 300,
+            "step": 100,
+            "default": 600
+          },
+          {
+            "type": "range",
+            "id": "title_spacing",
+            "label": "Bottom spacing",
+            "min": 0,
+            "max": 100,
+            "step": 5,
+            "unit": "px",
+            "default": 25
+          },
+          {
+            "type": "select",
+            "id": "title_transform",
+            "label": "Text transform",
+            "default": "default",
+            "options": [
+              {
+                "value": "default",
+                "label": "Default"
+              },
+              {
+                "value": "uppercase",
+                "label": "Uppercase"
+              },
+              {
+                "value": "lowercase",
+                "label": "Lowercase"
+              },
+              {
+                "value": "capitalize",
+                "label": "Capitalize"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "filter",
+        "name": "Product filter",
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this block on mobile devices."
+          },
+          {
+            "type": "checkbox",
+            "id": "show_toggle",
+            "label": "Show accordion toggle",
+            "default": true
+          },
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading"
+          },
+          {
+            "type": "textarea",
+            "id": "values",
+            "label": "Tag Values",
+            "info": "Sample: red,blue,green"
+          },
+          {
+            "type": "select",
+            "id": "type",
+            "label": "Type",
+            "options": [
+              {
+                "value": "normal",
+                "label": "Normal"
+              },
+              {
+                "value": "dropdown",
+                "label": "Drop down"
+              },
+              {
+                "value": "checkbox",
+                "label": "Check box"
+              },
+              {
+                "value": "background",
+                "label": "Background"
+              },
+              {
+                "value": "tags",
+                "label": "Tags"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "id": "hide_text",
+            "label": "Hide text (background only)"
+          },
+          {
+            "type": "checkbox",
+            "id": "multi_choice",
+            "label": "Multiple choices"
+          },
+          {
+            "type": "header",
+            "content": "— Heading styling"
+          },
+          {
+            "type": "color",
+            "id": "title_color",
+            "label": "Color",
+            "default": "#000"
+          },
+          {
+            "type": "range",
+            "id": "title_size",
+            "label": "Font size",
+            "max": 100,
+            "min": 10,
+            "step": 1,
+            "unit": "px",
+            "default": 24
+          },
+          {
+            "type": "range",
+            "id": "title_weight",
+            "label": "Font weight",
+            "max": 700,
+            "min": 300,
+            "step": 100,
+            "default": 600
+          },
+          {
+            "type": "range",
+            "id": "title_spacing",
+            "label": "Bottom spacing",
+            "min": 0,
+            "max": 100,
+            "step": 5,
+            "unit": "px",
+            "default": 25
+          },
+          {
+            "type": "select",
+            "id": "title_transform",
+            "label": "Text transform",
+            "default": "default",
+            "options": [
+              {
+                "value": "default",
+                "label": "Default"
+              },
+              {
+                "value": "uppercase",
+                "label": "Uppercase"
+              },
+              {
+                "value": "lowercase",
+                "label": "Lowercase"
+              },
+              {
+                "value": "capitalize",
+                "label": "Capitalize"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "product_tags",
+        "name": "Product tags",
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this block on mobile devices."
+          },
+          {
+            "type": "checkbox",
+            "id": "show_toggle",
+            "label": "Show accordion toggle",
+            "default": true
+          },
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading",
+            "default": "Tag clouds"
+          },
+          {
+            "type": "collection",
+            "id": "collection",
+            "label": "Collection",
+            "info": "Using current collection if empty."
+          },
+          {
+            "type": "header",
+            "content": "— Heading styling"
+          },
+          {
+            "type": "color",
+            "id": "title_color",
+            "label": "Color",
+            "default": "#000"
+          },
+          {
+            "type": "range",
+            "id": "title_size",
+            "label": "Font size",
+            "max": 100,
+            "min": 10,
+            "step": 1,
+            "unit": "px",
+            "default": 24
+          },
+          {
+            "type": "range",
+            "id": "title_weight",
+            "label": "Font weight",
+            "max": 700,
+            "min": 300,
+            "step": 100,
+            "default": 600
+          },
+          {
+            "type": "range",
+            "id": "title_spacing",
+            "label": "Bottom spacing",
+            "min": 0,
+            "max": 100,
+            "step": 5,
+            "unit": "px",
+            "default": 25
+          },
+          {
+            "type": "select",
+            "id": "title_transform",
+            "label": "Text transform",
+            "default": "default",
+            "options": [
+              {
+                "value": "default",
+                "label": "Default"
+              },
+              {
+                "value": "uppercase",
+                "label": "Uppercase"
+              },
+              {
+                "value": "lowercase",
+                "label": "Lowercase"
+              },
+              {
+                "value": "capitalize",
+                "label": "Capitalize"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "name": "Text",
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this block on mobile devices."
+          },
+          {
+            "type": "checkbox",
+            "id": "show_toggle",
+            "label": "Show accordion toggle",
+            "default": true
+          },
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading",
+            "default": "Talk about your brand"
+          },
+          {
+            "type": "richtext",
+            "id": "text",
+            "label": "Text",
+            "default": "<p>Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</p>"
+          },
+          {
+            "type": "header",
+            "content": "— Heading styling"
+          },
+          {
+            "type": "color",
+            "id": "title_color",
+            "label": "Color",
+            "default": "#000"
+          },
+          {
+            "type": "range",
+            "id": "title_size",
+            "label": "Font size",
+            "max": 100,
+            "min": 10,
+            "step": 1,
+            "unit": "px",
+            "default": 24
+          },
+          {
+            "type": "range",
+            "id": "title_weight",
+            "label": "Font weight",
+            "max": 700,
+            "min": 300,
+            "step": 100,
+            "default": 600
+          },
+          {
+            "type": "range",
+            "id": "title_spacing",
+            "label": "Bottom spacing",
+            "min": 0,
+            "max": 100,
+            "step": 5,
+            "unit": "px",
+            "default": 25
+          },
+          {
+            "type": "select",
+            "id": "title_transform",
+            "label": "Text transform",
+            "default": "default",
+            "options": [
+              {
+                "value": "default",
+                "label": "Default"
+              },
+              {
+                "value": "uppercase",
+                "label": "Uppercase"
+              },
+              {
+                "value": "lowercase",
+                "label": "Lowercase"
+              },
+              {
+                "value": "capitalize",
+                "label": "Capitalize"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "video",
+        "name": "Video",
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this block on mobile devices."
+          },
+          {
+            "type": "checkbox",
+            "id": "show_toggle",
+            "label": "Show accordion toggle",
+            "default": true
+          },
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading"
+          },
+          {
+            "type": "video_url",
+            "id": "video_url",
+            "label": "YouTube or vimeo link",
+            "accept": ["youtube", "vimeo"]
+          },
+          {
+            "type": "header",
+            "content": "— Heading styling"
+          },
+          {
+            "type": "color",
+            "id": "title_color",
+            "label": "Color",
+            "default": "#000"
+          },
+          {
+            "type": "range",
+            "id": "title_size",
+            "label": "Font size",
+            "max": 100,
+            "min": 10,
+            "step": 1,
+            "unit": "px",
+            "default": 24
+          },
+          {
+            "type": "range",
+            "id": "title_weight",
+            "label": "Font weight",
+            "max": 700,
+            "min": 300,
+            "step": 100,
+            "default": 600
+          },
+          {
+            "type": "range",
+            "id": "title_spacing",
+            "label": "Bottom spacing",
+            "min": 0,
+            "max": 100,
+            "step": 5,
+            "unit": "px",
+            "default": 25
+          },
+          {
+            "type": "select",
+            "id": "title_transform",
+            "label": "Text transform",
+            "default": "default",
+            "options": [
+              {
+                "value": "default",
+                "label": "Default"
+              },
+              {
+                "value": "uppercase",
+                "label": "Uppercase"
+              },
+              {
+                "value": "lowercase",
+                "label": "Lowercase"
+              },
+              {
+                "value": "capitalize",
+                "label": "Capitalize"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "spacing",
+        "name": "Spacing",
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this block on mobile devices."
+          },
+          {
+            "type": "range",
+            "id": "height",
+            "min": 1,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "label": "Height",
+            "default": 20
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

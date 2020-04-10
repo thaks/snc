@@ -1,0 +1,7 @@
+{%- capture my_src -%}{% include 'shortcode-render' render:'src' %}{%- endcapture -%}
+{%- capture my_poster -%}{% include 'shortcode-render' render:'poster' %}{%- endcapture -%}
+{%- if my_src != blank -%}
+<div class="widget__video">
+  <video class="pswp__video" src="{{ my_src }}"{% if my_poster != blank %} poster="{{ my_poster }}"{% endif %} controls="controls"></video>
+</div>
+{%- endif -%}

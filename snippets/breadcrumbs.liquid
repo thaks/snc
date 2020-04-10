@@ -1,0 +1,48 @@
+{%- assign next_index = 1 -%}
+{%- assign new_page_title = page_title -%}
+<ol class="breadcrumbs d-flex align-items-center justify-content-center" itemscope itemtype="http://schema.org/BreadcrumbList">
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="{{ shop.url }}">
+      <span itemprop="name">{{ 'general.breadcrumbs.homepage' | t }}</span><span class="delimiter">/</span>
+    </a>
+    <meta itemprop="position" content="{{ next_index }}" />
+    {%- assign next_index = next_index | plus: 1 -%}
+  </li>
+  {%- case template.name -%}
+  {%- when 'article' -%}
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="{{ shop.url }}{{ blog.url }}">
+      <span itemprop="name">{{ blog.title }}</span>
+    </a>
+    <meta itemprop="position" content="{{ next_index }}" />
+    {%- assign next_index = next_index | plus: 1 -%}
+    {%- assign new_page_title = article.title -%}
+  </li>
+  {%- when 'collection' -%}
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="{{ shop.url }}/collections">
+      <span itemprop="name">{{ 'general.breadcrumbs.collections' | t }}</span><span class="delimiter">/</span>
+    </a>
+    <meta itemprop="position" content="{{ next_index }}" />
+    {%- assign next_index = next_index | plus: 1 -%}
+    {%- assign new_page_title = collection.title -%}
+  </li>
+  {%- when 'product' -%}
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="{{ shop.url }}/collections/vendors?q={{ product.vendor | url_escape }}">
+      <span itemprop="name">{{ product.vendor }}</span><span class="delimiter">/</span>
+    </a>
+    <meta itemprop="position" content="{{ next_index }}" />
+    {%- assign next_index = next_index | plus: 1 -%}
+    {%- assign new_page_title = product.title -%}
+  </li>
+  {%- endcase -%}
+  {%- unless template.name == 'article' -%}
+  <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+    <a itemprop="item" href="{{ canonical_url }}">
+      <span itemprop="name">{{ new_page_title }}</span>
+    </a>
+    <meta itemprop="position" content="{{ next_index }}" />
+  </li>
+  {%- endunless -%}
+</ol>

@@ -1,0 +1,14 @@
+.thr-gender {
+    margin: 30px 0;
+
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-gap: 15px;
+
+    .thr-gender__item {
+        display: block;
+        img {
+            width: 100%;
+        }
+    }
+}

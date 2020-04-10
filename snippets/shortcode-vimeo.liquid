@@ -1,0 +1,9 @@
+{%- capture my_video_link -%}{% include 'shortcode-render' render:'video' %}{%- endcapture -%}
+{%- assign my_video = my_video_link | split: '/' | last -%}
+{%- if my_video != blank -%}
+<div class="widget__video">
+  <div class="video__wrapper">
+    <iframe class="pswp__video" src="//player.vimeo.com/video/{{ my_video }}" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+  </div>
+</div>
+{%- endif -%}

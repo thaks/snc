@@ -1,0 +1,320 @@
+{%- if section.settings.show_sidebar -%}
+<aside role="complementary" id="site-secondary" class="col-12 col-p-{{ section.settings.sidebar_width | default: 25 }}"{% if sidebar_sticky and sidebar_design == '1' %} data-section-id="{{ section.id }}" data-section-type="sidebar-sticky"{% endif %}>
+  <div class="site-sidebar">
+    <div class="sidebar__close close-icon"></div>
+    <div class="widget-area">
+      {%- if section.blocks.size > 0 -%}
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+
+            {%- when 'spacing' -%}
+            <div class="site-widget spacing col-12{% if block.settings.mobile_disable %} mb-hidden{% endif %}" style="min-height:{{ block.settings.height | append:'px' }};" {{ block.shopify_attributes }}></div>
+
+            {%- when 'search' -%}
+            <div class="site-widget{% if block.settings.mobile_disable %} mb-hidden{% endif %}" {{ block.shopify_attributes }}>
+              {%- include 'headings', type: 'sidebar' -%}
+              <div class="widget__content">
+                <form class="search-form" action="/search" method="GET" role="search">
+                  <input type="hidden" name="type" value="article" />
+                  <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ block.settings.placeholder | escape }}" />
+                  <button type="submit">{{ 'general.search.submit' | t }}</button>
+                </form>
+              </div>
+            </div>
+
+            {%- when 'text' -%}
+            <div class="site-widget{% if block.settings.mobile_disable %} mb-hidden{% endif %}" {{ block.shopify_attributes }}>
+              {%- include 'headings', type: 'sidebar' -%}
+              <div class="widget__content">{{ block.settings.text }}</div>
+            </div>
+
+            {%- when 'image' -%}
+            <div class="site-widget image{% if block.settings.mobile_disable %} mb-hidden{% endif %}" {{ block.shopify_attributes }}>
+              {%- include 'headings', type: 'sidebar' -%}
+              <div class="widget__content">
+                {%- capture my_image -%}{{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}{%- endcapture -%}
+                {%- if block.settings.image != blank -%}
+                {%- capture my_image -%}{{ block.settings.image | img_url: 'master' | img_tag: image_alt }}{%- endcapture -%}
+                {%- endif -%}
+
+                {%- if block.settings.link != blank -%}
+                  <a href="{{ block.settings.link }}">
+                    {{- my_image -}}
+                    <div class="image__overlay"></div>
+                  </a>
+                {%- else -%}
+                  {{- my_image -}}
+                  <div class="image__overlay"></div>
+                {%- endif -%}
+              </div>
+            </div>
+
+            {%- when 'video' -%}
+            <div class="site-widget video{% if block.settings.mobile_disable %} mb-hidden{% endif %}" {{ block.shopify_attributes }}>
+              {%- include 'headings', type: 'sidebar' -%}
+              <div class="widget__content">
+                <div class="video__wrapper">
+                  {%- if block.settings.video_url == blank -%}
+                    <iframe src="//www.youtube.com/embed/_9VUPq3SxOc?rel=0&showinfo=0&vq=720" width="850" height="480" frameborder="0" allowfullscreen></iframe>
+                  {%- else -%}
+                    {%- if block.settings.video_url.type == "youtube" -%}
+                      <iframe src="//www.youtube.com/embed/{{ block.settings.video_url.id }}?rel=0&showinfo=0&vq=720" width="850" height="480" frameborder="0" allowfullscreen></iframe>
+                    {%- endif -%}
+                    {%- if block.settings.video_url.type == "vimeo" -%}
+                      <iframe src="//player.vimeo.com/video/{{ block.settings.video_url.id }}?byline=0&portrait=0&badge=0" width="850" height="480" frameborder="0" allowfullscreen></iframe>
+                    {%- endif -%}
+                  {%- endif -%}
+                </div>
+              </div>
+            </div>
+
+            {%- when 'html' -%}
+            <div class="site-widget html{% if block.settings.mobile_disable %} mb-hidden{% endif %}" {{ block.shopify_attributes }}>
+              {%- include 'headings', type: 'sidebar' -%}
+              <div class="widget__content">{{ block.settings.code }}</div>
+            </div>
+
+            {%- when 'linklist' -%}
+            <div class="site-widget linklist{% if block.settings.mobile_disable %} mb-hidden{% endif %}" {{ block.shopify_attributes }}>
+              {%- include 'headings', type: 'sidebar' -%}
+
+              {%- if block.settings.linklist != blank -%}
+                {%- assign linklist = linklists[block.settings.linklist] -%}
+                <ul class="widget__content{% unless block.settings.heading != blank %} categories{% endunless %}">
+                  {%- for link in linklist.links -%}
+                  <li>
+                    <a href="{{ link.url }}">{{ link.title }}</a>
+                    {%- if link.type == 'collection_link' -%}
+                    <span class="count">{{ link.object.all_products_count }}</span>
+                    {%- endif -%}
+                    {%- if link.links.size > 0 -%}
+                    <ul class="children">
+                      {%- for lk in link.links -%}
+                      <li>
+                        <a href="{{ lk.url }}">{{ lk.title }}</a>
+                        {%- if lk.type == 'collection_link' -%}
+                        <span class="count">{{ lk.object.all_products_count }}</span>
+                        {%- endif -%}
+                      </li>
+                      {%- endfor -%}
+                    </ul>
+                    {%- endif -%}
+                  </li>
+                  {%- endfor -%}
+                </ul>
+              {%- else -%}
+                <div class="widget__content">Choose a link list</div>
+              {%- endif -%}
+            </div>
+
+            {%- when 'posts' -%}
+            <div class="site-widget listing{% if block.settings.mobile_disable %} mb-hidden{% endif %}" {{ block.shopify_attributes }}>
+              {%- include 'headings', type: 'sidebar' -%}
+
+              {%- assign my_blog = blog -%}
+              {%- if block.settings.blog != blank -%}
+                {%- assign my_blog = blogs[block.settings.blog] -%}
+              {%- endif -%}
+              <ul class="widget__content">
+                {%- for my_article in my_blog.articles limit: block.settings.limit -%}
+                <li>
+                  <div class="listing__content">
+                    <a href="{{ my_article.url }}" title="{{ my_article.title | escape }}">{{ my_article.title }}</a>
+                    <time datetime="{{ my_article.published_at }}">{{ my_article.published_at | date: "%-d, %b"  }}</time>
+                  </div>
+                </li>
+                {%- endfor -%}
+              </ul>
+            </div>
+
+            {%- when 'blog_tags' -%}
+            <div class="site-widget tag_clouds{% if block.settings.mobile_disable %} mb-hidden{% endif %}" {{ block.shopify_attributes }}>
+              {%- include 'headings', type: 'sidebar' -%}
+
+              {%- assign my_blog = blog -%}
+              {%- if block.settings.blog != blank -%}
+                {%- assign my_blog = blogs[block.settings.blog] -%}
+              {%- endif -%}
+              <ul class="widget__content">
+                {%- for tag in my_blog.all_tags  -%}
+                  {%- if current_tags contains tag -%}
+                  <li class="active">{{ tag | link_to_remove_tag: tag }}</li>
+                  {%- else -%}
+                  <li>{{ tag | link_to_add_tag: tag }}</li>
+                  {%- endif -%}
+                {%- endfor -%}
+              </ul>
+            </div>
+
+            {%- when 'collections' -%}
+            <div class="site-widget linklist{% if block.settings.mobile_disable %} mb-hidden{% endif %}" {{ block.shopify_attributes }}>
+              {%- include 'headings', type: 'sidebar' -%}
+
+              <ul class="widget__content">
+                {%- assign my_collections = collections -%}
+                {%- case block.settings.sort -%}
+                  {%- when 'products_high' or 'products_low' -%}
+                    {%- assign my_collections = my_collections | sort: 'all_products_count' -%}
+                  {%- when 'date' or 'date_reversed' -%}
+                    {%- assign my_collections = my_collections | sort: 'published_at' -%}
+                {%- endcase -%}
+
+                {%- if block.settings.sort == 'products_low' or block.settings.sort == 'date' or block.settings.sort == 'alphabetical' -%}
+                  {%- for my_collection in my_collections -%}
+                    <li>
+                      <a href="{{ my_collection.url }}">{{ my_collection.title }}</a>
+                    </li>
+                  {%- endfor -%}
+                {%- else -%}
+                  {%- for my_collection in my_collections reversed -%}
+                    <li>
+                      <a href="{{ my_collection.url }}">{{ my_collection.title }}</a>
+                    </li>
+                  {%- endfor -%}
+                {%- endif -%}
+              </ul>
+            </div>
+
+            {%- when 'products' -%}
+            <div class="site-widget listing{% if block.settings.mobile_disable %} mb-hidden{% endif %}" {{ block.shopify_attributes }}>
+              {%- include 'headings', type: 'sidebar' -%}
+
+              {%- assign my_collection = collection -%}
+                {%- if block.settings.collection != blank -%}
+                {%- assign my_collection = collections[block.settings.collection] -%}
+              {%- endif -%}
+              <ul class="widget__content">
+                {%- for my_product in my_collection.products limit: block.settings.limit -%}
+                <li class="d-flex">
+                  {%- if my_product.featured_image -%}
+                  {%- assign featured_image_aspect_ratio = my_product.featured_image.aspect_ratio | default: 1 -%}
+                  <div class="listing__image">
+                    <div class="aspect__ratio aspect__ratio-{{ settings.shop_image_ratio }}{% if settings.shop_image_ratio != '0' and settings.shop_image_ratio_crop %} aspect__ratio-crop{% endif %}"{% if settings.shop_image_ratio == '0' %} style="padding-bottom:{{ 100 | divided_by: featured_image_aspect_ratio }}%;"{% endif %}>
+                      <a href="{{ my_product.url | within: my_collection }}" class="aspect__ratio-container">
+                        <div class="aspect__ratio-image lazyload" data-bgset="{% include 'bgset', image: my_product.featured_image %}" data-sizes="auto" data-parent-fit="cover" style="background-image:url({{ 'transparent.png.jpg' | asset_url }});"></div>
+                      </a>
+                    </div>
+                  </div>
+                  {%- endif -%}
+                  <div class="listing__content">
+                    <a href="{{ my_product.url | within: my_collection }}" title="{{ my_product.title | escape }}">{{ my_product.title }}</a>
+                    {%- if settings.shop_review_enable -%}
+                    <div class="listing__review"><span class="shopify-product-reviews-badge" data-id="{{ my_product.id }}"></span></div>
+                    {%- endif -%}
+                    <div class="listing__price">
+                      <span class="money price">{{ my_product.price | money }}</span>
+                      {%- if my_product.compare_at_price > my_product.price -%}
+                      <s class="money compare_at_price">{{ my_product.compare_at_price | money }}</s>
+                      {%- endif -%}
+                    </div>
+                  </div>
+                </li>
+                {%- endfor -%}
+              </ul>
+            </div>
+
+            {%- when 'product_tags' -%}
+            <div class="site-widget tag_clouds{% if block.settings.mobile_disable %} mb-hidden{% endif %}" {{ block.shopify_attributes }}>
+              {%- include 'headings', type: 'sidebar' -%}
+
+              {%- assign my_collection = collection -%}
+                {%- if block.settings.blog != blank -%}
+                {%- assign my_collection = blogs[block.settings.collection] -%}
+              {%- endif -%}
+              <ul class="widget__content">
+                {%- for tag in my_collection.all_tags  -%}
+                  {%- if current_tags contains tag -%}
+                  <li class="active">{{ tag | link_to_remove_tag: tag }}</li>
+                  {%- else -%}
+                  <li>{{ tag | link_to_add_tag: tag }}</li>
+                  {%- endif -%}
+                {%- endfor -%}
+              </ul>
+            </div>
+
+            {%- when 'filter' -%}
+            <div class="site-widget filtering{% if block.settings.mobile_disable %} mb-hidden{% endif %}" {{ block.shopify_attributes }}>
+              {%- if block.settings.show_toggle -%}
+              <input id="widget-{{ block.id }}" type="checkbox" class="widget__toggle hide" />
+              {%- endif -%}
+
+              {%- assign cat_item = block.settings.heading -%}
+              {%- assign cat_item_down = cat_item | downcase  | replace: ' ', '_' -%}
+              {%- assign filters = block.settings.values | strip_newlines | downcase | split: ',' -%}
+              {%- assign current_filters = current_tags | join: ',' | downcase | append: ',' | prepend: ',' -%}
+              <h3 class="widget__title size-{{ block.settings.title_size }} weight-{{ block.settings.title_weight }} text-{{ block.settings.title_transform }}" style="color:{{ block.settings.title_color }};margin-bottom:{{ block.settings.title_spacing }}px;">
+                <label for="widget-{{ block.id }}">{{ cat_item }}</label>
+                {%- for custom_tag in filters -%}
+                  {%- assign custom_filter = custom_tag | append: ',' | prepend: ',' -%}
+                  {%- if current_filters contains custom_filter -%}
+                    <span class="clear">{{ 'collections.general.clear' | t | escape }}</span>
+                    {%- break -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              </h3>
+              <div class="widget__content advanced-filter filter-{{ block.settings.type }}{% if block.settings.type == 'background' and block.settings.hide_text %} hide-text{% endif %}" data-multi_choice="{{ block.settings.multi_choice }}">
+                {%- case block.settings.type -%}
+                {%- when 'normal' -%}
+                  {%- for custom_tag in filters -%}
+                  {%- assign custom_filter = custom_tag | append: ',' | prepend: ',' -%}
+                  <div class="filter-tag{% if current_filters contains custom_filter %} active{% endif %}">
+                    <input class="filter" id="{{cat_item_down}}_{{custom_tag | handleize}}" type="checkbox" value="{{custom_tag | handleize}}" />
+                    <label for="{{cat_item_down}}_{{custom_tag | handleize}}">{{ custom_tag | capitalize }}</label>
+                  </div>
+                  {%- endfor -%}
+                {%- when 'tags' -%}
+                  {%- for custom_tag in filters -%}
+                  {%- assign custom_filter = custom_tag | append: ',' | prepend: ',' -%}
+                  <div class="filter-tag{% if current_filters contains custom_filter %} active{% endif %}">
+                    <input class="filter" id="{{cat_item_down}}_{{custom_tag | handleize}}" type="checkbox" value="{{custom_tag | handleize}}" />
+                    <label for="{{cat_item_down}}_{{custom_tag | handleize}}">{{ custom_tag | capitalize }}</label>
+                  </div>
+                  {%- endfor -%}
+                {%- when 'dropdown' -%}
+                  <div class="filter-tag">
+                    <div class="select-wrapper">
+                      <input class="filter" id="{{cat_item_down}}" type="checkbox" value="" />
+                      <select class="filter">
+                        <option value="">{{ 'collections.general.any' | t | escape }}</option>
+                        {%- for custom_tag in filters -%}
+                        {%- assign custom_filter = custom_tag | append: ',' | prepend: ',' -%}
+                        <option value="{{custom_tag | handleize}}"{% if current_filters contains custom_filter %} selected="selected"{% endif %}>{{ custom_tag | capitalize }}</option>
+                        {%- endfor -%}
+                      </select>
+                    </div>
+                  </div>
+                {%- when 'checkbox' -%}
+                  {%- for custom_tag in filters -%}
+                  {%- assign custom_filter = custom_tag | append: ',' | prepend: ',' -%}
+                  <div class="filter-tag{% if current_filters contains custom_filter %} active{% endif %}">
+                    <input class="filter" id="{{ cat_item_down }}_{{ custom_tag | handleize }}" type="checkbox" value="{{ custom_tag | handleize }}" />
+                    <label for="{{ cat_item_down }}_{{ custom_tag | handleize }}">{{ custom_tag | capitalize }}</label>
+                  </div>
+                  {%- endfor -%}
+                {%- when 'background' -%}
+                  {%- assign file_extension = '.png' -%}
+                  {%- for custom_tag in filters -%}
+                  {%- assign custom_filter = custom_tag | append: ',' | prepend: ',' -%}
+                  <div class="filter-tag{% if current_filters contains custom_filter %} active{% endif %}">
+                    <input class="filter" id="{{ cat_item_down }}_{{ custom_tag | handleize }}" type="checkbox" value="{{ custom_tag | handleize }}" />
+                    <label{% if block.settings.hide_text %} class="has-tooltip"{% endif %} for="{{ cat_item_down }}_{{ custom_tag | handleize }}">
+                      <span class="swatch" style="background-color:{{ custom_tag | handle }};background-image:url({{ custom_tag | handle | append: file_extension | asset_url }});">{{ custom_tag | capitalize }}</span>
+                      <span class="tooltip">{{ custom_tag | capitalize }}</span>
+                    </label>
+                  </div>
+                  {%- endfor -%}
+                {%- endcase -%}
+              </div>
+            </div>
+          {%- endcase -%}
+        {%- endfor -%}
+      {%- else -%}
+      <div class="no_blocks">
+        {%- include 'no-blocks' -%}
+      </div>
+      {%- endif -%}
+    </div>
+  </div>
+  <div class="sidebar__overlay"></div>
+</aside>
+{%- endif -%}

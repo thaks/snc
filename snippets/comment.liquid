@@ -1,0 +1,13 @@
+<div class="d-flex">
+  <div class="comment__image">
+    <img src="https://www.gravatar.com/avatar/{{ comment.email | remove: ' ' | strip_newlines | downcase | md5 }}?s=110" srcset="https://www.gravatar.com/avatar/{{ comment.email | remove: ' ' | strip_newlines | downcase | md5 }}?s=110, https://www.gravatar.com/avatar/{{ comment.email | remove: ' ' | strip_newlines | downcase | md5 }}?s=220 2x" alt="{{ comment.author }}" />
+  </div>
+  <div class="comment__content">
+    <ul class="comment__meta">
+      <li>{{ comment.author }}</li>
+      <li>{{ comment.created_at | time_tag: format: 'month_day_year' }}</li>
+    </ul>
+    <div class="comment__text">{{ comment.content }}</div>
+    <a href="#comment_form" class="comment__btn">{{ 'blogs.comments.reply' | t }}</a>
+  </div>
+</div>

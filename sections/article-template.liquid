@@ -1,0 +1,907 @@
+{%- assign new_comment = false -%}
+{%- if comment and comment.created_at -%}
+  {%- assign new_comment = true -%}
+  {%- assign new_comment_id = comment.id -%}
+{%- endif -%}
+
+{%- if new_comment -%}
+  {%- assign duplicate_comment = false %}
+  {%- for comment in article.comments -%}
+    {%- if comment.id == new_comment_id -%}
+      {%- assign duplicate_comment = true -%}
+      {%- break -%}
+    {%- endif -%}
+  {%- endfor -%}
+
+  {%- if duplicate_comment -%}
+    {%- assign number_of_comments = article.comments_count -%}
+  {%- else -%}
+    {%- assign number_of_comments = article.comments_count | plus: 1 -%}
+  {%- endif -%}
+{%- else -%}
+  {%- assign number_of_comments = article.comments_count -%}
+{%- endif -%}
+
+{%- include 'page-header', page_object: article, page_title: article.title, page_categories: my_menu.links, page_breadcrumbs: true -%}
+<div class="container content-area">
+  <div class="row row-60 justify-content-center">
+    <div id="site-primary" class="col-12{% if section.settings.show_sidebar %} col-p-{{ 100 | minus: section.settings.sidebar_width }}{% else %} col-p-83{% endif %}">
+      <div class="article-main">
+        <article class="article__listing" itemscope itemtype="http://schema.org/Article">
+          {%- if article.image -%}
+          <header class="article__image">
+            {%- assign img_url = article.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+            {%- capture img_sizes -%}{% if article.image.aspect_ratio > 1 %}x3{% else %}3x{% endif %}{%- endcapture -%}
+            <img class="lazyload"
+                 src="{{ article.image | img_url: img_sizes }}"
+                 data-src="{{ img_url }}"
+                 data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+                 data-aspectratio="{{ article.image.aspect_ratio }}"
+                 data-sizes="auto"
+                 tabindex="-1"
+                 alt="{{ article.image.alt | default: article.title | escape }}" />
+          </header>
+          {%- endif -%}
+          <div class="row justify-content-center">
+            <div class="col-12{% unless section.settings.show_sidebar %} col-p-83{% endunless %}">
+              <div class="article__content" itemprop="articleBody">
+                {%- include 'shortcode' load: article.content -%}
+              </div>
+              <footer class="article__meta">
+                <ul class="article__tags">
+                  {%- for tag in article.tags -%}
+                    <li>{{ tag | link_to_add_tag: tag }}</li>
+                  {%- endfor -%}
+                </ul>
+              </footer>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+    {%- include 'sidebar' -%}
+  </div>
+</div>
+<div class="site-pagination">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 col-md-6">
+        {%- if blog.previous_article != blank -%}
+        <div class="nav-prev text-left">
+          <a href="{{ blog.previous_article.url }}">
+            <div class="nav-title"> {{- 'blogs.article.previous_post' | t -}}</div>
+            <span>{{ blog.previous_article.title }}</span>
+          </a>
+        </div>
+        {%- endif -%}
+      </div>
+      <div class="col-12 col-md-6">
+        {%- if blog.next_article != blank -%}
+        <div class="nav-next text-right{% if blog.previous_article != blank %} has-border{% endif %}">
+          <a href="{{ blog.next_article.url }}">
+            <div class="nav-title"> {{- 'blogs.article.next_post' | t -}}</div>
+            <span>{{ blog.next_article.title }}</span>
+          </a>
+        </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+<div class="article__comments-container">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12{% unless section.settings.show_sidebar %} col-p-66{% endunless %}">
+        {%- if blog.comments_enabled? -%}
+        <div class="article__comments" id="comments">
+          {%- if number_of_comments > 0 -%}
+            <h2 class="comments-heading">{{ 'blogs.comments.comments_with_count' | t: count: number_of_comments }} <strong>"{{ article.title | escape }}"</strong></h2>
+
+            {%- if new_comment -%}
+            <div class="alert__message">
+              <div class="alert__icon">
+                <i class="mdi mdi-check"></i>
+              </div>
+              <div class="alert__content">
+                {%- if blog.moderated? -%}
+                  {{- 'blogs.comments.success_moderated' | t -}}
+                {%- else -%}
+                  {{- 'blogs.comments.success' | t -}}
+                {%- endif -%}
+              </div>
+            </div>
+            {%- endif -%}
+
+            {%- paginate article.comments by 5 -%}
+              <ul class="comment__list">
+                {%- comment -%}
+                  If a comment was just submitted with no blank field, show it.
+                {%- endcomment -%}
+                {%- if new_comment -%}
+                  <li id="{{ comment.id }}" class="comment__item">
+                    {%- include 'comment' -%}
+                  </li>
+                {%- endif -%}
+
+                {%- for comment in article.comments -%}
+                  {%- unless comment.id == new_comment_id -%}
+                    <li id="{{ comment.id }}" class="comment__item">
+                      {%- include 'comment' -%}
+                    </li>
+                  {%- endunless -%}
+                {%- endfor -%}
+              </ul>
+              {%- if paginate.pages > 1 -%}
+                {%- include 'pagination' -%}
+              {%- endif -%}
+            {%- endpaginate -%}
+          {%- endif -%}
+
+          {%- include 'comment-form', screen: 'md' -%}
+        </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Post pages",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "show_author",
+        "label": "Show author",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_date",
+        "label": "Show date",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_category",
+        "label": "Show category",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_share_buttons",
+        "label": "Show social sharing buttons",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_sidebar",
+        "label": "Show sidebar"
+      },
+      {
+        "type": "range",
+        "id": "sidebar_width",
+        "min": 1,
+        "max": 100,
+        "step": 1,
+        "default": 25,
+        "unit": "%",
+        "label": "Sidebar width",
+        "info": "For sidebar on Desktop only."
+      }
+    ],
+    "blocks": [
+      {
+        "type": "blog_tags",
+        "name": "Blog tags",
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this block on mobile devices."
+          },
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading",
+            "default": "Tags clouds"
+          },
+          {
+            "type": "blog",
+            "id": "blog",
+            "label": "Blog",
+            "info": "Using current blog if empty."
+          },
+          {
+            "type": "header",
+            "content": "— Heading styling"
+          },
+          {
+            "type": "color",
+            "id": "title_color",
+            "label": "Color",
+            "default": "#000"
+          },
+          {
+            "type": "range",
+            "id": "title_size",
+            "label": "Font size",
+            "max": 100,
+            "min": 10,
+            "step": 1,
+            "unit": "px",
+            "default": 24
+          },
+          {
+            "type": "range",
+            "id": "title_weight",
+            "label": "Font weight",
+            "max": 700,
+            "min": 300,
+            "step": 100,
+            "default": 600
+          },
+          {
+            "type": "range",
+            "id": "title_spacing",
+            "label": "Bottom spacing",
+            "min": 0,
+            "max": 100,
+            "step": 5,
+            "unit": "px",
+            "default": 25
+          },
+          {
+            "type": "select",
+            "id": "title_transform",
+            "label": "Text transform",
+            "options": [
+              {
+                "value": "default",
+                "label": "Default"
+              },
+              {
+                "value": "uppercase",
+                "label": "Uppercase"
+              },
+              {
+                "value": "lowercase",
+                "label": "Lowercase"
+              },
+              {
+                "value": "capitalize",
+                "label": "Capitalize"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "posts",
+        "name": "Featured posts",
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this block on mobile devices."
+          },
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading",
+            "default": "Featured posts"
+          },
+          {
+            "type": "blog",
+            "id": "blog",
+            "label": "Blog",
+            "info": "Using current blog if empty."
+          },
+          {
+            "type": "range",
+            "id": "limit",
+            "min": 1,
+            "max": 10,
+            "step": 1,
+            "label": "Limit",
+            "default": 3
+          },
+          {
+            "type": "header",
+            "content": "— Heading styling"
+          },
+          {
+            "type": "color",
+            "id": "title_color",
+            "label": "Color",
+            "default": "#000"
+          },
+          {
+            "type": "range",
+            "id": "title_size",
+            "label": "Font size",
+            "max": 100,
+            "min": 10,
+            "step": 1,
+            "unit": "px",
+            "default": 24
+          },
+          {
+            "type": "range",
+            "id": "title_weight",
+            "label": "Font weight",
+            "max": 700,
+            "min": 300,
+            "step": 100,
+            "default": 600
+          },
+          {
+            "type": "range",
+            "id": "title_spacing",
+            "label": "Bottom spacing",
+            "min": 0,
+            "max": 100,
+            "step": 5,
+            "unit": "px",
+            "default": 25
+          },
+          {
+            "type": "select",
+            "id": "title_transform",
+            "label": "Text transform",
+            "options": [
+              {
+                "value": "default",
+                "label": "Default"
+              },
+              {
+                "value": "uppercase",
+                "label": "Uppercase"
+              },
+              {
+                "value": "lowercase",
+                "label": "Lowercase"
+              },
+              {
+                "value": "capitalize",
+                "label": "Capitalize"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "html",
+        "name": "HTML",
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this block on mobile devices."
+          },
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading"
+          },
+          {
+            "type": "html",
+            "id": "code",
+            "label": "HTML"
+          },
+          {
+            "type": "header",
+            "content": "— Heading styling"
+          },
+          {
+            "type": "color",
+            "id": "title_color",
+            "label": "Color",
+            "default": "#000"
+          },
+          {
+            "type": "range",
+            "id": "title_size",
+            "label": "Font size",
+            "max": 100,
+            "min": 10,
+            "step": 1,
+            "unit": "px",
+            "default": 24
+          },
+          {
+            "type": "range",
+            "id": "title_weight",
+            "label": "Font weight",
+            "max": 700,
+            "min": 300,
+            "step": 100,
+            "default": 600
+          },
+          {
+            "type": "range",
+            "id": "title_spacing",
+            "label": "Bottom spacing",
+            "min": 0,
+            "max": 100,
+            "step": 5,
+            "unit": "px",
+            "default": 25
+          },
+          {
+            "type": "select",
+            "id": "title_transform",
+            "label": "Text transform",
+            "options": [
+              {
+                "value": "default",
+                "label": "Default"
+              },
+              {
+                "value": "uppercase",
+                "label": "Uppercase"
+              },
+              {
+                "value": "lowercase",
+                "label": "Lowercase"
+              },
+              {
+                "value": "capitalize",
+                "label": "Capitalize"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "image",
+        "name": "Image",
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this block on mobile devices."
+          },
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading"
+          },
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+          },
+          {
+            "type": "url",
+            "id": "link",
+            "label": "Link"
+          },
+          {
+            "type": "header",
+            "content": "— Heading styling"
+          },
+          {
+            "type": "color",
+            "id": "title_color",
+            "label": "Color",
+            "default": "#000"
+          },
+          {
+            "type": "range",
+            "id": "title_size",
+            "label": "Font size",
+            "max": 100,
+            "min": 10,
+            "step": 1,
+            "unit": "px",
+            "default": 24
+          },
+          {
+            "type": "range",
+            "id": "title_weight",
+            "label": "Font weight",
+            "max": 700,
+            "min": 300,
+            "step": 100,
+            "default": 600
+          },
+          {
+            "type": "range",
+            "id": "title_spacing",
+            "label": "Bottom spacing",
+            "min": 0,
+            "max": 100,
+            "step": 5,
+            "unit": "px",
+            "default": 25
+          },
+          {
+            "type": "select",
+            "id": "title_transform",
+            "label": "Text transform",
+            "options": [
+              {
+                "value": "default",
+                "label": "Default"
+              },
+              {
+                "value": "uppercase",
+                "label": "Uppercase"
+              },
+              {
+                "value": "lowercase",
+                "label": "Lowercase"
+              },
+              {
+                "value": "capitalize",
+                "label": "Capitalize"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "linklist",
+        "name": "Link list",
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this block on mobile devices."
+          },
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading"
+          },
+          {
+            "type": "link_list",
+            "id": "linklist",
+            "label": "Link list"
+          },
+          {
+            "type": "header",
+            "content": "— Heading styling"
+          },
+          {
+            "type": "color",
+            "id": "title_color",
+            "label": "Color",
+            "default": "#000"
+          },
+          {
+            "type": "range",
+            "id": "title_size",
+            "label": "Font size",
+            "max": 100,
+            "min": 10,
+            "step": 1,
+            "unit": "px",
+            "default": 24
+          },
+          {
+            "type": "range",
+            "id": "title_weight",
+            "label": "Font weight",
+            "max": 700,
+            "min": 300,
+            "step": 100,
+            "default": 600
+          },
+          {
+            "type": "range",
+            "id": "title_spacing",
+            "label": "Bottom spacing",
+            "min": 0,
+            "max": 100,
+            "step": 5,
+            "unit": "px",
+            "default": 25
+          },
+          {
+            "type": "select",
+            "id": "title_transform",
+            "label": "Text transform",
+            "options": [
+              {
+                "value": "default",
+                "label": "Default"
+              },
+              {
+                "value": "uppercase",
+                "label": "Uppercase"
+              },
+              {
+                "value": "lowercase",
+                "label": "Lowercase"
+              },
+              {
+                "value": "capitalize",
+                "label": "Capitalize"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "search",
+        "name": "Search",
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this block on mobile devices."
+          },
+          {
+            "type": "text",
+            "id": "placeholder",
+            "label": "Placeholder",
+            "default": "Search …"
+          },
+          {
+            "type": "header",
+            "content": "— Heading styling"
+          },
+          {
+            "type": "color",
+            "id": "title_color",
+            "label": "Color",
+            "default": "#000"
+          },
+          {
+            "type": "range",
+            "id": "title_size",
+            "label": "Font size",
+            "max": 100,
+            "min": 10,
+            "step": 1,
+            "unit": "px",
+            "default": 24
+          },
+          {
+            "type": "range",
+            "id": "title_weight",
+            "label": "Font weight",
+            "max": 700,
+            "min": 300,
+            "step": 100,
+            "default": 600
+          },
+          {
+            "type": "range",
+            "id": "title_spacing",
+            "label": "Bottom spacing",
+            "min": 0,
+            "max": 100,
+            "step": 5,
+            "unit": "px",
+            "default": 25
+          },
+          {
+            "type": "select",
+            "id": "title_transform",
+            "label": "Text transform",
+            "options": [
+              {
+                "value": "default",
+                "label": "Default"
+              },
+              {
+                "value": "uppercase",
+                "label": "Uppercase"
+              },
+              {
+                "value": "lowercase",
+                "label": "Lowercase"
+              },
+              {
+                "value": "capitalize",
+                "label": "Capitalize"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "name": "Text",
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this block on mobile devices."
+          },
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading",
+            "default": "Talk about your brand"
+          },
+          {
+            "type": "richtext",
+            "id": "text",
+            "label": "Text",
+            "default": "<p>Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</p>"
+          },
+          {
+            "type": "header",
+            "content": "— Heading styling"
+          },
+          {
+            "type": "color",
+            "id": "title_color",
+            "label": "Color",
+            "default": "#000"
+          },
+          {
+            "type": "range",
+            "id": "title_size",
+            "label": "Font size",
+            "max": 100,
+            "min": 10,
+            "step": 1,
+            "unit": "px",
+            "default": 24
+          },
+          {
+            "type": "range",
+            "id": "title_weight",
+            "label": "Font weight",
+            "max": 700,
+            "min": 300,
+            "step": 100,
+            "default": 600
+          },
+          {
+            "type": "range",
+            "id": "title_spacing",
+            "label": "Bottom spacing",
+            "min": 0,
+            "max": 100,
+            "step": 5,
+            "unit": "px",
+            "default": 25
+          },
+          {
+            "type": "select",
+            "id": "title_transform",
+            "label": "Text transform",
+            "options": [
+              {
+                "value": "default",
+                "label": "Default"
+              },
+              {
+                "value": "uppercase",
+                "label": "Uppercase"
+              },
+              {
+                "value": "lowercase",
+                "label": "Lowercase"
+              },
+              {
+                "value": "capitalize",
+                "label": "Capitalize"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "video",
+        "name": "Video",
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this block on mobile devices."
+          },
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading"
+          },
+          {
+            "type": "video_url",
+            "id": "video_url",
+            "label": "YouTube or vimeo link",
+            "accept": ["youtube", "vimeo"]
+          },
+          {
+            "type": "header",
+            "content": "— Heading styling"
+          },
+          {
+            "type": "color",
+            "id": "title_color",
+            "label": "Color",
+            "default": "#000"
+          },
+          {
+            "type": "range",
+            "id": "title_size",
+            "label": "Font size",
+            "max": 100,
+            "min": 10,
+            "step": 1,
+            "unit": "px",
+            "default": 24
+          },
+          {
+            "type": "range",
+            "id": "title_weight",
+            "label": "Font weight",
+            "max": 700,
+            "min": 300,
+            "step": 100,
+            "default": 600
+          },
+          {
+            "type": "range",
+            "id": "title_spacing",
+            "label": "Bottom spacing",
+            "min": 0,
+            "max": 100,
+            "step": 5,
+            "unit": "px",
+            "default": 25
+          },
+          {
+            "type": "select",
+            "id": "title_transform",
+            "label": "Text transform",
+            "options": [
+              {
+                "value": "default",
+                "label": "Default"
+              },
+              {
+                "value": "uppercase",
+                "label": "Uppercase"
+              },
+              {
+                "value": "lowercase",
+                "label": "Lowercase"
+              },
+              {
+                "value": "capitalize",
+                "label": "Capitalize"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "spacing",
+        "name": "Spacing",
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this block on mobile devices."
+          },
+          {
+            "type": "range",
+            "id": "height",
+            "min": 1,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "label": "Height",
+            "default": 20
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

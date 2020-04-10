@@ -1,0 +1,14 @@
+<div class="header__wishlist">
+  <a href="/pages/{{ settings.wishlist_page }}" class="wishlist__link{% if block.settings.show_icon %} d-icon{% endif %}">
+    {%- if block.settings.show_icon -%}
+      <svg class="svg-icon"><use xlink:href="#global__symbols-wishlist"></use></svg>
+    {%- else -%}
+      {{- 'general.accessibility.menu_wishlist' | t -}}
+    {%- endif -%}
+
+    {%- if block.settings.show_count -%}
+      {%- assign wishlist_size = customer.metafields.wishlist | size -%}
+      <sup class="wishlist__count{% if wishlist_size == 0 %} hide{% endif %}">{{ wishlist_size }}</sup>
+    {%- endif -%}
+  </a>
+</div>

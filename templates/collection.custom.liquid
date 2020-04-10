@@ -1,0 +1,53 @@
+{%- layout none -%}
+
+{%- capture limit_query -%}{% include 'querystring', name: 'limit', default: '4*1' %}{%- endcapture -%}
+{%- assign limit_query = limit_query | split: '*' -%}
+{%- assign grid_num = limit_query | first | plus: 0 -%}
+{%- assign grid_row = limit_query | last | plus: 0 -%}
+{%- assign limit = grid_num | times: grid_row -%}
+
+{%- capture type_query -%}{% include 'querystring', name: 'type', default: '75*1*1*0*5*1*1*1*1*1' %}{%- endcapture -%}
+{%- assign atts = type_query | split: '*' -%}
+
+{%- assign shop_image_ratio = atts[0] -%}
+{%- assign shop_image_ratio_crop = atts[1] | plus: 0 -%}
+{%- assign shop_image_second = atts[2] | plus: 0 -%}
+{%- assign shop_image_overlay = atts[3] | plus: 0 -%}
+{%- assign shop_product_hover = atts[4] -%}
+{%- assign shop_vendor_enable = atts[5] | plus: 0 -%}
+{%- assign shop_review_enable = atts[6] | plus: 0 -%}
+{%- assign shop_quickview_enable = atts[7] | plus: 0 -%}
+{%- assign shop_wishlist_enable = atts[8] | plus: 0 -%}
+{%- assign shop_compare_enable = atts[9] | plus: 0 -%}
+
+{%- if shop_image_ratio_crop == 0 -%}
+  {%- assign shop_image_ratio_crop = false -%}
+{%- endif -%}
+{%- if shop_image_second == 0 -%}
+  {%- assign shop_image_second = false -%}
+{%- endif -%}
+{%- if shop_vendor_enable == 0 -%}
+  {%- assign shop_vendor_enable = false -%}
+{%- endif -%}
+{%- if shop_review_enable == 0 -%}
+  {%- assign shop_review_enable = false -%}
+{%- endif -%}
+{%- if shop_quickview_enable == 0 -%}
+  {%- assign shop_quickview_enable = false -%}
+{%- endif -%}
+{%- if shop_wishlist_enable == 0 -%}
+  {%- assign shop_wishlist_enable = false -%}
+{%- endif -%}
+{%- if shop_compare_enable == 0 -%}
+  {%- assign shop_compare_enable = false -%}
+{%- endif -%}
+
+{%- paginate collection.products by limit -%}
+  {%- if collection.products_count > 0 -%}
+  <div class="row products products-grid" data-is_next="{{ paginate.next.is_link }}">
+    {%- for my_product in collection.products -%}
+      {%- include 'product-item', my_collection: collection -%}
+    {%- endfor -%}
+  </div>
+  {%- endif -%}
+{%- endpaginate -%}

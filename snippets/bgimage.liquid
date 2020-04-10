@@ -1,0 +1,26 @@
+{%- capture style_bground -%}
+  background-color:{{ block.settings.bground_color }};
+  opacity:{{ block.settings.bground_opacity | times: 1.00 | divided_by: 100 }};
+{%- endcapture -%}
+{%- if block.settings.bground_image -%}
+  {%- capture img_sizes -%}{% if block.settings.bground_image.aspect_ratio > 1 %}x3{% else %}3x{% endif %}{%- endcapture -%}
+  {%- capture style_bground_image -%}
+    background-repeat:no-repeat;
+    background-size:cover;
+    background-image:url('{{ 'transparent.png.jpg' | asset_url }}');
+  {%- endcapture -%}
+  <div class="section__bground lazyload position-{{ block.settings.bground_position }}{% if block.settings.parallax_effect %} skrollable skrollable-between{% endif %}"{% if block.settings.parallax_effect %} data-bottom-top="top: -20%;" data-top-bottom="top: 0%;"{% endif %}
+       data-bgset="{% include 'bgset', image: block.settings.bground_image %}" 
+       data-sizes="auto" 
+       data-parent-fit="cover" 
+       style="{{ style_bground_image | strip_newlines | remove: "  " }}">
+    <div class="section__overlay" style="{{ style_bground | strip_newlines | remove: "  " }}"></div>
+  </div>
+{%- else -%}
+  <div class="section__bground">
+    <div class="section__overlay" style="{{ style_bground | strip_newlines | remove: "  " }}"></div>
+  </div>
+{%- endif -%}
+{%- if block.settings.show_anchor -%}
+  <div class="section__anchor" style="color:{{ block.settings.anchor_color }};"></div>
+{%- endif -%}

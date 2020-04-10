@@ -1,0 +1,110 @@
+{%- capture unique_id -%}{% include 'random-number' %}{%- endcapture -%}
+{%- assign my_section_id = my_product.id | append: '-' | append: unique_id -%}
+{%- assign current_variant = my_product.first_available_variant -%}
+{%- assign featured_image = current_variant.featured_image | default: my_product.featured_image -%}
+{%- assign featured_image_aspect_ratio = featured_image.aspect_ratio | default: 1 -%}
+{%- assign is_external_product = false -%}
+{%- assign is_grouped_product = false -%}
+
+{%- if my_product.metafields.info.external_btn != blank and my_product.metafields.info.external_link != blank -%}
+  {%- assign is_external_product = true -%}
+{%- endif -%}
+
+{%- if my_product.metafields.info.grouped != blank and linklists[my_product.metafields.info.grouped].links.size > 0 -%}
+  {%- assign is_grouped_product = true -%}
+{%- endif -%}
+
+{%- capture product_btn -%}
+  {%- if is_external_product == false -%}
+    {%- if is_grouped_product == false -%}
+      {%- if my_product.available -%}
+        {%- if my_product.variants.size > 1 -%}
+        <a href="{{ my_product.url | within: my_collection }}" class="btn options_btn product_btn">
+          <span class="tooltip">{{ 'products.product.select_options' | t }}</span>
+          {{- 'products.product.select_options' | t -}}
+        </a>
+        {%- else -%}
+        <a href="/cart" class="btn addcart_btn product_btn" data-added="{{ 'products.product.view_cart' | t | escape }}">
+          <span class="tooltip">{% if current_variant.inventory_quantity <= 0 and current_variant.inventory_management == 'shopify' %}{{ 'products.product.pre_order' | t | escape }}{% else %}{{ 'products.product.add_to_cart' | t | escape }}{% endif %}</span>
+          {%- if current_variant.inventory_quantity <= 0 and current_variant.inventory_management == 'shopify' -%}{{ 'products.product.pre_order' | t }}{%- else -%}{{ 'products.product.add_to_cart' | t }}{%- endif -%}
+        </a>
+        {%- endif -%}
+      {%- else -%}
+      <a href="{{ my_product.url | within: my_collection }}" class="btn product_btn">
+        <span class="tooltip">{{ 'products.product.read_more' | t }}</span>
+        {{- 'products.product.read_more' | t -}}
+      </a>
+      {%- endif -%}
+    {%- else -%}
+      <a href="{{ my_product.url | within: my_collection }}" class="btn product_btn">
+        <span class="tooltip">{{ 'products.product.view_products' | t }}</span>
+        {{- 'products.product.view_products' | t -}}
+      </a>
+    {%- endif -%}
+  {%- else -%}
+    <a href="{{ my_product.metafields.info.external_link }}" class="btn product_btn">
+      <span class="tooltip">{{ my_product.metafields.info.external_btn }}</span>
+      {{- my_product.metafields.info.external_btn -}}
+    </a>
+  {%- endif -%}
+{%- endcapture -%}
+
+{%- if shop_image_ratio == nil -%}
+  {%- assign shop_image_ratio = settings.shop_image_ratio -%}
+{%- endif -%}
+{%- if shop_image_ratio_crop == nil -%}
+  {%- assign shop_image_ratio_crop = settings.shop_image_ratio_crop -%}
+{%- endif -%}
+{%- if shop_image_second == nil -%}
+  {%- assign shop_image_second = settings.shop_image_second -%}
+{%- endif -%}
+{%- if shop_image_overlay == nil -%}
+  {%- assign shop_image_overlay = settings.shop_image_overlay -%}
+{%- endif -%}
+{%- if shop_vendor_enable == nil -%}
+  {%- assign shop_vendor_enable = settings.shop_vendor_enable -%}
+{%- endif -%}
+{%- if shop_review_enable == nil -%}
+  {%- assign shop_review_enable = settings.shop_review_enable -%}
+{%- endif -%}
+{%- if shop_quickview_enable == nil -%}
+  {%- assign shop_quickview_enable = settings.shop_quickview_enable -%}
+{%- endif -%}
+{%- if shop_wishlist_enable == nil -%}
+  {%- assign shop_wishlist_enable = settings.shop_wishlist_enable -%}
+{%- endif -%}
+{%- if shop_compare_enable == nil -%}
+  {%- assign shop_compare_enable = settings.shop_compare_enable -%}
+{%- endif -%}
+
+<div class="product col-auto">
+  <form action="/cart/add" method="POST">
+    <div class="product__item product__{{ my_product.id }}">
+      {%- include 'product-labels' -%}
+      {%- include 'product-item-colors' -%}
+      <div class="product__image-wrapper">
+        <div class="aspect__ratio aspect__ratio-{{ shop_image_ratio }}{% if shop_image_ratio != '0' and shop_image_ratio_crop %} aspect__ratio-crop{% endif %}"{% if shop_image_ratio == '0' %} style="padding-bottom:{{ 100 | divided_by: featured_image_aspect_ratio }}%;"{% endif %}>
+          <a href="{{ my_product.url | within: my_collection }}" class="aspect__ratio-container">
+            <div class="product__overlay overlay-{{ shop_image_overlay }}"></div>
+            <div class="ProductImage-{{ my_section_id }} aspect__ratio-image product__image product__image-featured lazyload" data-bgset="{% include 'bgset', image: featured_image %}" data-sizes="auto" style="background-image:url({{ 'transparent.png.jpg' | asset_url }});"></div>
+            {%- if shop_image_second and my_product.images.size > 1 -%}
+              <div class="aspect__ratio-image product__image product__image-second lazyload lazypreload" data-bgset="{% include 'bgset', image: my_product.images[1] %}" data-sizes="auto" style="background-image:url({{ 'transparent.png.jpg' | asset_url }});"></div>
+            {%- endif -%}
+          </a>
+        </div>
+        {%- include 'product-countdown' -%}
+        {%- include 'product-item-before' -%}
+      </div>
+      {%- include 'product-item-after' -%}
+    </div>
+    <input type="hidden" name="quantity" value="1" />
+    {%- if my_product.available and my_product.variants.size == 1 and is_external_product == false and is_grouped_product == false -%}
+    <select class="hide" name="id">
+      {%- for variant in my_product.variants -%}
+      <option value="{{ variant.id }}">{{ variant.title | escape }} - {{ variant.price | money }}</option>
+      {%- endfor -%}
+    </select>
+    {%- endif -%}
+    {%- include 'product-item-variants' -%}
+  </form>
+</div>

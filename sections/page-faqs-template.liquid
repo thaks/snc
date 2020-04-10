@@ -1,0 +1,94 @@
+<div class="page-faqs">
+  <div class="content-area">
+    <div class="row row-0">
+      <div class="col-12 col-lg-5 col-xl-4 faqs-left">
+        <div class="faqs-inner">
+          <h1 class="faqs-title">{{ page.title }}</h1>
+          <div class="faqs-description">{{ page.content }}</div>
+        </div>
+      </div>
+      <div class="col-12 col-lg-7 col-xl-8 faqs-right">
+        <div class="faqs-inner">
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+              {%- when 'heading' -%}
+              <div class="faq-heading" {{ block.shopify_attributes }}>
+                {%- if block.settings.heading != blank -%}
+                <h2>{{ block.settings.heading }}</h2>
+                {%- endif -%}
+
+                {%- if block.settings.caption != blank -%}
+                <div class="caption">{{ block.settings.caption }}</div>
+                {%- endif -%}
+              </div>
+
+              {%- when 'faq' -%}
+              <div class="faq-item row row-0" {{ block.shopify_attributes }}>
+                {%- if block.settings.question != blank -%}
+                <div class="col-12 col-md-6">
+                  <h4 class="faq-question">{{ block.settings.question }}</h4>
+                </div>
+                {%- endif -%}
+
+                {%- if block.settings.answer != blank -%}
+                <div class="col-12 col-md-6">
+                  <div class="faq-answer">{{ block.settings.answer }}</div>
+                </div>
+                {%- endif -%}
+              </div>
+
+              {%- when 'line' -%}
+              <div class="row row-0" {{ block.shopify_attributes }}>
+                <div class="col-12 faq-line"></div>
+              </div>
+            {%- endcase -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "FAQs page",
+    "blocks": [
+      {
+        "type": "heading",
+        "name": "Heading",
+        "settings": [
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading"
+          },
+          {
+            "type": "html",
+            "id": "caption",
+            "label": "Caption"
+          }
+        ]
+      },
+      {
+        "type": "faq",
+        "name": "FAQ",
+        "settings": [
+          {
+            "type": "text",
+            "id": "question",
+            "label": "Question"
+          },
+          {
+            "type": "html",
+            "id": "answer",
+            "label": "Answer"
+          }
+        ]
+      },
+      {
+        "type": "line",
+        "name": "Line"
+      }
+    ]
+  }
+{% endschema %}

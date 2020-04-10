@@ -1,0 +1,88 @@
+{%- assign products_slider = false -%}
+{%- assign products_slider_arrow = true -%}
+{%- assign from_collection = false -%}
+
+{%- if cat_id != blank and collections[cat_id] != blank and collections[cat_id].all_products_count > 0 -%}
+  {%- assign products_slider = true -%}
+  {%- assign from_collection = true -%}
+{%- elsif storage_id != blank -%}
+  {%- assign products_slider = true -%}
+{%- endif -%}
+
+{%- if products_slider -%}
+<div data-section-id="{{ section_id }}" data-section-type="products-slider{% if is_sub %}-sub{% endif %}">
+  {%- if heading != blank -%}
+  <h3 class="page-subheading">{{ heading }}</h3>
+  {%- endif -%}
+  
+  {%- if from_collection -%}
+    {%- assign my_collection = collections[cat_id] -%}
+    {%- assign limit = grid_num | times: grid_row -%}
+    {%- if my_collection.products_count <= limit -%}
+      {%- assign products_slider_arrow = false -%}
+    {%- endif -%}
+  {%- endif -%}
+  
+  {%- if shop_image_ratio == nil -%}
+    {%- assign shop_image_ratio = settings.shop_image_ratio -%}
+  {%- endif -%}
+  {%- if shop_image_ratio_crop == nil -%}
+    {%- assign shop_image_ratio_crop = settings.shop_image_ratio_crop -%}
+  {%- endif -%}
+  {%- if shop_image_second == nil -%}
+    {%- assign shop_image_second = settings.shop_image_second -%}
+  {%- endif -%}
+  {%- if shop_image_overlay == nil -%}
+    {%- assign shop_image_overlay = settings.shop_image_overlay -%}
+  {%- endif -%}
+  {%- if shop_product_hover == nil -%}
+    {%- assign shop_product_hover = settings.shop_product_hover -%}
+  {%- endif -%}
+  {%- if shop_vendor_enable == nil -%}
+    {%- assign shop_vendor_enable = settings.shop_vendor_enable -%}
+  {%- endif -%}
+  {%- if shop_review_enable == nil -%}
+    {%- assign shop_review_enable = settings.shop_review_enable -%}
+  {%- endif -%}
+  {%- if shop_quickview_enable == nil -%}
+    {%- assign shop_quickview_enable = settings.shop_quickview_enable -%}
+  {%- endif -%}
+  {%- if shop_wishlist_enable == nil -%}
+    {%- assign shop_wishlist_enable = settings.shop_wishlist_enable -%}
+  {%- endif -%}
+  {%- if shop_compare_enable == nil -%}
+    {%- assign shop_compare_enable = settings.shop_compare_enable -%}
+  {%- endif -%}
+  
+  {%- capture atts_json -%}
+    image_ratio: {{- shop_image_ratio -}},
+    image_ratio_crop: {{- shop_image_ratio_crop -}},
+    image_second: {{- shop_image_second -}},
+    image_overlay: {{- shop_image_overlay -}},
+    product_hover: {{- shop_product_hover -}},
+    vendor: {{- shop_vendor_enable -}},
+    review: {{- shop_review_enable -}},
+    quickview: {{- shop_quickview_enable -}},
+    wishlist: {{- shop_wishlist_enable -}},
+    compare: {{- shop_compare_enable -}}
+  {%- endcapture -%}
+  
+  <div class="products-slider is-slick_slider{% if is_container %} is-slick_slider-container{% endif %}">
+    <div class="slick-slider slick-slider-{{ section_id }}"{% if from_collection %} data-cat_id="{{ my_collection.handle }}"{% endif %}{% unless from_collection %} data-storage_id="{{ storage_id }}"{% endunless %} data-max_pages="{{ max_pages }}" data-grid_num="{{ grid_num }}" data-grid_row="{{ grid_row }}" data-atts="{{ atts_json | strip_newlines | remove: "  " | escape }}">
+      <div class="row row-{{ shop_product_spacing }} products products-grid grid-{{ grid_num }} layout-{{ shop_product_hover }}">
+        {%- if from_collection -%}
+          {%- for my_product in my_collection.products limit: limit -%}
+            {%- include 'product-item' -%}
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+    </div>
+    {%- if max_pages > 1 and products_slider_arrow -%}
+    <div class="slick-arrows d-flex justify-content-center">
+      <div class="slick-arrow slick-prev"><svg class="svg-icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#global__symbols-prev2"></use></svg></div>
+      <div class="slick-arrow slick-next"><svg class="svg-icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#global__symbols-next2"></use></svg></div>
+    </div>
+    {%- endif -%}
+  </div>
+</div>
+{%- endif -%}

@@ -1,0 +1,53 @@
+<div class="header__customer d-position-{{ block.settings.dropdown_position }}{% if block.settings.show_form or customer %} my-account-has-drop{% endif %}">
+  <a href="/account" class="customer__link{% if block.settings.show_icon %} d-icon{% endif %}">
+    {%- if block.settings.show_icon -%}
+      <i class="ris ri-account"></i>
+    {%- else -%}
+      {%- if customer -%}{{ 'general.accessibility.menu_account' | t }}{%- else -%}{{ 'general.accessibility.menu_login_register' | t }}{%- endif -%}
+    {%- endif -%}
+  </a>
+
+  {%- if block.settings.show_form or customer -%}
+  <div class="customer__dropdown{% unless customer %} need-login{% endunless %}">
+    <div class="customer__dropdown-inner">
+      {%- unless customer -%}
+        <h3 class="d-flex align-items-center">
+          <span>{{ 'customer.login.title' | t }}</span>
+          <a href="/account/register">{{ 'customer.register.title' | t }}</a>
+        </h3>
+        {%- assign form_id = 'customer__login-' | append: block.id -%}
+        {%- form 'customer_login', id: form_id -%}
+        <div class="form-group">
+          <label for="customer__login-email-{{ block.id }}">{{ 'customer.login.email' | t }}<span class="required">*</span></label>
+          <input id="customer__login-email-{{ block.id }}" type="email" name="customer[email]"{% if form.errors contains 'email' %} class="input-error"{% endif %} autocapitalize="off" required="required" />
+        </div>
+        {%- if form.password_needed -%}
+        <div class="form-group">
+          <label for="customer__login-password-{{ block.id }}">{{ 'customer.login.password' | t }}<span class="required">*</span></label>
+          <input id="customer__login-password-{{ block.id }}" type="password" value="" name="customer[password]"{% if form.errors contains 'password' %} class="input-error"{% endif %} required="required" />
+        </div>
+        {%- endif -%}
+        {%- if form.password_needed -%}
+        <div class="form-group">
+          <a class="recover" href="#recover" id="RecoverPassword">{{ 'customer.login.forgot_password' | t }}</a>
+        </div>
+        {%- endif -%}
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary w100">{{ 'customer.login.sign_in' | t }}</button>
+        </div>
+        {%- endform -%}
+      {%- else -%}
+        <ul class="submenu">
+          <li><a href="/account"><span>{{ 'layout.customer.dashboard' | t }}</span></a></li>
+          <li><a href="/account/orders"><span>{{ 'layout.customer.orders' | t }}</span></a></li>
+          <li><a href="/account/addresses"><span>{{ 'layout.customer.addresses' | t }}</span></a></li>
+          {%- if settings.shop_wishlist and settings.wishlist_page != blank -%}
+          <li><a href="/pages/{{ settings.wishlist_page }}"><span>{{ 'layout.customer.wishlist' | t }}</span></a></li>
+          {%- endif -%}
+          <li><a href="/account/logout"><span>{{ 'layout.customer.log_out' | t }}</span></a></li>
+        </ul>
+      {%- endunless-%}
+    </div>
+  </div>
+  {%- endif -%}
+</div>

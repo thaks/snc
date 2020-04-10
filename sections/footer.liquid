@@ -1,0 +1,688 @@
+{%- unless template.name == 'index' and section.settings.index_disable -%}
+  {%- if section.blocks.size > 0 -%}
+    {%- assign footer_start = '' -%}
+    {%- assign footer_end = '</div>' -%}
+
+    {%- assign column_start = '<div class="col col-p-$width col-pm-$width_mb text-$text_alignment text-m-$text_m_alignment mb-hidden">' -%}
+    {%- assign column_end = '</div>' -%}
+
+    {%- comment -%} check if there have any columns? {%- endcomment -%}
+    {%- assign has_column_type = false -%}
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'column' -%}
+        {%- assign has_column_type = true -%}
+        {%- break -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- if has_column_type == false -%}
+      {%- assign footer_start = '<div class="col">' -%}
+    {%- endif -%}
+
+    <footer role="contentinfo" class="site-footer" style="padding:{{ section.settings.padding_top }}px {{ section.settings.padding_right }}px {{ section.settings.padding_bottom }}px {{ section.settings.padding_left }}px;">
+    <div class="container">
+      <div class="row">
+        {{- footer_start -}}
+
+        {%- assign first_column = true -%}
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+          {%- when 'column' -%}
+            {%- if first_column == false -%}
+              {{- column_end -}}
+            {%- endif -%}
+            {%- assign column_start_new = column_start | replace: '$width_mb', block.settings.width_mb | replace: '$width', block.settings.width | replace: '$text_alignment', block.settings.text_alignment | replace: '$text_m_alignment', block.settings.text_alignment_mb -%}
+
+            {%- unless block.settings.mobile_disable -%}
+              {%- assign column_start_new = column_start_new | replace: ' mb-hidden', '' -%}
+            {%- endunless -%}
+
+            {{- column_start_new -}}
+            {%- assign first_column = false -%}
+
+          {%- when 'contact' -%}
+            <div class="footer__widget{% if block.settings.mobile_disable %} mb-hidden{% endif %}" {{ block.shopify_attributes }}>
+              {%- include 'headings', type: 'footer' -%}
+
+              <ul class="content linklist contact">
+                {%- if block.settings.logo != blank -%}
+                <li class="d-flex"><img src="{{ block.settings.logo | img_url: '300x' }}" alt="{{ block.settings.logo.alt }}" style="max-height:{{ block.settings.max_height }}px;" /></li>
+                {%- endif -%}
+                {%- if block.settings.address != blank -%}
+                <li class="d-flex">
+                  <i class="ion ion-ios-home"></i>
+                  <span>
+                    {{- block.settings.address -}}
+                    {%- if block.settings.gmap != blank -%}
+                      &nbsp;—&nbsp;<a href="{{ block.settings.gmap }}" target="_blank">{{ 'layout.footer.view_map' | t }}</a>
+                    {%- endif -%}
+                  </span>
+                </li>
+                {%- endif -%}
+                {%- if block.settings.mail != blank -%}
+                <li class="d-flex"><i class="ion ion-ios-mail"></i><a href="mailto:{{ block.settings.mail }}">{{ block.settings.mail }}</a></li>
+                {%- endif -%}
+                {%- if block.settings.phone != blank -%}
+                <li class="d-flex"><i class="ion ion-md-call"></i><a href="tel:{{ block.settings.phone | replace: ' ', '' }}">{{ block.settings.phone }}</a></li>
+                {%- endif -%}
+                {%- if block.settings.hours != blank -%}
+                <li class="d-flex"><i class="ion ion-md-timer"></i><span>{{ block.settings.hours }}</span></li>
+                {%- endif -%}
+              </ul>
+            </div>
+
+          {%- when 'menu' -%}
+            <div class="footer__widget{% if block.settings.mobile_disable %} mb-hidden{% endif %}" {{ block.shopify_attributes }}>
+              {%- include 'headings', type: 'footer' -%}
+
+              <ul class="content linklist">
+                {%- assign my_menu = linklists[block.settings.linklist] -%}
+                {%- if my_menu != blank and my_menu.links.size > 0 -%}
+                  {%- for link in my_menu.links -%}
+                  <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+                  {%- endfor -%}
+                {%- else -%}
+                  <li>{% include 'no-blocks' %}</li>
+                {%- endif -%}
+              </ul>
+            </div>
+
+          {%- when 'newsletter' -%}
+            <div class="footer__widget{% if block.settings.mobile_disable %} mb-hidden{% endif %}" {{ block.shopify_attributes }}>
+              {%- include 'headings', type: 'footer' -%}
+
+              <div class="content newsletter">
+                {%- if block.settings.subheading != blank -%}
+                  {{- block.settings.subheading -}}
+                {%- endif -%}
+
+                {%- unless block.settings.use_mailchimp -%}
+                  {%- assign contact_form = 'contact_form-' | append: block.id -%}
+                  {%- form 'customer', id: contact_form -%}
+                
+                    {%- if form.posted_successfully? -%}
+                    <div class="alert alert-success">
+                      <div class="alert__icon">
+                        <i class="ris ri-check"></i>
+                      </div>
+                      <div class="alert__content">
+                        {{- 'sections.newsletter.confirmation' | t -}}
+                      </div>
+                    </div>
+                    {%- endif -%}
+                
+                    {%- if form.errors != blank -%}
+                    <div class="alert alert-error">
+                      <div class="alert__icon">
+                        <i class="ris ri-alert"></i>
+                      </div>
+                      <div class="alert__content">
+                        {{- form.errors | default_errors -}}
+                      </div>
+                    </div>
+                    {%- endif -%}
+                    
+                    <div class="form-group d-flex">
+                      <input type="hidden" name="contact[tags]" value="newsletter" />
+                      <input type="email" name="contact[email]" required="required" class="form-control" value="{% if customer %}{{ customer.email }}{% endif %}" placeholder="{{ 'general.mailchimp_form.email_placeholder' | t | escape }}" autocapitalize="off" />
+                      <button type="submit" class="btn btn-primary">{{ 'general.mailchimp_form.submit' | t }}</button>
+                    </div>
+                  {%- endform -%}
+                {%- else -%}
+                <form action="{{ block.settings.form_action }}" method="POST" name="mc-embedded-subscribe-form" target="_blank">
+                  <div class="form-group d-flex">
+                    <input type="email" name="EMAIL" required="required" class="form-control" value="{% if customer %}{{ customer.email }}{% endif %}" placeholder="{{ 'general.mailchimp_form.email_placeholder' | t | escape }}" autocapitalize="off" />
+                    <button type="submit" class="btn btn-primary">{{ 'general.mailchimp_form.submit' | t }}</button>
+                  </div>
+                </form>
+                {%- endunless -%}
+              </div>
+            </div>
+
+          {%- when 'payment' -%}
+            <div class="footer__widget{% if block.settings.mobile_disable %} mb-hidden{% endif %}" {{ block.shopify_attributes }}>
+              {%- include 'headings', type: 'footer' -%}
+
+              <ul class="content payment_providers">
+                {%- for type in shop.enabled_payment_types -%}
+                <li>{{ type | payment_type_svg_tag }}</li>
+                {%- endfor -%}
+              </ul>
+            </div>
+
+          {%- when 'products' -%}
+            <div class="footer__widget{% if block.settings.mobile_disable %} mb-hidden{% endif %}" {{ block.shopify_attributes }}>
+              {%- include 'headings', type: 'footer' -%}
+
+              <ul class="content linklist products">
+                {%- assign my_collection = collections[block.settings.collection] -%}
+                {%- if my_collection != blank and my_collection.products_count > 0 -%}
+                  {%- for my_product in my_collection.products limit: block.settings.limit -%}
+                  <li class="d-flex">
+                    <a href="{{ my_product.url | within: my_collection }}" class="left">
+                      <div class="aspect__ratio aspect__ratio-{{ settings.shop_image_ratio }}">
+                        <div class="aspect__ratio-image"style="background-image: url({{ my_product.featured_image | img_url: '100x100' }});"></div>
+                      </div>
+                    </a>
+                    <div class="right">
+                      <a href="{{ my_product.url | within: my_collection }}">{{ my_product.title }}</a>
+                      <p>
+                        <span class="money price">{{ my_product.price | money }}</span>
+                        {%- if my_product.compare_at_price > my_product.price -%}
+                        <s class="money compare_at_price">{{ my_product.compare_at_price | money }}</s>
+                        {%- endif -%}
+                      </p>
+                    </div>
+                  </li>
+                  {%- endfor -%}
+                {%- else -%}
+                  <li class="d-flex">{% include 'no-blocks' %}</li>
+                {%- endif -%}
+              </ul>
+            </div>
+
+          {%- when 'social' -%}
+            <div class="footer__widget{% if block.settings.mobile_disable %} mb-hidden{% endif %}" {{ block.shopify_attributes }}>
+              {%- include 'headings', type: 'footer' -%}
+
+              <ul class="content social-icons{% if block.settings.social_border %} social--has-border{% endif %} row row-{{ block.settings.social_spacing }}">
+                {%- include 'social-icons', facebook: block.settings.social_facebook, twitter: block.settings.social_twitter, pinterest: block.settings.social_pinterest, instagram: block.settings.social_instagram, tumblr: block.settings.social_tumblr, googleplus: block.settings.social_googleplus, youtube: block.settings.social_youtube, vimeo: block.settings.social_vimeo, size: block.settings.social_size -%}
+              </ul>
+            </div>
+
+          {%- when 'html' -%}
+            <div class="footer__widget{% if block.settings.mobile_disable %} mb-hidden{% endif %}" {{ block.shopify_attributes }}>
+              {%- include 'headings', type: 'footer' -%}
+
+              <div class="content html">{{ block.settings.content }}</div>
+            </div>
+
+          {%- when 'spacing' -%}
+            <div class="col-12{% if block.settings.mobile_disable %} mb-hidden{% endif %}" style="min-height:{{ block.settings.height | append:'px' }};" {{ block.shopify_attributes }}></div>
+          {%- endcase -%}
+        {%- endfor -%}
+
+        {{- footer_end -}}
+      </div>
+    </div>
+  </footer>
+  {%- endif -%}
+{%- endunless -%}
+
+{% schema %}
+  {
+    "name": "Footer",
+    "settings": [
+      {
+        "type": "header",
+        "content": "— Heading style"
+      },
+      {
+        "type": "range",
+        "id": "title_size",
+        "label": "Font size",
+        "max": 100,
+        "min": 10,
+        "step": 1,
+        "unit": "px",
+        "default": 18
+      },
+      {
+        "type": "range",
+        "id": "title_weight",
+        "label": "Font weight",
+        "max": 700,
+        "min": 300,
+        "step": 100,
+        "default": 600
+      },
+      {
+        "type": "range",
+        "id": "title_spacing",
+        "label": "Bottom spacing",
+        "min": 0,
+        "max": 100,
+        "step": 5,
+        "unit": "px",
+        "default": 25
+      },
+      {
+        "type": "header",
+        "content": "— Paddings"
+      },
+      {
+        "type": "range",
+        "id": "padding_top",
+        "label": "Top padding",
+        "min": 0,
+        "max": 250,
+        "step": 5,
+        "unit": "px",
+        "default": 30
+      },
+      {
+        "type": "range",
+        "id": "padding_bottom",
+        "label": "Bottom padding",
+        "min": 0,
+        "max": 250,
+        "step": 5,
+        "unit": "px",
+        "default": 40
+      },
+      {
+        "type": "range",
+        "id": "padding_left",
+        "label": "Left padding",
+        "min": 0,
+        "max": 250,
+        "step": 5,
+        "unit": "px",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "padding_right",
+        "label": "Right padding",
+        "min": 0,
+        "max": 250,
+        "step": 5,
+        "unit": "px",
+        "default": 0
+      },
+      {
+        "type": "header",
+        "content": "— Options"
+      },
+      {
+        "type": "checkbox",
+        "id": "index_disable",
+        "label": "Disable on homepage",
+        "info": "Check to disable footer on homepage."
+      }
+    ],
+    "blocks": [
+      {
+        "type": "column",
+        "name": "— Column",
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this group on mobile devices."
+          },
+		  {
+            "type": "range",
+            "id": "width",
+            "label": "Width",
+            "min": 1,
+            "max": 100,
+            "step": 1,
+            "unit": "%",
+            "default": 25
+          },
+          {
+            "type": "range",
+            "id": "width_mb",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "%",
+            "label": "Width on mobile",
+            "default": 50
+          },
+          {
+            "type": "select",
+            "id": "text_alignment",
+            "label": "Text alignment",
+            "default": "left",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "text_alignment_mb",
+            "label": "Text alignment on mobile",
+            "default": "left",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "contact",
+        "name": "Contact",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this block on mobile devices."
+          },
+		  {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading",
+            "default": "Contact"
+          },
+		  {
+            "type": "image_picker",
+            "id": "logo",
+            "label": "Logo"
+          },
+          {
+            "type": "range",
+            "id": "max_height",
+            "label": "Logo max height",
+            "min": 10,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "default": 20
+          },
+		  {
+            "type": "text",
+            "id": "address",
+            "label": "Address",
+            "default": "184 Main Rd E, St Albans VIC 3021, Australia"
+          },
+		  {
+            "type": "text",
+            "id": "mail",
+            "label": "Mail",
+            "default": "contact@company.com"
+          },
+		  {
+            "type": "text",
+            "id": "phone",
+            "label": "Phone",
+            "default": "+001 2233 456"
+          },
+		  {
+            "type": "text",
+            "id": "hours",
+            "label": "Hours",
+            "default": "7 days a week from 9 am to 6 pm"
+          },
+		  {
+            "type": "text",
+            "id": "gmap",
+            "label": "Google map address"
+          }
+        ]
+      },
+      {
+        "type": "menu",
+        "name": "Menu",
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this block on mobile devices."
+          },
+		  {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading",
+            "default": "Menu"
+          },
+		  {
+            "type": "link_list",
+            "id": "linklist",
+            "label": "Choose a menu"
+          }
+        ]
+      },
+      {
+        "type": "newsletter",
+        "name": "Newsletter",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this block on mobile devices."
+          },
+		  {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading",
+            "default": "Newsletter"
+          },
+          {
+            "type": "richtext",
+            "id": "subheading",
+            "label": "Subheading",
+            "default": "<p>A short sentence describing what someone will receive by subscribing</p>"
+          },
+          {
+            "type": "checkbox",
+            "id": "use_mailchimp",
+            "label": "Use Mailchimp instead of Shopify default"
+          },
+          {
+            "type": "text",
+            "id": "form_action",
+            "label": "Mailchimp form action [( ? )](https:\/\/youtu.be\/ucj6y7Ix6gU)"
+          }
+        ]
+      },
+      {
+        "type": "payment",
+        "name": "Payment providers",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this block on mobile devices."
+          },
+		  {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading",
+            "default": "Payment providers"
+          },
+		  {
+            "type": "paragraph",
+            "content": "The list of payment types is based on those accepted by your store's enabled payment providers."
+          }
+        ]
+      },
+      {
+        "type": "products",
+        "name": "Products",
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this block on mobile devices."
+          },
+		  {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading",
+            "default": "Products"
+          },
+		  {
+            "type": "collection",
+            "id": "collection",
+            "label": "Choose a collection"
+          },
+          {
+            "type": "range",
+            "id": "limit",
+            "label": "Number of products",
+            "min": 1,
+            "max": 10,
+            "step": 1,
+            "default": 4
+          }
+        ]
+      },
+      {
+        "type": "social",
+        "name": "Social media",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this block on mobile devices."
+          },
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading",
+            "info": "Theme settings > Social media, to change social links."
+          },
+          {
+            "type": "range",
+            "id": "social_spacing",
+            "min": 0,
+            "max": 30,
+            "step": 10,
+            "unit": "px",
+            "label": "Space between icons",
+            "default": 10
+          },
+          {
+            "type": "range",
+            "id": "social_size",
+            "min": 10,
+            "max": 50,
+            "step": 1,
+            "unit": "px",
+            "label": "Icon size",
+            "default": 14
+          },
+          {
+            "type": "checkbox",
+            "id": "social_border",
+            "label": "Has border",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "social_facebook",
+            "label": "Show facebook",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "social_twitter",
+            "label": "Show twitter",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "social_pinterest",
+            "label": "Show pinterest",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "social_instagram",
+            "label": "Show instagram",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "social_tumblr",
+            "label": "Show tumblr"
+          },
+          {
+            "type": "checkbox",
+            "id": "social_googleplus",
+            "label": "Show google plus"
+          },
+          {
+            "type": "checkbox",
+            "id": "social_youtube",
+            "label": "Show youtube"
+          },
+          {
+            "type": "checkbox",
+            "id": "social_vimeo",
+            "label": "Show vimeo"
+          }
+        ]
+      },
+      {
+        "type": "html",
+        "name": "HTML",
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this block on mobile devices."
+          },
+		  {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading"
+          },
+		  {
+            "type": "html",
+            "id": "content",
+            "label": "Content"
+          }
+        ]
+      },
+      {
+        "type": "spacing",
+        "name": "Spacing",
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "mobile_disable",
+            "label": "Disable on mobile",
+            "info": "Check to disable this block on mobile devices."
+          },
+		  {
+            "type": "range",
+            "id": "height",
+            "min": 1,
+            "max": 100,
+            "step": 1,
+            "unit": "px",
+            "label": "Height",
+            "default": 30
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

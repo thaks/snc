@@ -1,0 +1,20 @@
+{%- capture loadnew -%}{{- load | replace: '<!--[', '[' -}}{%- endcapture -%}
+{%- capture loadnew -%}{{- loadnew | replace: ']-->', ']' -}}{%- endcapture -%}
+{%- capture loadnew -%}{{- loadnew | replace: ']</p>', ']' -}}{%- endcapture -%}
+{%- capture loadnew -%}{{- loadnew | replace: '<p>[', '[' -}}{%- endcapture -%}
+{%- assign shortcodeBeginnings = loadnew | split: '[' -%}
+
+{%- if shortcodeBeginnings.size > 1 -%}
+
+  {%- for shortcodeBegin in shortcodeBeginnings -%}
+    {%- assign forloopNextIndex = forloop.index0 | plus: 1 -%}
+
+    {%- unless forloop.first -%}
+      {%- assign shortcodeEndings = shortcodeBegin | split: ']' -%}
+
+      {%- capture shortcodeFull -%}{{-shortcodeEndings[0]-}}{%- endcapture -%}
+
+      {{- '[' | append: shortcodeFull | append: ']' -}}
+    {%- endunless -%}
+  {%- endfor -%}
+{%- endif -%}

@@ -1,0 +1,164 @@
+{% if product.type == 'SCRUBS' or product.type == "LABCOAT" %}
+<div class="line-item">
+    <div v-show="isEmbroideryForm" class="line-item__content">
+        <div class="line-item__heading">
+            Embroidery: <span> Upgrade your apparel with custom embroidery for a look that you'll love to wear, day in and day out.</span>
+            <ul class="line-item__ul">
+              <li>Logo + Text = 35AED </li>
+              <li>Logo only   = 25AED </li>
+              <li>Text only   = 20AED </li>
+
+            </ul>
+        </div>
+
+        <p class="line-item-property__field line-item__selectbox">
+            <label for="your-name" class="line-item__label">Logo: </label><br>
+            <input id="embroideryLogo" type="file" name="properties[embroidery-logo]" class="line-item__label">
+        </p>
+
+      <p class="line-item-property__field line-item__selectbox">
+        <label class="line-item__label">Embroidery Position: </label><br>
+        <select v-model="embroiderPosition"  id="your-name" name="properties[embroidery-position]">
+          <option value="Left" selected="selected">Left</option>
+          <option value="Right">Right</option>
+        </select>
+      </p>
+
+      <div class="line-item__extra-div">
+        <p class="line-item-property__field line-item__selectbox">
+          <label class="line-item__label">Thread Color: </label><br>
+          <select @change="onTreadColorChange" id="thr-embroidery-text-color" name="properties[embroidery-thread-color]">
+            <option value="rgb(0, 0, 0)" selected="selected">Black</option>
+            <option value="rgb(255, 255, 255)">White</option>
+            <option value="rgb(31, 40, 64)">Navy</option>
+            <option value="rgb(28, 47, 150)">Royal Blue</option>
+            <option value="rgb(2, 105, 139)">Teal</option>
+            <option value="rgb(102, 147, 188)">Light Blue</option>
+            <option value="rgb(104, 30, 91)">Purple</option>
+            <option value="rgb(184, 1, 96)">Fushia</option>
+            <option value="#C40043">Red</option>
+            <option value="rgb(2, 64, 38)">Hunter Green</option>
+            <option value="rgb(206, 153, 77)">Gold</option>
+            <option value="rgb(199, 183, 147)">Khaki</option>
+            <option value="rgb(131, 34, 51)">Burgundy</option>
+          </select>
+        </p>
+
+        <p class="line-item-property__field line-item__selectbox">
+          <label class="line-item__label">Font: </label><br>
+          <select @change="onFontChange" id="thr-embroidery-font" name="properties[embroidery-font]">
+            <option value="Roboto Mono,monospace">Roboto Mono</option>
+            <option value="PT Sans,sans-serif">PT Sans</option>
+            <option value="Oleo Script,cursive">Oleo Script</option>
+            <option value="Bowlby One SC,cursive">Bowlby One SC</option>
+          </select>
+        </p>
+      </div>
+
+      <p class="line-item-property__field line-item__selectbox">
+        <label for="your-name" class="line-item__label">Name</label>
+        <input v-model="firstline" class="line-item__show-text" id="thr-embroidery-firstline" type="text" name="properties[first-line]">
+      </p>
+      <p class="line-item-property__field line-item__selectbox">
+        <label for="your-name" class="line-item__label">Designation</label>
+        <input v-model="secondline" class="line-item__show-text line-item__show-text"  id="thr-embroidery-secondline" type="text" name="properties[second-line]">
+      </p>
+
+      <div class="line-item__heading">
+        By clicking EMBROIDERY SAVE, you agree to these terms.: <span>Embroidery preview is meant as a sample only. Note embroidered items are not returnable unless there is a defect or embroidery error. Please review selections for accuracy.
+        </span>
+      </div>
+
+      <div  @click="embroiderSave" class="line-item__selectbox line-item__embroidery-save-button">
+        Embroidery Save
+      </div>
+      
+    </div>
+
+    <div v-show="!isEmbroideryForm" class="line-item__confirm">
+        <label class="line-item__label line-item__label">Name: <span class="firstlineOutput  line-item__show-text">${ firstline }</span></label><br>
+        <label class="line-item__label line-item__label">Designation: <span class="secondlineOutput line-item__show-text">${ secondline }</span></label><br>
+        <label class="line-item__label">Position: ${ embroiderPosition }</label><br>
+
+        <!-- <p class="line-item-property__field line-item__selectbox">
+            <label for="your-name" class="line-item__label">Whatsapp ( Optional)</label>
+            <input v-model="secondline" class=""  id="thr-embroidery-whatsapp" type="text" name="properties[second-line]">
+          </p>
+         -->
+
+        <div @click="embroideryClose" class="line-item__embroidery-close-button">
+        </div>
+
+    </div>
+</div>
+{% else %}
+
+<!-- <div id="thr-steth-tube-engraving" class="thr-steth-tube-engraving">
+    <div v-show="isEngravingForm" class="thr-steth-tube-engraving__content">
+        <div class="thr-steth-tube-engraving__heading">
+            Tube Engraving: <span> Upgrade your Stethoscope with custom Tube engraving. Only 50 Dhs per Item.</span>
+        </div>
+
+      <div class="line-item__extra-div">
+        <p class="line-item-property__field thr-steth-tube-engraving__selectbox">
+          <label class="thr-steth-tube-engraving__label">Text Color: </label><br>
+          <select @change="onTreadColorChange" id="thr-embroidery-text-color" name="properties[embroidery-thread-color]">
+            <option value="rgb(0, 0, 0)" selected="selected">Black</option>
+            <option value="rgb(255, 255, 255)">White</option>
+            <option value="rgb(31, 40, 64)">Navy</option>
+            <option value="rgb(28, 47, 150)">Royal Blue</option>
+            <option value="rgb(2, 105, 139)">Teal</option>
+            <option value="rgb(102, 147, 188)">Light Blue</option>
+            <option value="rgb(104, 30, 91)">Purple</option>
+            <option value="rgb(184, 1, 96)">Fushia</option>
+            <option value="#C40043">Red</option>
+            <option value="rgb(2, 64, 38)">Hunter Green</option>
+            <option value="rgb(206, 153, 77)">Gold</option>
+            <option value="rgb(199, 183, 147)">Khaki</option>
+            <option value="rgb(131, 34, 51)">Burgundy</option>
+          </select>
+        </p>
+
+        <p class="line-item-property__field thr-steth-tube-engraving__selectbox">
+          <label class="thr-steth-tube-engraving__label">Font: </label><br>
+          <select @change="onFontChange" id="thr-embroidery-font" name="properties[embroidery-font]">
+            <option value="Roboto Mono,monospace">Roboto Mono</option>
+            <option value="PT Sans,sans-serif">PT Sans</option>
+            <option value="Oleo Script,cursive">Oleo Script</option>
+            <option value="Bowlby One SC,cursive">Bowlby One SC</option>
+          </select>
+        </p>
+      </div>
+
+      <p class="line-item-property__field thr-steth-tube-engraving__selectbox">
+        <label for="your-name" class="thr-steth-tube-engraving__label">Name</label>
+        <input v-model="firstline" class="thr-steth-tube-engraving__show-text" id="thr-engraving-name" type="text" name="properties[first-line]">
+      </p>
+
+      <div class="thr-steth-tube-engraving__heading">
+        By clicking TUBE ENGRAVING SAVE, you agree to these terms.: <span>Embroidery preview is meant as a sample only. Note embroidered items are not returnable unless there is a defect or embroidery error. Please review selections for accuracy.
+        </span>
+      </div>
+
+      <div  @click="engravingSave" class="thr-steth-tube-engraving__selectbox thr-steth-tube-engraving__embroidery-save-button">
+        TUBE ENGRAVING SAVE 
+      </div>
+      
+    </div>
+
+    <div v-show="!isEngravingForm" class="thr-steth-tube-engraving__confirm">
+        <label class="thr-steth-tube-engraving__label">Tube engraving: <span class="firstlineOutput  thr-steth-tube-engraving__show-text">${ tube-engraving-line }</span></label><br>
+
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda, enim reiciendis. Necessitatibus, consectetur sapiente. Debitis, ipsam iure, cum soluta error consequuntur veritatis ipsa vitae quidem veniam, voluptas sequi amet quam.
+
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste deserunt dolorum animi! Eligendi placeat blanditiis consectetur eos architecto est ex hic rerum, incidunt laboriosam odio sequi ratione, reprehenderit illum quaerat?
+
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aperiam maiores natus nobis molestiae fugit sunt voluptatum, tenetur eius a, corporis totam tempore! Suscipit consectetur aut odit unde quos dolores inventore!
+
+        <div @click="engravingClose" class="thr-steth-tube-engraving__embroidery-close-button">
+        </div>
+
+    </div>
+</div> -->
+
+{% endif %}

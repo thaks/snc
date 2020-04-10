@@ -1,0 +1,50 @@
+<div class="container content-area">
+  <div class="site-account">
+    {%- form 'create_customer' -%}
+    
+    {%- if form.errors != blank -%}
+    <div class="alert alert-error">
+      <div class="alert__icon">
+        <i class="ris ri-alert"></i>
+      </div>
+      <div class="alert__content">
+        {{- form.errors | default_errors -}}
+      </div>
+    </div>
+    {%- endif -%}
+
+    <div class="title-wrapper text-center">
+      {%- include 'breadcrumbs' -%}
+      <h1 class="page-title">{{ 'customer.register.title' | t }}</h1>
+    </div>
+
+    <div class="form-group">
+      <label for="customer_register-first_name">{{ 'customer.register.first_name' | t }}</label>
+      <input id="customer_register-first_name" type="text" name="customer[first_name]"{% if form.first_name %} value="{{ form.first_name }}"{% endif %} autofocus />
+    </div>
+    <div class="form-group">
+      <label for="customer_register-last_name">{{ 'customer.register.last_name' | t }}</label>
+      <input id="customer_register-last_name" type="text" name="customer[last_name]"{% if form.last_name %} value="{{ form.last_name }}"{% endif %} />
+    </div>
+    <div class="form-group">
+      <label for="customer_register-email">{{ 'customer.register.email' | t }}<span class="required">*</span></label>
+      <input id="customer_register-email" type="email" name="customer[email]"{% if form.errors contains 'email' %} class="input-error"{% endif %}{% if form.email %} value="{{ form.email }}"{% endif %} autocorrect="off" autocapitalize="off" required="required" />
+    </div>
+    <div class="form-group">
+      <label for="customer_register-password">{{ 'customer.register.password' | t }}<span class="required">*</span></label>
+      <input id="customer_register-password" type="password" name="customer[password]"{% if form.errors contains 'password' %} class="input-error"{% endif %} required="required" />
+    </div>
+    <p class="form-animate">{{ 'customer.register.policy_html' | t }}</p>
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary w100">{{ 'customer.register.submit' | t }}</button>
+    </div>
+    <div class="form-divider">
+      <span>{{ 'customer.register.or' | t }}</span>
+    </div>
+    <div class="form-group">
+      <a href="/account/login" class="btn w100">{{ 'customer.login.title' | t }}</a>
+    </div>
+
+    {%- endform -%}
+  </div>
+</div>

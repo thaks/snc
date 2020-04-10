@@ -1,0 +1,42 @@
+<h2 class="reply-heading">{{ 'blogs.comments.title' | t }}</h2>
+<p class="reply-notes">{{ 'blogs.comments.notes' | t }}</p>
+
+{%- form 'new_comment', article -%}
+
+  {%- if form.errors != blank -%}
+  <div class="alert alert-error">
+    <div class="alert__icon">
+      <i class="ris ri-alert"></i>
+    </div>
+    <div class="alert__content">
+      {{- form.errors | default_errors -}}
+    </div>
+  </div>
+  {%- endif -%}
+
+  <div class="row">
+    <div class="form-group col">
+      <label for="{{ section.id }}-body">{{ 'blogs.comments.message' | t }} <span class="required">*</span></label>
+      <textarea name="comment[body]" required="required"{% if form.errors contains 'body' %} class="input-error"{% endif %}>{% if form.body %}{{ form.body }}{% endif %}</textarea>
+    </div>
+  </div>
+  <div class="row">
+    <div class="form-group col-12 col-{{ screen }}-4">
+      <label for="{{ section.id }}-name">{{ 'blogs.comments.name' | t }} <span class="required">*</span></label>
+      <input id="{{ section.id }}-name" type="text" name="comment[author]" required="required"{% if form.errors contains 'author' %} class="input-error"{% endif %} value="{% if form.author %}{{ form.author }}{% elsif customer %}{{ customer.name }}{% endif %}" />
+    </div>
+    <div class="form-group col-12 col-{{ screen }}-4">
+      <label for="{{ section.id }}-email">{{ 'blogs.comments.email' | t }} <span class="required">*</span></label>
+      <input id="{{ section.id }}-email" type="email" name="comment[email]" required="required"{% if form.errors contains 'email' %} class="input-error"{% endif %} value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}" autocorrect="off" autocapitalize="off" />
+    </div>
+    <div class="form-group col-12 col-{{ screen }}-4">
+      <label for="{{ section.id }}-website">{{ 'blogs.comments.website' | t }}</label>
+      <input id="{{ section.id }}-website" type="url" name="comment[website]" pattern="https?://.+" value="{% if form.website %}{{ form.website }}{% endif %}" />
+    </div>
+  </div>
+  <div class="row">
+    <div class="form-group col">
+      <button type="submit" class="btn btn-primary">{{ 'blogs.comments.post' | t }}</button>
+    </div>
+  </div>
+{%- endform -%}
